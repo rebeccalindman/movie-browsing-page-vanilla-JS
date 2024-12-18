@@ -1,0 +1,12 @@
+
+
+
+.ux-shape-divider {
+    --divider-top-width: 100%;
+    --divider-width: 100%;
+    left: 0;
+    line-height: 0;
+    overflow: hidden;
+    position: absolute;
+    width: 100%
+}
