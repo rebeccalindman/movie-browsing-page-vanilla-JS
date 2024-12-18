@@ -1,5 +1,58 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; 
+}
+
+:root{
+    --brand-color1: #ffcc00; /*mustard yellow*/
+    --brand-color2: #5f9ea0; /*dark mint green*/
+    --brand-color3: #e6e6fa; /*lilac*/
+    --text-color-dark: #16181a;
+}
+
+header{
+    background-color: #ffffff;
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: top;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+    flex-wrap: wrap-reverse;
+}
+
+header img {
+    padding: .8rem;
+}
+
+nav ul{
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    gap: .6rem;
+    margin-right: clamp(.5rem, 1rem, 5%);
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--text-color-dark);
+    background-color: var(--brand-color1);
+    padding: 0.9rem 1rem .8rem 1rem;
+    border-radius: 0rem 0rem 1.2rem 1.2rem;
+    display: inline-block;
+    transition: background-color 0.3s;
+}
+
+nav ul li a:hover {
+    background-color: var(--brand-color2);
+}
 
 
+
+/** UX Shape Dividers **/
 
 .ux-shape-divider {
     --divider-top-width: 100%;
@@ -9,4 +62,35 @@
     overflow: hidden;
     position: absolute;
     width: 100%
+}
+
+
+.ux-shape-divider--top {
+    top: -1px;
+    transform: rotate(180deg)
+}
+
+.ux-shape-divider--top svg {
+    width: calc(var(--divider-top-width) + 2px)
+}
+
+.ux-shape-divider--bottom {
+    bottom: -1px
+}
+
+
+.ux-shape-divider--bottom svg {
+    width: calc(var(--divider-width) + 2px)
+}
+
+.ux-shape-divider--flip svg {
+    transform: translateX(-50%) rotateY(180deg)
+}
+
+.ux-shape-divider--to-front {
+    z-index: 2
+}
+
+.ux-shape-divider .ux-shape-fill {
+    fill: #fff
 }
