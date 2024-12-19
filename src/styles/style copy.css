@@ -1,0 +1,133 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; 
+}
+
+main, body, html {
+    overflow: visible; /* Ensure no clipping occurs */
+}
+
+:root{
+    --brand-color1: #ffcc00; /*mustard yellow*/
+    --brand-color2: #5f9ea0; /*dark mint green*/
+    --brand-color2-5: #70b3b6; /*light mint green*/
+    --brand-color3: #e6e6fa; /*lilac*/
+    --text-color-dark: #16181a;
+}
+
+header{
+    background-color: #ffffff;
+    color: #fff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+    position: sticky;
+    top: 0;
+    height: auto;
+    z-index: 9999;
+    flex-wrap: wrap-reverse;
+}
+
+
+/* debugging end */
+nav ul{
+    list-style: none;
+    display: flex;
+    flex-direction: row;
+    gap: .6rem;
+    margin: 0 clamp(.5rem, 1rem, 5%);
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--text-color-dark);
+    padding: 1.2rem 1rem 1rem 1rem;
+    border-radius: 0rem 0rem 1.2rem 1.2rem;
+    display: inline-block;
+    transition: background-color 0.3s;
+    border: 1px solid white;
+}
+
+nav ul li a:hover {
+    background-color: var(--brand-color2);
+    border: 1px solid white;
+}
+
+main {
+    background-color: var(--brand-color3);
+    color: var(--text-color-dark);
+    display: block;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#home {
+    border-right: 1px solid var(--brand-color2);
+    border-bottom: 1px solid var(--brand-color2);
+    border-left: 1px solid var(--brand-color2);
+}
+
+#page-title {
+    padding: 3rem 1rem;
+    color: white;
+    text-align: center;
+    font-size: 2.5rem;
+}
+
+
+
+/** UX Shape Dividers **/
+
+ #background-image-wrapper {
+    position: relative; /* Container for relative positioning */
+    height: 200px;
+    background: repeating-linear-gradient(
+        135deg, /* Direction: 90 degrees creates vertical stripes */
+        var(--brand-color2-5), /* First stripe color */
+        var(--brand-color2-5) 50px, /* Stripe width */
+        var(--brand-color2) 50px, /* Gap between stripes (starts second color) */
+        var(--brand-color2) 100px /* Total stripe width (alternates back to first color) */
+    );
+}
+
+#background-image img {
+    display: block; /* Ensure no unexpected spacing issues */
+    width: 100%; /* Cover full width */
+    height: auto;
+    z-index: 0; /* Place image below divider */
+}
+
+.ux-shape-divider {
+    position: absolute; /* Position relative to #background-image-wrapper */
+    bottom: 0; /* Stick to the bottom of the image */
+    left: 0; /* Align to the left */
+    width: 100%; /* Match image width */
+    z-index: 1; /* Ensure it's on top of the image */
+    line-height: 0; /* Remove line height spacing */
+    overflow: hidden;
+}
+
+.ux-shape-divider svg {
+    width: 100%; /* Ensure SVG stretches across the container */
+    height: auto;
+}
+
+.ux-shape-fill {
+    fill: #fff; /* Adjust color to match your design */
+}
+
+
+
+
+
+/* Debugging start */
+/* header {
+    border: 2px solid red;
+}
+
+main {
+    border: 2px solid blue;
+} */

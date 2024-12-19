@@ -5,86 +5,165 @@
 }
 
 :root {
+  --text-dark: #16181a;
+  --text-light: #fff;
   --brand-color1: #fc0;
   --brand-color2: #5f9ea0;
+  --brand-color2-5: #70b3b6;
   --brand-color3: #e6e6fa;
   --text-color-dark: #16181a;
+  --sds-typography-body-size-medium: 16px;
+  --sds-typography-body-font-weight-regular: 400;
+}
+
+body {
+  background-color: #fff;
+  font-family: Inria Sans, sans-serif;
 }
 
 header {
-  color: #fff;
-  justify-content: space-between;
-  align-items: top;
-  z-index: 999;
-  background-color: #fff;
-  flex-flow: wrap-reverse;
-  display: flex;
-  position: sticky;
-  top: 0;
+  background-color: inherit;
 }
 
-header img {
-  padding: .8rem;
+.navButton {
+  background: #fff;
+  border-radius: 0 0 20px 20px;
 }
 
-nav ul {
-  flex-direction: row;
-  gap: .6rem;
-  margin-right: clamp(.5rem, 1rem, 5%);
-  list-style: none;
-  display: flex;
+.navButton:hover {
+  background: var(--brand-color2-5, #70b3b6);
+  border-radius: 0 0 20px 20px;
 }
 
-nav ul li a {
-  color: var(--text-color-dark);
-  background-color: var(--brand-color1);
-  border-radius: 0 0 1.2rem 1.2rem;
-  padding: .9rem 1rem .8rem;
+.navButton #active {
+  border-right: 2px solid var(--brand-color2, #5f9ea0);
+  border-bottom: 2px solid var(--brand-color2, #5f9ea0);
+  border-left: 2px solid var(--brand-color2, #5f9ea0);
+  background: #fff;
+  border-radius: 0 0 20px 20px;
+}
+
+header nav ul li a {
+  color: var(--text-dark);
+  font-size: var(--sds-typography-body-size-medium);
+  font-weight: var(--sds-typography-body-font-weight-regular);
+  line-height: 100%;
   text-decoration: none;
-  transition: background-color .3s;
-  display: inline-block;
 }
 
-nav ul li a:hover {
-  background-color: var(--brand-color2);
+body {
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100vw;
+  display: flex;
+}
+
+header {
+  justify-content: space-between;
+  align-self: stretch;
+  align-items: flex-start;
+  padding: 0 60px;
+  display: flex;
+}
+
+header nav ul {
+  align-items: center;
+  gap: 21px;
+  display: flex;
+}
+
+.nav-button {
+  justify-content: center;
+  align-items: center;
+  gap: var(--sds-size-space-200);
+  padding: 20px 16px;
+  display: flex;
+}
+
+main {
+  flex-direction: column;
+  align-self: stretch;
+  align-items: center;
+  display: flex;
+}
+
+.section-header {
+  align-self: stretch;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 80px;
+  display: flex;
+}
+
+.section-header #dark {
+  background-color: var(--background-dark-base, #16181a);
+  color: var(--brand-color1, #fc0);
+  text-align: center;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.top-movies-list {
+  flex-direction: column;
+  align-self: stretch;
+  align-items: flex-start;
+  gap: 52px;
+  padding: 40px 0;
+  display: flex;
+}
+
+.top-movies-list #featured {
+  background: var(--background-dark-base, #16181a);
+}
+
+.movie-card-container {
+  align-self: stretch;
+  align-items: flex-start;
+  gap: 20px;
+  height: 365px;
+  padding-left: 20px;
+  display: flex;
+}
+
+#page-title {
+  color: #fff;
+  text-align: center;
+  padding: 3rem 1rem;
+  font-size: 2.5rem;
+}
+
+#background-image-wrapper {
+  background: repeating-linear-gradient(135deg, var(--brand-color2-5), var(--brand-color2-5) 50px, var(--brand-color2) 50px, var(--brand-color2) 100px);
+  height: 200px;
+  position: relative;
+}
+
+#background-image img {
+  z-index: 0;
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
 .ux-shape-divider {
-  --divider-top-width: 100%;
-  --divider-width: 100%;
+  z-index: 1;
   width: 100%;
   line-height: 0;
   position: absolute;
+  bottom: 0;
   left: 0;
   overflow: hidden;
 }
 
-.ux-shape-divider--top {
-  top: -1px;
-  transform: rotate(180deg);
+.ux-shape-divider svg {
+  width: 100%;
+  height: auto;
 }
 
-.ux-shape-divider--top svg {
-  width: calc(var(--divider-top-width)  + 2px);
-}
-
-.ux-shape-divider--bottom {
-  bottom: -1px;
-}
-
-.ux-shape-divider--bottom svg {
-  width: calc(var(--divider-width)  + 2px);
-}
-
-.ux-shape-divider--flip svg {
-  transform: translateX(-50%)rotateY(180deg);
-}
-
-.ux-shape-divider--to-front {
-  z-index: 2;
-}
-
-.ux-shape-divider .ux-shape-fill {
+.ux-shape-fill {
   fill: #fff;
 }
 /*# sourceMappingURL=index.6dd9c435.css.map */

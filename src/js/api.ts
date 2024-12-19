@@ -5,6 +5,7 @@ export const apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API
 
 export type Movie = {
   title: string;
+  overview: string;
   backdrop_path: string;
   poster_path: string;
   release_date: string;

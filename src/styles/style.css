@@ -4,93 +4,212 @@
     box-sizing: border-box; 
 }
 
-:root{
+/* style */
+:root {
+    --text-dark: #16181A;
+    --text-light: #FFF; 
     --brand-color1: #ffcc00; /*mustard yellow*/
-    --brand-color2: #5f9ea0; /*dark mint green*/
+    --brand-color2: #5F9EA0; /*dark mint green*/
+    --brand-color2-5: #70b3b6; /*light mint green*/
     --brand-color3: #e6e6fa; /*lilac*/
     --text-color-dark: #16181a;
+
+    --sds-typography-body-size-medium: 16px;
+    --sds-typography-body-font-weight-regular: 400;
+}
+
+body{
+background-color: #FFF;
+font-family: "Inria Sans", sans-serif;
 }
 
 header{
+    background-color: inherit;
+}
+
+.navButton {
+    border-radius: 0px 0px 20px 20px;
+    background: #FFF;
+}
+
+.navButton:hover{
+    border-radius: 0px 0px 20px 20px;
+    background: var(--brand-color2-5, #70B3B6);
+}
+
+.navButton #active{
+    border-radius: 0px 0px 20px 20px;
+    background: #FFF;
+    border-right: 2px solid var(--brand-color2, #5F9EA0);
+    border-bottom: 2px solid var(--brand-color2, #5F9EA0);
+    border-left: 2px solid var(--brand-color2, #5F9EA0);
+}
+
+header nav ul li a {
+    color: var(--text-dark);
+    font-size: var(--sds-typography-body-size-medium);
+    text-decoration: none;
+    font-weight: var(--sds-typography-body-font-weight-regular);
+    line-height: 100%; /* 16px */
+}
+
+/* Layout */
+body{
+display: flex;
+width: 100vw;
+flex-direction: column;
+align-items: center;
+gap: 10px;
+}
+
+header {
+    display: flex;
+    padding: 0px 60px;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-self: stretch;
+}
+
+header nav ul{
+    display: flex;
+    align-items: center;
+    gap: 21px;
+}
+
+.nav-button {
+    display: flex;
+    padding: 20px 16px;
+    justify-content: center;
+    align-items: center;
+    gap: var(--sds-size-space-200);
+    
+}
+
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: stretch;
+   /*  width: 100vw; */
+}
+
+.section-header{
+    display: flex;
+    padding: 24px 80px;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+}
+
+/* style */
+.section-header #dark {
+    background-color: var(--background-dark-base, #16181A);
+    color: var(--brand-color1, #FC0);
+    text-align: center;
+    font-size: 36px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.top-movies-list {
+    display: flex;
+    padding: 40px 0px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 52px;
+    align-self: stretch;
+}
+
+.top-movies-list #featured {
+    background: var(--background-dark-base, #16181A);
+}
+
+.movie-card-container {
+    display: flex;
+    height: 365px;
+    padding-left: 20px;
+    align-items: flex-start;
+    gap: 20px;
+    align-self: stretch;
+}
+
+
+/* header{
     background-color: #ffffff;
     color: #fff;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    align-items: top;
+    align-items: flex-start;
     position: sticky;
     top: 0;
-    z-index: 999;
+    height: auto;
+    z-index: 9999;
     flex-wrap: wrap-reverse;
 }
+ */
 
-header img {
-    padding: .8rem;
-}
 
-nav ul{
-    list-style: none;
-    display: flex;
-    flex-direction: row;
-    gap: .6rem;
-    margin-right: clamp(.5rem, 1rem, 5%);
-}
-
-nav ul li a {
-    text-decoration: none;
-    color: var(--text-color-dark);
-    background-color: var(--brand-color1);
-    padding: 0.9rem 1rem .8rem 1rem;
-    border-radius: 0rem 0rem 1.2rem 1.2rem;
-    display: inline-block;
-    transition: background-color 0.3s;
-}
-
-nav ul li a:hover {
-    background-color: var(--brand-color2);
+#page-title {
+    padding: 3rem 1rem;
+    color: white;
+    text-align: center;
+    font-size: 2.5rem;
 }
 
 
 
 /** UX Shape Dividers **/
 
+ #background-image-wrapper {
+    position: relative; /* Container for relative positioning */
+    height: 200px;
+    background: repeating-linear-gradient(
+        135deg, /* Direction: 90 degrees creates vertical stripes */
+        var(--brand-color2-5), /* First stripe color */
+        var(--brand-color2-5) 50px, /* Stripe width */
+        var(--brand-color2) 50px, /* Gap between stripes (starts second color) */
+        var(--brand-color2) 100px /* Total stripe width (alternates back to first color) */
+    );
+}
+
+#background-image img {
+    display: block; /* Ensure no unexpected spacing issues */
+    width: 100%; /* Cover full width */
+    height: auto;
+    z-index: 0; /* Place image below divider */
+}
+
 .ux-shape-divider {
-    --divider-top-width: 100%;
-    --divider-width: 100%;
-    left: 0;
-    line-height: 0;
+    position: absolute; /* Position relative to #background-image-wrapper */
+    bottom: 0; /* Stick to the bottom of the image */
+    left: 0; /* Align to the left */
+    width: 100%; /* Match image width */
+    z-index: 1; /* Ensure it's on top of the image */
+    line-height: 0; /* Remove line height spacing */
     overflow: hidden;
-    position: absolute;
-    width: 100%
+}
+
+.ux-shape-divider svg {
+    width: 100%; /* Ensure SVG stretches across the container */
+    height: auto;
+}
+
+.ux-shape-fill {
+    fill: #fff; /* Adjust color to match your design */
 }
 
 
-.ux-shape-divider--top {
-    top: -1px;
-    transform: rotate(180deg)
-}
-
-.ux-shape-divider--top svg {
-    width: calc(var(--divider-top-width) + 2px)
-}
-
-.ux-shape-divider--bottom {
-    bottom: -1px
-}
 
 
-.ux-shape-divider--bottom svg {
-    width: calc(var(--divider-width) + 2px)
+
+/* Debugging start */
+/* header {
+    border: 2px solid red;
 }
 
-.ux-shape-divider--flip svg {
-    transform: translateX(-50%) rotateY(180deg)
-}
-
-.ux-shape-divider--to-front {
-    z-index: 2
-}
-
-.ux-shape-divider .ux-shape-fill {
-    fill: #fff
-}
+main {
+    border: 2px solid blue;
+} */
