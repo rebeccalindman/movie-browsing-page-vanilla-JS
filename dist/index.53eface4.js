@@ -596,21 +596,12 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 }
 
 },{}],"gfLib":[function(require,module,exports,__globalThis) {
-var _api = require("./api");
-var _dom = require("./dom");
-async function displayFirstMovie(url) {
-    try {
-        const data = await (0, _api.fetchMovies)(url);
-        if (data && data.results.length > 0) {
-            const firstMovie = data.results[0];
-            (0, _dom.renderMovie)(firstMovie); // Pass the movie data to renderMovie
-        } else console.error('No movies found!');
-    } catch (error) {
-        console.error('An error occurred while displaying the movie:', error.message);
-    }
-}
-// Call the function to display the movie
-/* displayFirstMovie(apiUrl); */ /* MOCK-MOVIE DATA TEST */ const mockMovie = {
+//main.ts
+var _apiTs = require("./api.ts");
+var _domTs = require("./dom.ts");
+var _modalTs = require("./modal.ts");
+// Mock Movie Data
+const mockMovie = {
     title: "EXAMPLE: The Shawshank Redemption",
     overview: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
     backdrop_path: "/5KvYhSZuRzrcXzWjVO4J3q4b2qU.jpg",
@@ -621,7 +612,10 @@ async function displayFirstMovie(url) {
     vote_average: 9.2,
     vote_count: 2500,
     genres: [
-        "Drama"
+        {
+            id: 1,
+            name: "Drama"
+        }
     ],
     cast: [
         {
@@ -634,42 +628,55 @@ async function displayFirstMovie(url) {
         }
     ]
 };
-const mockMovieData = {
-    results: [
-        mockMovie
-    ]
-};
-(0, _dom.createMovieModal)(mockMovie);
-async function displayMovieCard(url) {
+document.addEventListener('DOMContentLoaded', ()=>{
+    main();
+});
+async function main() {
     try {
-        const data = await (0, _api.fetchMovies)(url);
-        if (data && data.results.length > 0) {
-            const firstMovie = data.results[0];
-            await (0, _dom.renderMovieCard)(firstMovie); // Pass the movie data to renderMovieCard
-        } else console.error('No movies found!');
+        // Fetch and display featured movies
+        await (0, _apiTs.fetchMovies)((0, _apiTs.apiUrl));
+        await displayFeaturedMovies();
+        // Display categories
+        (0, _domTs.createCategorySection)('Action');
+        (0, _domTs.createCategorySection)('Drama');
+        // Display a single movie card (optional, replace URL as needed)
+        await displayMovieCard((0, _apiTs.apiUrl));
+        // Example of rendering a modal with mock data (for testing)
+        (0, _modalTs.createMovieModal)(mockMovie);
     } catch (error) {
-        console.error('An error occurred while displaying the movie:', error);
+        console.error('Error during main execution:', error);
     }
 }
-(0, _dom.createCategorySection)('Action');
-(0, _dom.createCategorySection)('Drama'); // Call the function to display movie card
- /* displayMovieCard(apiUrl); */  // get the first object from JSON, parse to javascript
- // get and display poster_path (img)
- // get movie id
- // get and display title
+// Featured Movies Function
+async function displayFeaturedMovies() {
+    const featuredApiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${(0, _apiTs.API_KEY_tmdb)}&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_watch_providers=netflix%20OR%20prime%20OR%20svt&year=2024`;
+    try {
+        const data = await (0, _apiTs.fetchMovies)(featuredApiUrl);
+        if (data) data.forEach((movie)=>(0, _domTs.renderMovie)(movie));
+        else console.warn('No featured movies found.');
+    } catch (error) {
+        console.error('Error displaying featured movies:', error);
+    }
+}
+// Single Movie Card Function
+async function displayMovieCard(url) {
+    try {
+        const data = await (0, _apiTs.fetchMovies)(url);
+        if (data && data.length > 0) {
+            const firstMovie = data[0];
+            (0, _domTs.renderMovieCard)(firstMovie);
+        } else console.error('No movies found for displayMovieCard!');
+    } catch (error) {
+        console.error('An error occurred while displaying the movie card:', error);
+    }
+}
 
-},{"./api":"jGtCU","./dom":"eWIKv"}],"jGtCU":[function(require,module,exports,__globalThis) {
+},{"./api.ts":"jGtCU","./dom.ts":"eWIKv","./modal.ts":"5pIqC"}],"jGtCU":[function(require,module,exports,__globalThis) {
+//api.ts
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "API_KEY_tmdb", ()=>API_KEY_tmdb);
 parcelHelpers.export(exports, "apiUrl", ()=>apiUrl);
-//api search
-// fetch data from the api
-// let getMovies = async(url) => {   
-//     const response = await fetch(url);
-//     const data = await response.json();
-//     return data;
-// }
-// getMovies(searchUrl).then(data => console.log(data));
 /**
  ** Fetch movies from The Movie Database API.
  */ parcelHelpers.export(exports, "fetchMovies", ()=>fetchMovies);
@@ -683,9 +690,22 @@ async function fetchMovies(url) {
             displayErrorMessage(response.status);
             return null;
         }
-        const data = await response.json();
-        storeMovieData(data);
-        return data;
+        const json = await response.json();
+        const movies = json.results.map((movie)=>({
+                title: movie.title,
+                overview: movie.overview,
+                backdrop_path: movie.backdrop_path,
+                poster_path: movie.poster_path,
+                release_date: movie.release_date,
+                id: movie.id,
+                love: movie.love || false,
+                vote_average: movie.vote_average,
+                vote_count: movie.vote_count,
+                genres: movie.genres,
+                cast: movie.cast
+            }));
+        storeMovieData(movies);
+        return movies;
     } catch (error) {
         // Log any fetch or parsing errors
         console.error("Error during fetchMovies execution:", error);
@@ -697,7 +717,7 @@ async function fetchMovies(url) {
 /**
  ** Display an error message based on the HTTP status code.
  * (Recycled from Boiler Room w 47)
- */ const displayErrorMessage = (statusCode)=>{
+ */ function displayErrorMessage(statusCode) {
     const errorMessage = document.createElement("p");
     errorMessage.classList.add("error-message");
     switch(statusCode){
@@ -706,16 +726,16 @@ async function fetchMovies(url) {
             console.error("Invalid request (400). Check your URL.");
             break;
         case 401:
-            errorMessage.textContent = "Access denied. Please try again later and contact the support if the issue persists.";
+            errorMessage.textContent = "Access denied. Please try again later and contact support if the issue persists.";
             console.error("Unauthorized access (401). Invalid API key.");
             break;
         case 404:
-            errorMessage.textContent = "Oops! We couldn't find what you're looking for. Check your request and please try again later."; //todo add alternative link for redirection
+            errorMessage.textContent = "Oops! We couldn't find what you're looking for. Check your request and please try again later.";
             console.error("Resource not found (404).");
             break;
         case 429:
             errorMessage.textContent = "You're making too many requests! Please wait a while before trying again.";
-            console.error("Too many requests (429). Your request count (#) is over the allowed limit of (40)."); //todo add requestcounter ??
+            console.error("Too many requests (429). Your request count (#) is over the allowed limit of (40).");
             break;
         case 500:
             errorMessage.textContent = "Something went wrong on our end. An error has been sent to our IT. Please try again later.";
@@ -724,14 +744,15 @@ async function fetchMovies(url) {
         case 503:
             errorMessage.textContent = "We are sorry! This service is temporarily offline, try again later.";
             console.error("Service offline (503). This service is temporarily offline.");
+            break;
         default:
             errorMessage.textContent = "Oopsie! An unexpected error occurred. Please try again.";
             console.error(`Unexpected error (${statusCode}).`);
             break;
     }
-    document.body.innerHTML = ""; // Clear existing news items
-    document.body.appendChild(errorMessage); // Display error message to the user
-};
+    document.body.innerHTML = "";
+    document.body.appendChild(errorMessage);
+}
 function storeMovieData(data) {
     localStorage.setItem('movieData', JSON.stringify(data));
 }
@@ -767,46 +788,75 @@ exports.export = function(dest, destName, get) {
 };
 
 },{}],"eWIKv":[function(require,module,exports,__globalThis) {
+//dom.ts
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "renderMovie", ()=>renderMovie);
 parcelHelpers.export(exports, "renderMovieCard", ()=>renderMovieCard);
-/* TODO replace with star icon and heart icon */ parcelHelpers.export(exports, "createMovieModal", ()=>createMovieModal);
 parcelHelpers.export(exports, "createCategorySection", ()=>createCategorySection);
-const topMovieList = document.getElementById('top-movie-list');
-const renderMovie = (movie)=>{
+const mainElement = document.querySelector('main');
+const topMovieWrapper = document.getElementById('featured');
+function renderMovie(movie) {
     //create and append backdrop image
     const backdrop = document.createElement('img');
     backdrop.src = `https://image.tmdb.org/t/p/w500${movie.backdrop_path}`;
-    topMovieList.appendChild(backdrop);
+    topMovieWrapper.appendChild(backdrop);
     // Create and append title
     const title = document.createElement('h2');
     title.textContent = movie.title;
-    topMovieList.appendChild(title);
+    topMovieWrapper.appendChild(title);
     //release date
     const releaseDate = document.createElement('small');
     releaseDate.textContent = movie.release_date;
-    topMovieList.appendChild(releaseDate);
+    topMovieWrapper.appendChild(releaseDate);
     // Create and append overview
     const overview = document.createElement('p');
     overview.textContent = movie.overview;
-    topMovieList.appendChild(overview);
+    topMovieWrapper.appendChild(overview);
     //movie id
     const movieID = document.createElement('p');
     movieID.textContent = movie.id.toString();
-    topMovieList.appendChild(movieID);
+    topMovieWrapper.appendChild(movieID);
     console.log(movie);
-};
-const renderMovieCard = (movie)=>{
+}
+function renderMovieCard(movie) {
     // Create and append image
     const img = document.createElement('img');
     img.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-    topMovieList.appendChild(img);
+    topMovieWrapper.appendChild(img);
     // Create and append title
     const title = document.createElement('h2');
     title.textContent = movie.title;
-    topMovieList.appendChild(title);
-};
+    topMovieWrapper.appendChild(title);
+}
+function createCategorySection(category) {
+    const section = document.createElement('section');
+    section.classList.add('section-header');
+    section.innerHTML = `
+      <h2>${category}</h2>
+      <p>Click on a movie card to view more details and find a streaming site.</p>
+    `;
+    if (!mainElement) {
+        console.error("Error: 'main' element not found in the DOM.");
+        return;
+    }
+    mainElement.appendChild(section);
+    if (!topMovieWrapper) {
+        console.error("Error: 'top-movies-wrapper' element not found in the DOM.");
+        return;
+    }
+    const topMoviesList = document.createElement('section');
+    topMoviesList.classList.add('top-movies-list');
+    topMovieWrapper.innerHTML = `
+      <div class="movie-card-container"></div>
+    `;
+    mainElement.appendChild(topMoviesList);
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"5pIqC":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+/* TODO replace with star icon and heart icon */ parcelHelpers.export(exports, "createMovieModal", ()=>createMovieModal);
 function createMovieModal(movie) {
     const movieModal = document.createElement('div');
     movieModal.classList.add('movie-modal');
@@ -866,26 +916,6 @@ function createMovieModal(movie) {
     if (closeButton) closeButton.addEventListener('click', ()=>{
         movieModal.remove();
     });
-}
-function createCategorySection(category) {
-    const section = document.createElement('section');
-    section.classList.add('section-header');
-    section.innerHTML = `
-        <h2>${category}</h2>
-        <p>Click on a movie card to view more details and find a streaming site.</p>
-        
-
-    `;
-    document.querySelector('main')?.appendChild(section);
-    const topMoviesList = document.createElement('section');
-    topMoviesList.classList.add('top-movies-list');
-    topMovieList.innerHTML = `
-
-      <div class="movie-card-container">
-                      
-      </div>
-    `;
-    document.querySelector('main')?.appendChild(topMoviesList);
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}]},["lI3Wn","gfLib"], "gfLib", "parcelRequire94c2")

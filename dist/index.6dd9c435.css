@@ -4,6 +4,10 @@
   padding: 0;
 }
 
+main {
+  flex: 1;
+}
+
 :root {
   --text-dark: #16181a;
   --text-light: #fff;
@@ -86,7 +90,7 @@ main {
   align-self: center;
   align-items: center;
   width: clamp(300px, 100%, 1400px);
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
 }
 
@@ -115,7 +119,7 @@ main {
   color: #fff;
 }
 
-.top-movies-list {
+.top-movies-wrapper {
   background-color: #fff;
   flex-direction: column;
   align-self: stretch;
@@ -125,7 +129,7 @@ main {
   display: flex;
 }
 
-.top-movies-list #featured {
+.top-movies-wrapper #featured {
   background: var(--background-dark-base, #16181a);
 }
 
@@ -397,7 +401,7 @@ main {
   top: 300px;
 }
 
-.top-movies-list#featured .ux-shape-divider {
+.top-movies-wrapper#featured .ux-shape-divider {
   z-index: 0;
   position: relative;
   top: clamp(470px, 100%, 480px);
@@ -426,6 +430,8 @@ footer {
   gap: 20px;
   padding: 40px;
   display: flex;
+  position: relative;
+  bottom: 0;
 }
 
 footer p {
