@@ -31,10 +31,91 @@
         </section>
         <section id="top-movie-list">
             <div class="movie-card-container">
-                <article class="movie-card"></article>
-            </div>
+                <article class="movie-card">
+                    <img class="movie-card-poster" src="https://image.tmdb.org/t/p/w500/2XnBwZpE5l9Y2i7j0lUoQe3xG5o.jpg" alt="Movie 1 Poster">
+                    <h3 class="movie-card-title">Movie 1</h3>
+                    <div class="rating-container">
+                        <p>6.8/10</p> 
+                        <p>(xxx votes)</p>
+                        <button type="button" class="love-button"></button>
+                    </div>
+                    <p class="movie-card-overview">Overview 1 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis voluptas ad possimus fugiat deleniti aliquid, quibusdam nemo quasi praesentium ut.</p>
+                    <p class="movie-card-release-date">Release Date 1</p>
+                    
+                    <h4>Links</h4>
+                    <ul>
+                        <li><a href="#">IMDb</a></li>
+                        <li><a href="#">Rotten Tomatoes</a></li>
+                    </ul>
 
+                    <h4>Watch on</h4>
+                    <ul>
+                        <li><a href="#">Netflix</a></li>
+                        <li><a href="#">Amazon Prime</a></li>
+                    </ul>
+
+                </article>
+            </div>
+            
         </section>
+
+        <!-- * MOVIE MODAL * -->
+        <div class="movie-modal">
+                <button type="button" class="movie-modal-close">X</button>
+                <div class="movie-modal-backdrop" aria-label="Movie 1 backdrop"></div>
+                <section class="movie-modal-title-container">
+                    <h3 class="movie-modal-title">Movie 1</h3>
+                </section>
+                <section class="rating-container">
+                    <div class="rating-group">
+                        <p class="star-icon">⭐️</p> <!-- todo replace with star icon -->
+                        <p class="movie-modal-rating">6.8/10</p> 
+                        <p class="vote-count">(938 votes)</p> <!-- todo function to display vote count -->
+                    </div>
+                    <button type="button" class="love-button">❤️</button> <!-- todo replace with heart icon -->
+                </section>
+                <section class="information-container">
+                    <ul class="movie-genres">
+                        <li>Action</li>
+                        <li>Sci-Fi</li>
+                        <li>Drama</li>
+                    </ul>
+                    <p class="movie-modal-overview">Overview 1 Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis voluptas ad possimus fugiat deleniti aliquid, quibusdam nemo quasi praesentium ut.</p>
+                    <p class="movie-modal-release-date">2001-01-25</p>
+                    
+                    <div class="movie-modal-links">
+                        <h4>Links</h4>
+                        <ul>
+                            <li><a href="#">IMDb</a></li>
+                            <li><a href="#">Rotten Tomatoes</a></li>
+                        </ul>
+                    
+
+                        <h4>Watch on</h4>
+                        <ul class="movie-modal-links">
+                            <li><a href="#">Netflix</a></li>
+                            <li><a href="#">Amazon Prime</a></li>
+                        </ul>
+                    </div>
+                    
+                    <section class="actors-section">
+                        <ol>
+                            <li class="actor-list-item">
+                                <img class="actor-image" src="#" alt="Actor 1">
+                                <span>Actor 1</span>
+                            </li>
+                            <li class="actor-list-item">
+                                <img class="actor-image" src="#" alt="Actor 2">
+                                <span>Actor 2</span>
+                            </li>
+                            <li class="actor-list-item">
+                                <img class="actor-image" src="#" alt="Actor 3">
+                                <span>Actor 3</span>
+                            </li>
+                        </ol>
+                    </section>
+                </section>
+        </div>
         <!-- Wrapper for background pattern and divider -->
         <div id="background-image-wrapper">
             <!-- Page heading text -->

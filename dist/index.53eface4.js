@@ -621,9 +621,8 @@ async function displayMovieCard(url) {
     } catch (error) {
         console.error('An error occurred while displaying the movie:', error);
     }
-}
-// Call the function to display movie card
-displayMovieCard((0, _api.apiUrl)); // get the first object from JSON, parse to javascript
+} // Call the function to display movie card
+ /* displayMovieCard(apiUrl); */  // get the first object from JSON, parse to javascript
  // get and display poster_path (img)
  // get movie id
  // get and display title
@@ -654,7 +653,9 @@ async function fetchMovies(url) {
             displayErrorMessage(response.status);
             return null;
         }
-        return await response.json();
+        const data = await response.json();
+        storeMovieData(data);
+        return data;
     } catch (error) {
         // Log any fetch or parsing errors
         console.error("Error during fetchMovies execution:", error);
@@ -701,6 +702,9 @@ async function fetchMovies(url) {
     document.body.innerHTML = ""; // Clear existing news items
     document.body.appendChild(errorMessage); // Display error message to the user
 };
+function storeMovieData(data) {
+    localStorage.setItem('movieData', JSON.stringify(data));
+}
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"amG76":[function(require,module,exports,__globalThis) {
 exports.interopDefault = function(a) {
@@ -737,6 +741,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "renderMovie", ()=>renderMovie);
 parcelHelpers.export(exports, "renderMovieCard", ()=>renderMovieCard);
+/* TODO replace with star icon and heart icon */ parcelHelpers.export(exports, "createMovieModal", ()=>createMovieModal);
 const topMovieList = document.getElementById('top-movie-list');
 const renderMovie = (movie)=>{
     //create and append backdrop image
@@ -771,6 +776,57 @@ const renderMovieCard = (movie)=>{
     title.textContent = movie.title;
     topMovieList.appendChild(title);
 };
+function createMovieModal(movie) {
+    const movieModal = document.createElement('div');
+    movieModal.classList.add('movie-modal');
+    movieModal.innerHTML = `
+    <button type="button" class="movie-modal-close">X</button>
+    <div class="movie-modal-backdrop"  aria-label="${movie.title} movie backdrop"></div>
+    <section class="movie-modal-title-container">
+        <h3 class="movie-modal-title">${movie.title}</h3>
+    </section>
+    <section class="rating-container">
+        <div class="rating-group">
+            <p class="star-icon">\u{2B50}\u{FE0F}</p> <!-- todo replace with star icon -->
+            <p class="movie-modal-rating">${movie.vote_average}/10</p> 
+            <p class="vote-count">(${movie.vote_count} votes)</p> 
+        </div>
+        <button type="button" class="love-button">\u{2764}\u{FE0F}</button> 
+    </section>
+    <section class="information-container">
+        <ul class="movie-genres">
+            ${movie.genres.map((genre)=>`<li>${genre.name}</li>`).join('')}
+        </ul>
+        <p class="movie-modal-overview">${movie.overview}</p>
+        <p class="movie-modal-release-date">${movie.release_date}</p>
+        
+        <div class="movie-modal-links">
+            <h4>Links</h4>
+            <ul>
+                <li><a href="#">IMDb</a></li>
+                <li><a href="#">Rotten Tomatoes</a></li>
+            </ul>
+        
+
+            <h4>Watch on</h4>
+            <ul class="movie-modal-links">
+                <li><a href="#">Netflix</a></li>
+                <li><a href="#">Amazon Prime</a></li>
+            </ul>
+        </div>
+        
+        <section class="actors-section">
+            <ol>
+                ${movie.credits.cast.map((actor)=>`<li class="actor-list-item">
+                    <img class="actor-image" src="${actor.profile_path}" alt="${actor.name}" class="actor-image">
+                    <span>${actor.name}</span>
+                </li>`).join('')}
+            </ol>
+        </section>
+    </section>
+    `;
+    topMovieList.appendChild(movieModal);
+}
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}]},["lI3Wn","gfLib"], "gfLib", "parcelRequire94c2")
 

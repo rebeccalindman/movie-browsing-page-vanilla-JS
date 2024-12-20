@@ -128,6 +128,216 @@ main {
   display: flex;
 }
 
+#top-movie-list {
+  flex-direction: column;
+  align-self: stretch;
+  align-items: flex-start;
+  gap: 52px;
+  padding: 40px 0;
+  display: flex;
+}
+
+#featured {
+  background: var(--background-dark-base, #16181a);
+}
+
+.movie-card {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+  display: flex;
+}
+
+.movie-card-poster {
+  width: 250px;
+  height: 375px;
+}
+
+.movie-card-title {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.rating-container {
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  display: flex;
+}
+
+.love-button {
+  cursor: pointer;
+  background-color: #0000;
+  border: none;
+}
+
+.movie-card-overview, .movie-card-release-date {
+  display: none;
+}
+
+.hidden {
+  display: block;
+}
+
+.movie-modal {
+  background: #fff;
+  border: 2px solid red;
+  border-radius: 20px;
+  flex-direction: column;
+  align-items: center;
+  width: 664px;
+  display: flex;
+  overflow: hidden;
+}
+
+.movie-modal-close {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 100px;
+  right: 100px;
+}
+
+.movie-modal-backdrop {
+  background: #d3d3d3 url("https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.booktopia.com.au%2Finternals%2F9781608871131-1.jpg&f=1&nofb=1&ipt=4d23876e259ed9df3db786251f55600226d8a5d7bfe4c38fef70b203ad7df282&ipo=images>") 50% / cover no-repeat;
+  flex-shrink: 0;
+  grid-area: movie-modal-backdrop;
+  width: 100%;
+  height: 350px;
+}
+
+.rating-container {
+  background: var(--brand-color3, #e6e6fa);
+  grid-area: rating-container;
+  justify-content: space-between;
+  align-self: stretch;
+  align-items: center;
+  padding: 15px 30px;
+  display: flex;
+}
+
+.rating-group {
+  color: var(--text-dark);
+  align-items: center;
+  gap: 8px;
+  font-style: normal;
+  line-height: normal;
+  display: flex;
+}
+
+.movie-modal-title-container {
+  grid: movie-modal-title-container;
+  background: var(--background-dark-base, #16181a);
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 737px;
+  padding: 15px 40px;
+  display: flex;
+}
+
+.movie-modal-title {
+  color: var(--brand-color1, #fc0);
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.movie-modal-rating, .star-icon {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.vote-count {
+  font-size: 16px;
+  font-weight: 300;
+}
+
+.love-button {
+  background: #d3d3ff80;
+  border-radius: 999px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 44px;
+  padding: 10px;
+  display: flex;
+}
+
+.information-container {
+  color: var(--text-dark);
+  flex: 1 0 0;
+  grid-template: "movie-genres actors-section"
+                 "movie-modal-overview actors-section"
+                 "movie-modal-release-date actors-section"
+                 "movie-modal-links actors-section"
+                 "movie-modal-links actors-section"
+                 / 2fr 1fr;
+  gap: 15px;
+  padding: 10px 30px 30px;
+  display: grid;
+}
+
+.movie-genres {
+  font-size: 24px;
+  font-weight: 200;
+}
+
+.movie-genres li {
+  margin-right: 10px;
+  display: inline;
+}
+
+.movie-modal-overview {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.movie-modal-release-date {
+  font-size: 16px;
+  font-weight: 300;
+}
+
+.movie-modal .information-container h4 {
+  font-size: 16px;
+}
+
+.movie-modal-links {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  display: flex;
+}
+
+.movie-modal-links li {
+  list-style: none;
+}
+
+.movie-modal-links li a {
+  color: var(--text-dark);
+}
+
+.movie-modal .actors-section {
+  border: 2px solid var(--brand-color3, #e6e6fa);
+  border-radius: 20px;
+  flex-direction: column;
+  grid-area: actors-section;
+  align-self: stretch;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  display: flex;
+}
+
+.actor-list-item {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  display: flex;
+}
+
 #page-title {
   color: #fff;
   text-align: center;
