@@ -14,7 +14,9 @@ main {
   --brand-color1: #fc0;
   --brand-color2: #5f9ea0;
   --brand-color2-5: #70b3b6;
-  --brand-color3: #e6e6fa;
+  --brand-color3: #d3d3ff;
+  --brand-color3-8: #d3d3ffcc;
+  --brand-color4: #e93dad;
   --text-color-dark: #16181a;
   --sds-typography-body-size-medium: 16px;
   --sds-typography-body-font-weight-regular: 400;
@@ -125,8 +127,10 @@ main {
   align-self: stretch;
   align-items: flex-start;
   gap: 52px;
-  padding: 40px 0;
+  padding-top: 30px;
   display: flex;
+  position: relative;
+  overflow: scroll hidden;
 }
 
 .top-movies-wrapper #featured {
@@ -137,9 +141,105 @@ main {
   align-self: stretch;
   align-items: flex-start;
   gap: 20px;
+  width: fit-content;
   height: 365px;
   padding-left: 20px;
   display: flex;
+}
+
+.movie-card {
+  background: #fff;
+  border-radius: 20px;
+  align-items: center;
+  gap: 10px;
+  width: 254px;
+  padding-bottom: 15px;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.movie-card:hover {
+  z-index: 2;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px #0003;
+}
+
+.movie-card .love-button {
+  background: #d3d3ff80;
+  border-radius: 999px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 44px;
+  padding: 10px;
+  display: flex;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.movie-card:hover .love-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px #0003;
+}
+
+.movie-card.loved .love-button {
+  background: var(--brand-color3);
+}
+
+.movie-card.loved .love-button svg path {
+  fill: var(--brand-color4);
+  fill-opacity: 1;
+}
+
+.movie-card-content {
+  flex-direction: column;
+  flex-shrink: 0;
+  align-items: center;
+  width: 254px;
+  height: 452px;
+  display: flex;
+}
+
+.movie-card-content img {
+  flex-shrink: 0;
+  width: 254px;
+  height: 351px;
+}
+
+.movie-card-content h3 {
+  background: var(--brand-color1, #fc0);
+  color: var(--text-dark, #16181a);
+  flex-direction: column;
+  justify-content: center;
+  align-self: stretch;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 10px;
+  font-size: 16px;
+  font-weight: 700;
+  display: flex;
+}
+
+.movie-card-information-container {
+  flex-direction: column;
+  align-self: stretch;
+  align-items: center;
+  gap: 5px;
+  padding-top: 10px;
+  display: flex;
+}
+
+.movie-card-genres {
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.cto-view-details {
+  color: var(--brand-color2, #5f9ea0);
+  font-size: 12px;
+  font-weight: 700;
 }
 
 #top-movie-list {
@@ -168,6 +268,7 @@ main {
 }
 
 .movie-card-title {
+  text-align: center;
   font-size: 24px;
   font-weight: 700;
   line-height: normal;
@@ -390,11 +491,13 @@ main {
 
 .ux-shape-divider {
   z-index: 1;
+  z-index: 1;
+  pointer-events: none;
   width: 100%;
   line-height: 0;
-  position: relative;
+  position: fixed;
+  bottom: 0;
   left: 0;
-  overflow: hidden;
 }
 
 .movie-modal .ux-shape-divider {

@@ -634,40 +634,25 @@ document.addEventListener('DOMContentLoaded', ()=>{
 async function main() {
     try {
         // Fetch and display featured movies
-        await (0, _apiTs.fetchMovies)((0, _apiTs.apiUrl));
-        await displayFeaturedMovies();
+        const featuredMovies = await (0, _apiTs.fetchMovies)((0, _apiTs.apiUrl));
+        if (featuredMovies) // Display movie cards if movies are available
+        displayMovieCards(featuredMovies);
+        else console.error('No movies found!');
         // Display categories
         (0, _domTs.createCategorySection)('Action');
         (0, _domTs.createCategorySection)('Drama');
-        // Display a single movie card (optional, replace URL as needed)
-        await displayMovieCard((0, _apiTs.apiUrl));
         // Example of rendering a modal with mock data (for testing)
         (0, _modalTs.createMovieModal)(mockMovie);
     } catch (error) {
         console.error('Error during main execution:', error);
     }
 }
-// Featured Movies Function
-async function displayFeaturedMovies() {
-    const featuredApiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${(0, _apiTs.API_KEY_tmdb)}&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_watch_providers=netflix%20OR%20prime%20OR%20svt&year=2024`;
-    try {
-        const data = await (0, _apiTs.fetchMovies)(featuredApiUrl);
-        if (data) data.forEach((movie)=>(0, _domTs.renderMovie)(movie));
-        else console.warn('No featured movies found.');
-    } catch (error) {
-        console.error('Error displaying featured movies:', error);
-    }
-}
 // Single Movie Card Function
-async function displayMovieCard(url) {
+function displayMovieCards(movies) {
     try {
-        const data = await (0, _apiTs.fetchMovies)(url);
-        if (data && data.length > 0) {
-            const firstMovie = data[0];
-            (0, _domTs.renderMovieCard)(firstMovie);
-        } else console.error('No movies found for displayMovieCard!');
+        movies.forEach((movie)=>(0, _domTs.renderMovieCard)(movie));
     } catch (error) {
-        console.error('An error occurred while displaying the movie card:', error);
+        console.error('An error occurred while displaying the movie cards:', error);
     }
 }
 
@@ -677,11 +662,13 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "API_KEY_tmdb", ()=>API_KEY_tmdb);
 parcelHelpers.export(exports, "apiUrl", ()=>apiUrl);
+parcelHelpers.export(exports, "apiFeaturedMoviesUrl", ()=>apiFeaturedMoviesUrl);
 /**
  ** Fetch movies from The Movie Database API.
  */ parcelHelpers.export(exports, "fetchMovies", ()=>fetchMovies);
 const API_KEY_tmdb = "6369fcc46c83ecd475d3f734321f2a0b"; //themoviedb.org
 const apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc`;
+const apiFeaturedMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_watch_providers=netflix%20OR%20prime%20OR%20svt&year=2024`;
 async function fetchMovies(url) {
     try {
         const response = await fetch(url);
@@ -791,43 +778,35 @@ exports.export = function(dest, destName, get) {
 //dom.ts
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "renderMovie", ()=>renderMovie);
 parcelHelpers.export(exports, "renderMovieCard", ()=>renderMovieCard);
 parcelHelpers.export(exports, "createCategorySection", ()=>createCategorySection);
 const mainElement = document.querySelector('main');
 const topMovieWrapper = document.getElementById('featured');
-function renderMovie(movie) {
-    //create and append backdrop image
-    const backdrop = document.createElement('img');
-    backdrop.src = `https://image.tmdb.org/t/p/w500${movie.backdrop_path}`;
-    topMovieWrapper.appendChild(backdrop);
-    // Create and append title
-    const title = document.createElement('h2');
-    title.textContent = movie.title;
-    topMovieWrapper.appendChild(title);
-    //release date
-    const releaseDate = document.createElement('small');
-    releaseDate.textContent = movie.release_date;
-    topMovieWrapper.appendChild(releaseDate);
-    // Create and append overview
-    const overview = document.createElement('p');
-    overview.textContent = movie.overview;
-    topMovieWrapper.appendChild(overview);
-    //movie id
-    const movieID = document.createElement('p');
-    movieID.textContent = movie.id.toString();
-    topMovieWrapper.appendChild(movieID);
-    console.log(movie);
-}
+const movieCardContainer = document.querySelector('.movie-card-container');
 function renderMovieCard(movie) {
-    // Create and append image
-    const img = document.createElement('img');
-    img.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
-    topMovieWrapper.appendChild(img);
-    // Create and append title
-    const title = document.createElement('h2');
-    title.textContent = movie.title;
-    topMovieWrapper.appendChild(title);
+    const movieCard = document.createElement('article');
+    movieCard.classList.add('movie-card');
+    movieCard.innerHTML = `
+
+    <div class="movie-card-content">
+      <button class="love-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12.62 20.8101C12.28 20.9301 11.72 20.9301 11.38 20.8101C8.48 19.8201 2 15.6901 2 8.6901C2 5.6001 4.49 3.1001 7.56 3.1001C9.38 3.1001 10.99 3.9801 12 5.3401C13.01 3.9801 14.63 3.1001 16.44 3.1001C19.51 3.1001 22 5.6001 22 8.6901C22 15.6901 15.52 19.8201 12.62 20.8101Z" fill="white" fill-opacity="0.4"/>
+          </svg>
+      </button>
+      <img class="movie-card-poster" src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title} poster">
+        <h3 class="movie-card-title">${movie.title}</h3>
+        <div class="movie-card-information-container">
+          <p class="movie-card-genres">${movie.genres}</p>
+          <p class="movie-card-release-date">${movie.release_date}</p>
+          <p class="cto-view-details">View Details</p>
+        </div>
+    </div>
+    `;
+    movieCardContainer.appendChild(movieCard);
+    movieCard.querySelector('.love-button').addEventListener('click', ()=>{
+        movieCard.classList.toggle('loved');
+    });
 }
 function createCategorySection(category) {
     const section = document.createElement('section');
@@ -841,16 +820,14 @@ function createCategorySection(category) {
         return;
     }
     mainElement.appendChild(section);
-    if (!topMovieWrapper) {
-        console.error("Error: 'top-movies-wrapper' element not found in the DOM.");
-        return;
-    }
-    const topMoviesList = document.createElement('section');
-    topMoviesList.classList.add('top-movies-list');
-    topMovieWrapper.innerHTML = `
-      <div class="movie-card-container"></div>
+    const topMoviesCategoryWrapper = document.createElement('section');
+    topMoviesCategoryWrapper.classList.add('top-movies-wrapper');
+    topMoviesCategoryWrapper.innerHTML = `
+      <div class="movie-card-container">
+      
+      </div>
     `;
-    mainElement.appendChild(topMoviesList);
+    mainElement.appendChild(topMoviesCategoryWrapper);
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"5pIqC":[function(require,module,exports,__globalThis) {

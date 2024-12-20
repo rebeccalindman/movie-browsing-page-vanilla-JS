@@ -16,7 +16,9 @@ main {
     --brand-color1: #ffcc00; /*mustard yellow*/
     --brand-color2: #5F9EA0; /*dark mint green*/
     --brand-color2-5: #70b3b6; /*light mint green*/
-    --brand-color3: #e6e6fa; /*lilac*/
+    --brand-color3: #D3D3FF; /*lilac*/
+    --brand-color3-8: #D3D3FFCC; /* lilac 80% opacity */
+    --brand-color4: #E93DAD; /* hot pink */
     --text-color-dark: #16181a;
 
     --sds-typography-body-size-medium: 16px;
@@ -127,13 +129,15 @@ main {
 }
 
 .top-movies-wrapper {
+    position: relative;
     display: flex;
-    padding: 40px 0px;
+    padding-top: 30px;
     flex-direction: column;
     align-items: flex-start;
-    gap: 52px;
     align-self: stretch;
-
+    overflow-x: scroll;
+    overflow-y: hidden;
+    gap: 52px;
     background-color: white;
 }
 
@@ -148,16 +152,111 @@ main {
     align-items: flex-start;
     gap: 20px;
     align-self: stretch;
+    width: fit-content;
+
 }
 
-.movie-card-container {
+.movie-card {
+    position: relative; /* sets positioning context for children */
     display: flex;
-    height: 365px;
-    padding-left: 20px;
-    align-items: flex-start;
-    gap: 20px;
+    width: 254px;
+    padding-bottom: 15px;
+    align-items: center;
+    gap: 10px;
+    overflow: hidden;
+
+    border-radius: 20px;
+    background: #FFF;   
+}
+
+.movie-card:hover {
+    transform: scale(1.05);
+    z-index: 2;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.movie-card .love-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    display: flex;
+    width: 44px;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    border-radius: 999px;
+    background: rgba(211, 211, 255, 0.50);
+}
+
+.movie-card:hover .love-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.movie-card.loved .love-button {
+    background: var(--brand-color3);
+}
+
+.movie-card.loved .love-button svg path {
+    fill: var(--brand-color4);
+    fill-opacity: 1;
+}
+
+.movie-card-content {
+    display: flex;
+    width: 254px;
+    height: 452px;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.movie-card-content img { /* todo check if necessary? */
+    width: 254px;
+height: 351px;
+flex-shrink: 0;
+}
+
+
+
+.movie-card-content h3 {
+    display: flex;
+    padding: 15px 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+
+    background: var(--brand-color1, #FC0);
+
+    color: var(--text-dark, #16181A);
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.movie-card-information-container {
+    display: flex;
+    padding-top: 10px;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
     align-self: stretch;
 }
+
+.movie-card-genres {
+    font-size: 13px;
+    font-weight: 400;
+}
+
+.cto-view-details {
+    color: var(--brand-color2, #5F9EA0);
+    font-size: 12px;
+    font-weight: 700;
+}
+
 
 #top-movie-list {
     display: flex;
@@ -188,6 +287,7 @@ main {
     font-size: 24px;
     font-weight: 700;
     line-height: normal;
+    text-align: center;
 }
 
 .rating-container {
@@ -325,15 +425,15 @@ main {
 
 .love-button {
     display: flex;
-width: 44px;
-padding: 10px;
-justify-content: center;
-align-items: center;
-gap: 10px;
+    width: 44px;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
 
-/* style */
-border-radius: 999px;
-background: rgba(211, 211, 255, 0.50);
+    /* style */
+    border-radius: 999px;
+    background: rgba(211, 211, 255, 0.50);
 }
 
 .information-container {
@@ -443,12 +543,14 @@ background: rgba(211, 211, 255, 0.50);
 }
 
 .ux-shape-divider {
-    position: relative; /* Position relative to #background-image-wrapper */
+    position: fixed; /* Position relative to #background-image-wrapper */
     left: 0; /* Align to the left */
+    z-index: 1; /* Ensure it's on top of the scrolling cards */
+    bottom: 0;
     width: 100%; /* Match image width */
     z-index: 1; /* Ensure it's on top of the image */
     line-height: 0; /* Remove line height spacing */
-    overflow: hidden;
+    pointer-events: none;
 }
 
 .movie-modal .ux-shape-divider {

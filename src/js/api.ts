@@ -4,8 +4,7 @@ export const API_KEY_tmdb = "6369fcc46c83ecd475d3f734321f2a0b"; //themoviedb.org
 
 export const apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc`;
 
-
-
+export const apiFeaturedMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_watch_providers=netflix%20OR%20prime%20OR%20svt&year=2024`;
 
 
 /**
@@ -96,5 +95,7 @@ function displayErrorMessage(statusCode: number): void {
 function storeMovieData(data: MovieData) {
   localStorage.setItem('movieData', JSON.stringify(data));
 }
+
+
 
 

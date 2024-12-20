@@ -1,7 +1,7 @@
 //main.ts
 import { Movie, MovieData } from "./types.ts";
-import { fetchMovies, apiUrl, API_KEY_tmdb } from './api.ts';
-import { renderMovie, renderMovieCard, createCategorySection } from './dom.ts';
+import { fetchMovies, apiUrl, apiFeaturedMoviesUrl } from './api.ts';
+import { renderMovieCard, createCategorySection } from './dom.ts';
 import { createMovieModal } from './modal.ts';
 
 // Mock Movie Data
@@ -32,51 +32,33 @@ document.addEventListener('DOMContentLoaded', () => {
 async function main() {
   try {
     // Fetch and display featured movies
-    await fetchMovies(apiUrl);
-    await displayFeaturedMovies();
+    const featuredMovies = await fetchMovies(apiUrl);
+
+    if (featuredMovies) {
+      // Display movie cards if movies are available
+      displayMovieCards(featuredMovies);
+    } else {
+      console.error('No movies found!');
+    }
 
     // Display categories
     createCategorySection('Action');
     createCategorySection('Drama');
-
-    // Display a single movie card (optional, replace URL as needed)
-    await displayMovieCard(apiUrl);
 
     // Example of rendering a modal with mock data (for testing)
     createMovieModal(mockMovie);
   } catch (error) {
     console.error('Error during main execution:', error);
   }
-};
-
-// Featured Movies Function
-async function displayFeaturedMovies() {
-  const featuredApiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_watch_providers=netflix%20OR%20prime%20OR%20svt&year=2024`;
-
-  try {
-    const data = await fetchMovies(featuredApiUrl);
-    if (data) {
-      data.forEach(movie => renderMovie(movie));
-    } else {
-      console.warn('No featured movies found.');
-    }
-  } catch (error) {
-    console.error('Error displaying featured movies:', error);
-  }
 }
 
+
 // Single Movie Card Function
-async function displayMovieCard(url: string) {
+function displayMovieCards(movies: MovieData) {
   try {
-    const data = await fetchMovies(url);
-    if (data && data.length > 0) {
-      const firstMovie = data[0];
-      renderMovieCard(firstMovie);
-    } else {
-      console.error('No movies found for displayMovieCard!');
-    }
+    movies.forEach(movie => renderMovieCard(movie));
   } catch (error) {
-    console.error('An error occurred while displaying the movie card:', error);
+    console.error('An error occurred while displaying the movie cards:', error);
   }
 }
 
