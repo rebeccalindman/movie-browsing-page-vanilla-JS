@@ -610,7 +610,36 @@ async function displayFirstMovie(url) {
     }
 }
 // Call the function to display the movie
-displayFirstMovie((0, _api.apiUrl));
+/* displayFirstMovie(apiUrl); */ /* MOCK-MOVIE DATA TEST */ const mockMovie = {
+    title: "EXAMPLE: The Shawshank Redemption",
+    overview: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
+    backdrop_path: "/5KvYhSZuRzrcXzWjVO4J3q4b2qU.jpg",
+    poster_path: "/q6y0Go1tsGEsmtFryIEreULOSLp.jpg",
+    release_date: "1994-09-23",
+    id: 1,
+    love: false,
+    vote_average: 9.2,
+    vote_count: 2500,
+    genres: [
+        "Drama"
+    ],
+    cast: [
+        {
+            profile_path: "#",
+            name: "Tim Robbins"
+        },
+        {
+            profile_path: "#",
+            name: "Morgan Freeman"
+        }
+    ]
+};
+const mockMovieData = {
+    results: [
+        mockMovie
+    ]
+};
+(0, _dom.createMovieModal)(mockMovie);
 async function displayMovieCard(url) {
     try {
         const data = await (0, _api.fetchMovies)(url);
@@ -621,7 +650,9 @@ async function displayMovieCard(url) {
     } catch (error) {
         console.error('An error occurred while displaying the movie:', error);
     }
-} // Call the function to display movie card
+}
+(0, _dom.createCategorySection)('Action');
+(0, _dom.createCategorySection)('Drama'); // Call the function to display movie card
  /* displayMovieCard(apiUrl); */  // get the first object from JSON, parse to javascript
  // get and display poster_path (img)
  // get movie id
@@ -644,7 +675,6 @@ parcelHelpers.export(exports, "apiUrl", ()=>apiUrl);
  */ parcelHelpers.export(exports, "fetchMovies", ()=>fetchMovies);
 const API_KEY_tmdb = "6369fcc46c83ecd475d3f734321f2a0b"; //themoviedb.org
 const apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc`;
-let searchInput = "harry"; //!test
 async function fetchMovies(url) {
     try {
         const response = await fetch(url);
@@ -742,6 +772,7 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "renderMovie", ()=>renderMovie);
 parcelHelpers.export(exports, "renderMovieCard", ()=>renderMovieCard);
 /* TODO replace with star icon and heart icon */ parcelHelpers.export(exports, "createMovieModal", ()=>createMovieModal);
+parcelHelpers.export(exports, "createCategorySection", ()=>createCategorySection);
 const topMovieList = document.getElementById('top-movie-list');
 const renderMovie = (movie)=>{
     //create and append backdrop image
@@ -781,7 +812,11 @@ function createMovieModal(movie) {
     movieModal.classList.add('movie-modal');
     movieModal.innerHTML = `
     <button type="button" class="movie-modal-close">X</button>
-    <div class="movie-modal-backdrop"  aria-label="${movie.title} movie backdrop"></div>
+    <div class="movie-modal-backdrop" aria-label="${movie.title} movie backdrop">
+      <svg class ="ux-shape-divider" viewBox="0 0 1000 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                    <path class="ux-shape-fill dark" d="M0 0C0 0 200 50 500 50C800 50 1000 0 1000 0V101H0V1V0Z"></path>
+                </svg>
+    </div>
     <section class="movie-modal-title-container">
         <h3 class="movie-modal-title">${movie.title}</h3>
     </section>
@@ -795,7 +830,7 @@ function createMovieModal(movie) {
     </section>
     <section class="information-container">
         <ul class="movie-genres">
-            ${movie.genres.map((genre)=>`<li>${genre.name}</li>`).join('')}
+            ${movie.genres.map((genre)=>`<li>${genre}</li>`).join('')}
         </ul>
         <p class="movie-modal-overview">${movie.overview}</p>
         <p class="movie-modal-release-date">${movie.release_date}</p>
@@ -807,7 +842,6 @@ function createMovieModal(movie) {
                 <li><a href="#">Rotten Tomatoes</a></li>
             </ul>
         
-
             <h4>Watch on</h4>
             <ul class="movie-modal-links">
                 <li><a href="#">Netflix</a></li>
@@ -817,15 +851,41 @@ function createMovieModal(movie) {
         
         <section class="actors-section">
             <ol>
-                ${movie.credits.cast.map((actor)=>`<li class="actor-list-item">
-                    <img class="actor-image" src="${actor.profile_path}" alt="${actor.name}" class="actor-image">
-                    <span>${actor.name}</span>
-                </li>`).join('')}
+                ${movie.cast ? movie.cast.map((actor)=>`
+                        <li class="actor-list-item">
+                            <img class="actor-image" src="${actor.profile_path}" alt="${actor.name}">
+                            <span>${actor.name}</span>
+                        </li>
+                    `).join('') : '<li>No cast information available</li>'}
             </ol>
         </section>
     </section>
     `;
-    topMovieList.appendChild(movieModal);
+    document.body.appendChild(movieModal);
+    const closeButton = movieModal.querySelector('.movie-modal-close');
+    if (closeButton) closeButton.addEventListener('click', ()=>{
+        movieModal.remove();
+    });
+}
+function createCategorySection(category) {
+    const section = document.createElement('section');
+    section.classList.add('section-header');
+    section.innerHTML = `
+        <h2>${category}</h2>
+        <p>Click on a movie card to view more details and find a streaming site.</p>
+        
+
+    `;
+    document.querySelector('main')?.appendChild(section);
+    const topMoviesList = document.createElement('section');
+    topMoviesList.classList.add('top-movies-list');
+    topMovieList.innerHTML = `
+
+      <div class="movie-card-container">
+                      
+      </div>
+    `;
+    document.querySelector('main')?.appendChild(topMoviesList);
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}]},["lI3Wn","gfLib"], "gfLib", "parcelRequire94c2")

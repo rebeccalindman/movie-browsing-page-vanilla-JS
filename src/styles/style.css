@@ -90,27 +90,35 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
-    align-self: stretch;
-   /*  width: 100vw; */
+    align-self: center;
+    width: clamp(300px, 100%, 1400px);
+    height: 100vh;
+
 }
 
-.section-header{
+.section-header {
     display: flex;
+    flex-direction: column;
+    width: 100%;
     padding: 24px 80px;
-    align-items: center;
     gap: 10px;
-    align-self: stretch;
+    font-size: 36px;
+    font-weight: 700;
+    background-color: var(--brand-color2);
+    z-index: 1;
 }
 
-/* style */
-.section-header #dark {
+.dark {
     background-color: var(--background-dark-base, #16181A);
     color: var(--brand-color1, #FC0);
-    text-align: center;
-    font-size: 36px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
+}
+
+.section-header p {
+    font-size: 12px;
+}
+
+.section-header.dark p {
+    color: white;
 }
 
 .top-movies-list {
@@ -120,6 +128,8 @@ main {
     align-items: flex-start;
     gap: 52px;
     align-self: stretch;
+
+    background-color: white;
 }
 
 .top-movies-list #featured {
@@ -199,10 +209,12 @@ main {
 
 /***** MODAL *****/
 .movie-modal {
-/*     position: fixed;
+    z-index: 100;
+
+    position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%); */
+    transform: translate(-50%, -50%);
 
     display: flex;
     width: 664px;
@@ -213,18 +225,32 @@ main {
 
     /* style */
     border-radius: 20px;
-    border: red solid 2px;
+    box-sizing: border-box;
+    border: 2px solid white;
+    border-width: thick;
     background: #FFF;
+
 }
 
 .movie-modal-close {
     /* grid-area: movie-modal-close; */
     position: absolute;
-    top: 100px;
-    right: 100px;
-    width: 24px;
-    height: 24px;
+    top: 16px;
+    right: 16px;
+    width: 28px;
+    height: 28px;
     flex-shrink: 0;    
+
+    /* style */
+    cursor: pointer;
+    background-color: var(--brand-color3);
+    border: none;
+    border-radius: 99px;
+    opacity: 0.8;
+}
+
+.movie-modal-close:hover {
+    background-color: var(--brand-color1);
 }
 
 .movie-modal-backdrop {
@@ -267,6 +293,7 @@ main {
     justify-content: center;
     align-items: center;
     gap: 10px;
+    z-index: 2;
     /* style */
     background: var(--background-dark-base, #16181A);
 }
@@ -276,6 +303,7 @@ main {
     text-align: center;
     font-size: 24px;
     font-weight: 700;
+
 }
 
 .movie-modal-rating, .star-icon {
@@ -410,13 +438,26 @@ background: rgba(211, 211, 255, 0.50);
 }
 
 .ux-shape-divider {
-    position: absolute; /* Position relative to #background-image-wrapper */
-    bottom: 0; /* Stick to the bottom of the image */
+    position: relative; /* Position relative to #background-image-wrapper */
     left: 0; /* Align to the left */
     width: 100%; /* Match image width */
     z-index: 1; /* Ensure it's on top of the image */
     line-height: 0; /* Remove line height spacing */
     overflow: hidden;
+}
+
+.movie-modal .ux-shape-divider {
+    top: 300px; /* Stick to the bottom of the image */
+}
+
+.top-movies-list#featured .ux-shape-divider {
+    position: relative; /* Position relative to #background-image-wrapper */
+    top: clamp(470px, 100%, 480px);
+    z-index: 0;
+}
+
+.ux-shape-divider .dark {
+    fill: var(--text-color-dark);
 }
 
 .ux-shape-divider svg {
@@ -429,6 +470,69 @@ background: rgba(211, 211, 255, 0.50);
 }
 
 
+footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100vw;
+    gap: 20px;
+
+    padding: 40px;
+
+    background-color: var(--brand-color1);
+    color: var(--text-dark);
+}   
+
+footer p {
+    text-align: center;
+}
+
+.footer-content {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    grid-template-areas: 
+    "footer-tagline footer-tagline"
+    "footer-contact footer-links"
+    "footer-contact footer-newsletter"
+    ;
+
+}
+
+.footer-bottom, .footer-newsletter, .footer-content *{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+}
+
+.footer-tagline {
+    grid-area: footer-tagline;
+}
+
+.footer-contact {
+    grid-area: footer-contact;
+}
+
+.footer-links {
+    grid-area: footer-links;
+}
+
+.footer-newsletter {
+    grid-area: footer-newsletter;
+}
+
+.footer-social {
+    grid-area: footer-social;
+}
+
+.footer-bottom {
+
+    text-align: center;
+}
 
 
 

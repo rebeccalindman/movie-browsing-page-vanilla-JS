@@ -54,7 +54,11 @@ export const renderMovie = (movie: Movie) => {
     movieModal.classList.add('movie-modal');
     movieModal.innerHTML = `
     <button type="button" class="movie-modal-close">X</button>
-    <div class="movie-modal-backdrop"  aria-label="${movie.title} movie backdrop"></div>
+    <div class="movie-modal-backdrop" aria-label="${movie.title} movie backdrop">
+      <svg class ="ux-shape-divider" viewBox="0 0 1000 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                    <path class="ux-shape-fill dark" d="M0 0C0 0 200 50 500 50C800 50 1000 0 1000 0V101H0V1V0Z"></path>
+                </svg>
+    </div>
     <section class="movie-modal-title-container">
         <h3 class="movie-modal-title">${movie.title}</h3>
     </section>
@@ -68,7 +72,7 @@ export const renderMovie = (movie: Movie) => {
     </section>
     <section class="information-container">
         <ul class="movie-genres">
-            ${movie.genres.map(genre => `<li>${genre.name}</li>`).join('')}
+            ${movie.genres.map(genre => `<li>${genre}</li>`).join('')}
         </ul>
         <p class="movie-modal-overview">${movie.overview}</p>
         <p class="movie-modal-release-date">${movie.release_date}</p>
@@ -80,7 +84,6 @@ export const renderMovie = (movie: Movie) => {
                 <li><a href="#">Rotten Tomatoes</a></li>
             </ul>
         
-
             <h4>Watch on</h4>
             <ul class="movie-modal-links">
                 <li><a href="#">Netflix</a></li>
@@ -90,15 +93,57 @@ export const renderMovie = (movie: Movie) => {
         
         <section class="actors-section">
             <ol>
-                ${movie.credits.cast.map(actor => `<li class="actor-list-item">
-                    <img class="actor-image" src="${actor.profile_path}" alt="${actor.name}" class="actor-image">
-                    <span>${actor.name}</span>
-                </li>`).join('')}
+                ${movie.cast
+                    ? movie.cast.map(actor => `
+                        <li class="actor-list-item">
+                            <img class="actor-image" src="${actor.profile_path}" alt="${actor.name}">
+                            <span>${actor.name}</span>
+                        </li>
+                    `).join('')
+                    : '<li>No cast information available</li>'
+                }
             </ol>
         </section>
     </section>
     `;
-    topMovieList.appendChild(movieModal);
+    document.body.appendChild(movieModal);
 
-  }
-  
+    const closeButton = movieModal.querySelector('.movie-modal-close');
+    if (closeButton) {
+      closeButton.addEventListener('click', () => {
+        movieModal.remove();
+      });
+    }
+}
+
+
+export function createCategorySection(category: string) {
+    const section = document.createElement('section');
+    section.classList.add('section-header');
+    section.innerHTML = `
+        <h2>${category}</h2>
+        <p>Click on a movie card to view more details and find a streaming site.</p>
+        
+
+    `;
+
+    document.querySelector('main')?.appendChild(section);
+
+    const topMoviesList = document.createElement('section');
+    topMoviesList.classList.add('top-movies-list');
+
+    topMovieList.innerHTML = `
+
+      <div class="movie-card-container">
+                      
+      </div>
+    `;
+
+
+    document.querySelector('main')?.appendChild(topMoviesList);
+
+   
+
+    
+}
+

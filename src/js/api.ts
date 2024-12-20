@@ -11,7 +11,16 @@ export type Movie = {
   release_date: string;
   id: number;
   love?: boolean;
+  vote_average?: number;
+  vote_count?: number;
+  genres: { id: number; name: string }[];
+  cast: Cast[];
 };
+
+export type Cast = {
+  profile_path: string;
+  name: string;
+}
 
 export interface MovieData {
   results: Movie[] | null;
@@ -19,7 +28,6 @@ export interface MovieData {
 }
 
 
-let searchInput = "harry"; //!test
 
 //api search
 
@@ -50,7 +58,7 @@ export async function fetchMovies(url:string): Promise<MovieData | null> {
 
     const data = await response.json();
     storeMovieData(data);
-    
+
     return data;
   } catch (error) {
     // Log any fetch or parsing errors
