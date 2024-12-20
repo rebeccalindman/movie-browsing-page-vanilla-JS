@@ -17,6 +17,7 @@ async function displayFirstMovie(url: string) {
   }
 }
 
+
 // Call the function to display the movie
 displayFirstMovie(apiUrl);
 
@@ -37,7 +38,7 @@ async function displayMovieCard(url) {
 }
 
 // Call the function to display movie card
-displayMovieCard(apiUrl);
+/* displayMovieCard(apiUrl); */
 
   
     

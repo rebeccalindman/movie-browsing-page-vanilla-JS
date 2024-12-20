@@ -10,7 +10,9 @@ export type Movie = {
   poster_path: string;
   release_date: string;
   id: number;
+  love?: boolean;
 };
+
 export interface MovieData {
   results: Movie[] | null;
   // other properties...
@@ -46,7 +48,10 @@ export async function fetchMovies(url:string): Promise<MovieData | null> {
       return null;
     }
 
-    return await response.json();
+    const data = await response.json();
+    storeMovieData(data);
+    
+    return data;
   } catch (error) {
     // Log any fetch or parsing errors
     console.error("Error during fetchMovies execution:", error);
@@ -105,4 +110,9 @@ const displayErrorMessage = (statusCode: number) => {
   document.body.innerHTML = ""; // Clear existing news items
   document.body.appendChild(errorMessage); // Display error message to the user
 };
+
+function storeMovieData(data: MovieData) {
+  localStorage.setItem('movieData', JSON.stringify(data));
+}
+
 
