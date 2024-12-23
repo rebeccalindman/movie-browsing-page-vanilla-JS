@@ -19,6 +19,8 @@ main {
     --brand-color3: #D3D3FF; /*lilac*/
     --brand-color3-8: #D3D3FFCC; /* lilac 80% opacity */
     --brand-color4: #E93DAD; /* hot pink */
+
+    --brand-color7: #FE671D; /* orange */
     --text-color-dark: #16181a;
 
     --sds-typography-body-size-medium: 16px;
@@ -32,26 +34,38 @@ font-family: "Inria Sans", sans-serif;
 
 header{
     background-color: black;
+    position: fixed;
+    z-index: 100;
+    width: 100vw;
 }
 
 .nav-button {
     border-radius: 0px 0px 20px 20px;
-    background: inherit;
+    background: var(--brand-color2);
 }
+
+/* Colors for nav bar */
+.nav-button:nth-child(1){
+    background: var(--brand-color7);
+}
+
+.nav-button:nth-child(2){
+    background-color: #E93DAD;
+}
+
+
+
 
 .nav-button:hover{
     border-radius: 0px 0px 20px 20px;
     background: var(--brand-color2-5, #70B3B6);
+    cursor: pointer
 }
 
 
 
-.nav-button #active{
-    border-radius: 0px 0px 20px 20px;
+.nav-button#active{
     background-color: inherit;
-    border-right: 2px solid var(--brand-color2, #5F9EA0);
-    border-bottom: 2px solid var(--brand-color2, #5F9EA0);
-    border-left: 2px solid var(--brand-color2, #5F9EA0);
 }
 
 header nav ul li a {
@@ -69,6 +83,14 @@ width: 100vw;
 flex-direction: column;
 align-items: center;
 gap: 10px;
+background: repeating-linear-gradient(
+        135deg, /* Direction: 90 degrees creates vertical stripes */
+        #569092, /* First stripe color */
+        #569092 80px, /* Stripe width */
+        #51888a 80px, /* Gap between stripes (starts second color) */
+        #51888a 160px /* Total stripe width (alternates back to first color) */
+    );
+
 }
 
 header {
@@ -102,7 +124,7 @@ main {
     align-self: center;
     width: clamp(300px, 100%, 1400px);
     min-height: 100vh;
-
+    margin-top: 84px;
 }
 
 .section-header {
@@ -344,7 +366,7 @@ flex-shrink: 0;
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -35%);
 
     display: flex;
     width: 664px;
@@ -679,3 +701,23 @@ footer p {
 main {
     border: 2px solid blue;
 } */
+
+/* Media Queries */
+
+@media screen and (max-width: 850px) {
+    .movie-modal {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        scale: 0.8;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .movie-modal {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        scale: 0.5;
+    }
+}

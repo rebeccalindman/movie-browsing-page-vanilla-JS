@@ -26,7 +26,16 @@ const mockMovie: Movie = {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+  const contactNavButton = document.getElementById('contact-nav-button');
+  if (contactNavButton) {
+    contactNavButton.addEventListener('click', () => {
+      scrollToBottom();
+    });
+  }
+  
   main();
+  
+
 });
 async function main() {
   try {
@@ -55,4 +64,12 @@ async function main() {
   } catch (error) {
     console.error('Error during main execution:', error);
   }
+}
+
+
+function scrollToBottom() {
+  window.scrollTo({
+    top: document.body.scrollHeight,
+    behavior: 'smooth'
+  });
 }
