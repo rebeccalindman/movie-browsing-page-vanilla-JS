@@ -28,7 +28,7 @@ body {
 }
 
 header {
-  background-color: inherit;
+  background-color: #000;
 }
 
 .navButton {
@@ -130,7 +130,7 @@ main {
   padding-top: 30px;
   display: flex;
   position: relative;
-  overflow: scroll hidden;
+  overflow-y: hidden;
 }
 
 .top-movies-wrapper #featured {
@@ -142,9 +142,15 @@ main {
   align-items: flex-start;
   gap: 20px;
   width: fit-content;
-  height: 365px;
+  height: fit-content;
   padding-left: 20px;
   display: flex;
+}
+
+.movie-card-scroll-container {
+  width: 100vw;
+  height: 500px;
+  overflow-x: scroll;
 }
 
 .movie-card {
@@ -153,14 +159,14 @@ main {
   align-items: center;
   gap: 10px;
   width: 254px;
-  padding-bottom: 15px;
+  padding-bottom: 20px;
   display: flex;
   position: relative;
   overflow: hidden;
 }
 
 .movie-card:hover {
-  z-index: 2;
+  z-index: 10;
   transform: scale(1.05);
   box-shadow: 0 0 10px #0003;
 }
@@ -272,9 +278,15 @@ main {
 
 .movie-card-title {
   text-align: center;
-  font-size: 24px;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  font-size: clamp(16px, 2.5vw, 24px);
   font-weight: 700;
   line-height: normal;
+  display: -webkit-box;
+  overflow: hidden;
 }
 
 .rating-container {

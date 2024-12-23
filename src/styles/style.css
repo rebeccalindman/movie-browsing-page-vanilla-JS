@@ -31,7 +31,7 @@ font-family: "Inria Sans", sans-serif;
 }
 
 header{
-    background-color: inherit;
+    background-color: black;
 }
 
 .navButton {
@@ -135,7 +135,7 @@ main {
     flex-direction: column;
     align-items: flex-start;
     align-self: stretch;
-    overflow-x: scroll;
+/*     overflow-x: scroll; */
     overflow-y: hidden;
     gap: 52px;
     background-color: white;
@@ -147,13 +147,19 @@ main {
 
 .movie-card-container {
     display: flex;
-    height: 365px;
     padding-left: 20px;
     align-items: flex-start;
     gap: 20px;
     align-self: stretch;
     width: fit-content;
+    height: fit-content;
 
+}
+
+.movie-card-scroll-container {
+    overflow-x: scroll;
+    width: 100vw;
+    height: 500px;
 }
 
 .movie-card {
@@ -163,15 +169,15 @@ main {
     padding-bottom: 15px;
     align-items: center;
     gap: 10px;
+    padding-bottom: 20px;
     overflow: hidden;
-
     border-radius: 20px;
     background: #FFF;   
 }
 
 .movie-card:hover {
     transform: scale(1.05);
-    z-index: 2;
+    z-index: 10;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -287,10 +293,16 @@ flex-shrink: 0;
 }
 
 .movie-card-title {
-    font-size: 24px;
+    font-size: clamp(16px, 2.5vw, 24px);
     font-weight: 700;
     line-height: normal;
     text-align: center;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .rating-container {
