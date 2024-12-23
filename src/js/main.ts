@@ -31,16 +31,25 @@ document.addEventListener('DOMContentLoaded', () => {
 async function main() {
   try {
 
+    getGenresList();
+
     const featuredMovies = await fetchMovies(apiUrl);
     if (!featuredMovies || featuredMovies.length === 0) {
       console.error('No movies found or fetched data is invalid.');
       return;
     }
-
+    
     storeDataArray(featuredMovies, "featuredMovies");
-
     displayMovieCards(featuredMovies, "featured");
+
+
     fetchAndDisplayCategoryMovies("Action");
+    fetchAndDisplayCategoryMovies("Adventure");
+    fetchAndDisplayCategoryMovies("Comedy");
+    fetchAndDisplayCategoryMovies("Drama");
+    fetchAndDisplayCategoryMovies("Horror");
+    fetchAndDisplayCategoryMovies("Romance");
+    fetchAndDisplayCategoryMovies("Thriller");
 
     createMovieModal(mockMovie);
   } catch (error) {

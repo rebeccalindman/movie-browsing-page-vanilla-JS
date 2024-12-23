@@ -633,6 +633,7 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 async function main() {
     try {
+        (0, _apiTs.getGenresList)();
         const featuredMovies = await (0, _apiTs.fetchMovies)((0, _apiTs.apiUrl));
         if (!featuredMovies || featuredMovies.length === 0) {
             console.error('No movies found or fetched data is invalid.');
@@ -641,6 +642,12 @@ async function main() {
         (0, _apiTs.storeDataArray)(featuredMovies, "featuredMovies");
         (0, _domTs.displayMovieCards)(featuredMovies, "featured");
         (0, _domTs.fetchAndDisplayCategoryMovies)("Action");
+        (0, _domTs.fetchAndDisplayCategoryMovies)("Adventure");
+        (0, _domTs.fetchAndDisplayCategoryMovies)("Comedy");
+        (0, _domTs.fetchAndDisplayCategoryMovies)("Drama");
+        (0, _domTs.fetchAndDisplayCategoryMovies)("Horror");
+        (0, _domTs.fetchAndDisplayCategoryMovies)("Romance");
+        (0, _domTs.fetchAndDisplayCategoryMovies)("Thriller");
         (0, _modalTs.createMovieModal)(mockMovie);
     } catch (error) {
         console.error('Error during main execution:', error);
