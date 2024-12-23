@@ -600,6 +600,7 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 var _apiTs = require("./api.ts");
 var _domTs = require("./dom.ts");
 var _modalTs = require("./modal.ts");
+var _utilsTs = require("./utils.ts");
 // Mock Movie Data
 const mockMovie = {
     title: "EXAMPLE: The Shawshank Redemption",
@@ -635,9 +636,27 @@ async function main() {
     try {
         // Fetch and display featured movies
         const featuredMovies = await (0, _apiTs.fetchMovies)((0, _apiTs.apiUrl));
-        if (featuredMovies) // Display movie cards if movies are available
-        displayMovieCards(featuredMovies);
-        else console.error('No movies found!');
+        if (!featuredMovies || featuredMovies.length === 0) {
+            console.error('No movies found or fetched data is invalid.');
+            return;
+        }
+        (0, _apiTs.storeDataArray)(featuredMovies, "featuredMovies");
+        const genresList = await (0, _apiTs.getGenresList)();
+        if (featuredMovies) {
+            featuredMovies.forEach((movie)=>{
+                const listOfGenres = [];
+                movie.genres.forEach((genre)=>{
+                    const genreName = (0, _utilsTs.getGenreFromId)(genre.id, genresList);
+                    listOfGenres.push({
+                        id: genre.id,
+                        name: genreName
+                    });
+                });
+                movie.genres = listOfGenres;
+            });
+            // Display movie cards if movies are available
+            displayMovieCards(featuredMovies);
+        } else console.error('No movies found!');
         // Display categories
         (0, _domTs.createCategorySection)('Action');
         (0, _domTs.createCategorySection)('Drama');
@@ -650,29 +669,41 @@ async function main() {
 // Single Movie Card Function
 function displayMovieCards(movies) {
     try {
-        movies.forEach((movie)=>(0, _domTs.renderMovieCard)(movie));
+        movies.forEach((movie)=>{
+            (0, _domTs.renderMovieCard)(movie);
+        });
     } catch (error) {
         console.error('An error occurred while displaying the movie cards:', error);
+    } finally{
+        console.log('Movie cards displayed successfully.');
     }
 }
 
-},{"./api.ts":"jGtCU","./dom.ts":"eWIKv","./modal.ts":"5pIqC"}],"jGtCU":[function(require,module,exports,__globalThis) {
+},{"./api.ts":"jGtCU","./dom.ts":"eWIKv","./modal.ts":"5pIqC","./utils.ts":"8NGW9"}],"jGtCU":[function(require,module,exports,__globalThis) {
 //api.ts
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "API_KEY_tmdb", ()=>API_KEY_tmdb);
 parcelHelpers.export(exports, "apiUrl", ()=>apiUrl);
 parcelHelpers.export(exports, "apiFeaturedMoviesUrl", ()=>apiFeaturedMoviesUrl);
+parcelHelpers.export(exports, "fetchMovies", ()=>fetchMovies);
 /**
- ** Fetch movies from The Movie Database API.
- */ parcelHelpers.export(exports, "fetchMovies", ()=>fetchMovies);
+ ** Display an error message based on the HTTP status code.
+ * (Recycled from Boiler Room w 47)
+ */ parcelHelpers.export(exports, "displayErrorMessage", ()=>displayErrorMessage);
+parcelHelpers.export(exports, "storeDataArray", ()=>storeDataArray);
+parcelHelpers.export(exports, "getGenresList", ()=>getGenresList);
 const API_KEY_tmdb = "6369fcc46c83ecd475d3f734321f2a0b"; //themoviedb.org
 const apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc`;
 const apiFeaturedMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_watch_providers=netflix%20OR%20prime%20OR%20svt&year=2024`;
 async function fetchMovies(url) {
     try {
+        const genresList = await getGenresList(); // Fetch genres once
+        if (!genresList || genresList.length === 0) {
+            console.error('Failed to fetch genres list.');
+            return null;
+        }
         const response = await fetch(url);
-        // Handle HTTP response errors
         if (!response.ok) {
             displayErrorMessage(response.status);
             return null;
@@ -688,23 +719,26 @@ async function fetchMovies(url) {
                 love: movie.love || false,
                 vote_average: movie.vote_average,
                 vote_count: movie.vote_count,
-                genres: movie.genres,
-                cast: movie.cast
+                genres: movie.genre_ids.map((genreId)=>{
+                    const genre = genresList.find((g)=>g.id === genreId);
+                    return genre ? {
+                        id: genre.id,
+                        name: genre.name
+                    } : {
+                        id: genreId,
+                        name: 'Unknown Genre'
+                    };
+                }),
+                cast: Array.isArray(movie.cast) ? movie.cast : []
             }));
-        storeMovieData(movies);
         return movies;
     } catch (error) {
-        // Log any fetch or parsing errors
-        console.error("Error during fetchMovies execution:", error);
-        // Show a generic error message to the user
+        console.error('Error during fetchMovies execution:', error);
         displayErrorMessage(0);
         return null;
     }
 }
-/**
- ** Display an error message based on the HTTP status code.
- * (Recycled from Boiler Room w 47)
- */ function displayErrorMessage(statusCode) {
+function displayErrorMessage(statusCode) {
     const errorMessage = document.createElement("p");
     errorMessage.classList.add("error-message");
     switch(statusCode){
@@ -740,8 +774,19 @@ async function fetchMovies(url) {
     document.body.innerHTML = "";
     document.body.appendChild(errorMessage);
 }
-function storeMovieData(data) {
-    localStorage.setItem('movieData', JSON.stringify(data));
+function storeDataArray(data, key) {
+    localStorage.setItem(key, JSON.stringify(data));
+}
+async function getGenresList() {
+    const url = `https://api.themoviedb.org/3/genre/movie/list?language=en&api_key=${API_KEY_tmdb}`;
+    try {
+        const response = await fetch(url);
+        const json = await response.json();
+        return json.genres || []; // Extract genres array
+    } catch (error) {
+        console.error('Error fetching genres:', error);
+        return null; // Return null on error
+    }
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"amG76":[function(require,module,exports,__globalThis) {
@@ -797,7 +842,7 @@ function renderMovieCard(movie) {
       <img class="movie-card-poster" src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title} poster">
         <h3 class="movie-card-title">${movie.title}</h3>
         <div class="movie-card-information-container">
-          <p class="movie-card-genres">${movie.genres}</p>
+          <p class="movie-card-genres">${movie.genres.map((genre)=>genre.name).join(', ')}</p>
           <p class="movie-card-release-date">${movie.release_date}</p>
           <p class="cto-view-details">View Details</p>
         </div>
@@ -893,6 +938,17 @@ function createMovieModal(movie) {
     if (closeButton) closeButton.addEventListener('click', ()=>{
         movieModal.remove();
     });
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"8NGW9":[function(require,module,exports,__globalThis) {
+//utils.ts
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getGenreFromId", ()=>getGenreFromId);
+function getGenreFromId(genreId, genres) {
+    if (!genres) return 'Unknown Genre'; // Fallback for null genres list
+    const genre = genres.find((genre)=>genre.id === genreId);
+    return genre ? genre.name : 'Unknown Genre'; // Fallback for missing genre ID
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}]},["lI3Wn","gfLib"], "gfLib", "parcelRequire94c2")

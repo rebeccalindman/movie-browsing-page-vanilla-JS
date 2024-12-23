@@ -1,8 +1,9 @@
 //main.ts
 import { Movie, MovieData } from "./types.ts";
-import { fetchMovies, apiUrl, apiFeaturedMoviesUrl } from './api.ts';
+import { fetchMovies, apiUrl, apiFeaturedMoviesUrl, displayErrorMessage, storeDataArray, getGenresList } from './api.ts';
 import { renderMovieCard, createCategorySection } from './dom.ts';
 import { createMovieModal } from './modal.ts';
+import { getGenreFromId } from "./utils.ts";  
 
 // Mock Movie Data
 const mockMovie: Movie = {
@@ -27,14 +28,33 @@ const mockMovie: Movie = {
 document.addEventListener('DOMContentLoaded', () => {
   main();
 });
-
-
 async function main() {
   try {
     // Fetch and display featured movies
     const featuredMovies = await fetchMovies(apiUrl);
+    if (!featuredMovies || featuredMovies.length === 0) {
+      console.error('No movies found or fetched data is invalid.');
+      return;
+    }
+    
+
+    storeDataArray(featuredMovies, "featuredMovies");
+
+    const genresList = await getGenresList();
 
     if (featuredMovies) {
+      featuredMovies.forEach(movie => { 
+        const listOfGenres: { id: number; name: string }[] = [];
+
+        movie.genres.forEach(genre => {
+          const genreName = getGenreFromId(genre.id, genresList);
+          listOfGenres.push({ id: genre.id, name: genreName });
+        });
+
+        movie.genres = listOfGenres;
+      });
+    
+
       // Display movie cards if movies are available
       displayMovieCards(featuredMovies);
     } else {
@@ -53,12 +73,18 @@ async function main() {
 }
 
 
+
 // Single Movie Card Function
 function displayMovieCards(movies: MovieData) {
   try {
-    movies.forEach(movie => renderMovieCard(movie));
+    movies.forEach(movie => {
+      renderMovieCard(movie);
+  });
+    
   } catch (error) {
     console.error('An error occurred while displaying the movie cards:', error);
   }
+  finally {
+    console.log('Movie cards displayed successfully.');
 }
-
+}

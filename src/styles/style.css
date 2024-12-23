@@ -249,6 +249,9 @@ flex-shrink: 0;
 .movie-card-genres {
     font-size: 13px;
     font-weight: 400;
+    width: 75%;
+    height: 30px;
+    text-align: center;
 }
 
 .cto-view-details {

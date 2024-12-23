@@ -21,7 +21,7 @@ const movieCardContainer = document.querySelector('.movie-card-container') as HT
       <img class="movie-card-poster" src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title} poster">
         <h3 class="movie-card-title">${movie.title}</h3>
         <div class="movie-card-information-container">
-          <p class="movie-card-genres">${movie.genres}</p>
+          <p class="movie-card-genres">${movie.genres.map(genre => genre.name).join(', ')}</p>
           <p class="movie-card-release-date">${movie.release_date}</p>
           <p class="cto-view-details">View Details</p>
         </div>

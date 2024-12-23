@@ -232,6 +232,9 @@ main {
 }
 
 .movie-card-genres {
+  text-align: center;
+  width: 75%;
+  height: 30px;
   font-size: 13px;
   font-weight: 400;
 }
