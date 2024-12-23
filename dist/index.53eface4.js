@@ -600,6 +600,7 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 var _apiTs = require("./api.ts");
 var _domTs = require("./dom.ts");
 var _modalTs = require("./modal.ts");
+var _utilsTs = require("./utils.ts");
 // Mock Movie Data
 const mockMovie = {
     title: "EXAMPLE: The Shawshank Redemption",
@@ -637,54 +638,34 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 async function main() {
     try {
-        (0, _apiTs.getGenresList)();
+        // Fetch genres and sync love property on page load
+        await (0, _utilsTs.getCachedGenresList)();
+        (0, _utilsTs.syncLovePropertyAcrossStoredArrays)();
+        // Fetch and display featured movies
         const featuredMovies = await (0, _apiTs.fetchMovies)((0, _apiTs.apiUrl));
-        if (!featuredMovies || featuredMovies.length === 0) {
-            console.error('No movies found or fetched data is invalid.');
-            return;
+        if (featuredMovies && featuredMovies.length > 0) {
+            (0, _apiTs.storeDataArray)(featuredMovies, "featuredMovies");
+            (0, _domTs.displayMovieCards)(featuredMovies, "featured");
         }
-        (0, _apiTs.storeDataArray)(featuredMovies, "featuredMovies");
-        (0, _domTs.displayMovieCards)(featuredMovies, "featured");
-        (0, _domTs.fetchAndDisplayCategoryMovies)("Action");
-        (0, _domTs.fetchAndDisplayCategoryMovies)("Adventure");
-        (0, _domTs.fetchAndDisplayCategoryMovies)("Comedy");
-        (0, _domTs.fetchAndDisplayCategoryMovies)("Drama");
-        (0, _domTs.fetchAndDisplayCategoryMovies)("Horror");
-        (0, _domTs.fetchAndDisplayCategoryMovies)("Romance");
-        (0, _domTs.fetchAndDisplayCategoryMovies)("Thriller");
+        // Fetch and display category movies
+        const categories = [
+            "Action",
+            "Adventure",
+            "Comedy",
+            "Drama",
+            "Horror",
+            "Romance",
+            "Thriller"
+        ];
+        categories.forEach((category)=>(0, _domTs.fetchAndDisplayCategoryMovies)(category));
+        // Example of rendering a modal with mock data
         (0, _modalTs.createMovieModal)(mockMovie);
     } catch (error) {
-        console.error('Error during main execution:', error);
+        console.error("Error during main execution:", error);
     }
-}
-function scrollToBottom() {
-    window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: 'smooth'
-    });
-}
-function markMovieAsFavorite(movie) {
-    movie.love = !movie.love;
-    (0, _domTs.displayMovieCards)(storedMoviesArr, "featured");
-}
-let lovedMoviesArr = [];
-localStorage.setItem("lovedMoviesArr", JSON.stringify(lovedMoviesArr));
-function saveMovieToFavoriteList(movie) {
-    movie.love = true;
-    lovedMoviesArr.push(movie);
-    localStorage.setItem("lovedMoviesArr", JSON.stringify(lovedMoviesArr));
-}
-function checkFavoriteList(movieId) {
-    lovedMoviesArr = JSON.parse(localStorage.getItem("lovedMoviesArr") || "[]");
-    if (!lovedMoviesArr) {
-        lovedMoviesArr = [];
-        return false;
-    }
-    if (lovedMoviesArr.some((movie)=>movie.id === movieId)) return true;
-    return false; // Return false if the movie is not found in the list
 }
 
-},{"./api.ts":"jGtCU","./dom.ts":"eWIKv","./modal.ts":"5pIqC"}],"jGtCU":[function(require,module,exports,__globalThis) {
+},{"./api.ts":"jGtCU","./dom.ts":"eWIKv","./modal.ts":"5pIqC","./utils.ts":"8NGW9"}],"jGtCU":[function(require,module,exports,__globalThis) {
 //api.ts
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -801,7 +782,17 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getGenreFromId", ()=>getGenreFromId);
 parcelHelpers.export(exports, "addCategoryFilter", ()=>addCategoryFilter);
 parcelHelpers.export(exports, "getCachedGenresList", ()=>getCachedGenresList);
-var _api = require("./api");
+/**
+ * Toggle a movie as a favorite. If it's already a favorite, it will be removed. Otherwise, it will be added.
+ */ parcelHelpers.export(exports, "toggleFavorite", ()=>toggleFavorite);
+/**
+ * Check if a movie is marked as favorite.
+ */ parcelHelpers.export(exports, "isFavorite", ()=>isFavorite);
+/**
+ * Get the current list of favorite movies.
+ */ parcelHelpers.export(exports, "getFavoriteMovies", ()=>getFavoriteMovies);
+parcelHelpers.export(exports, "syncLovePropertyAcrossStoredArrays", ()=>syncLovePropertyAcrossStoredArrays);
+var _apiTs = require("./api.ts");
 function getGenreFromId(genreId, genres) {
     if (!genres) return 'Unknown Genre'; // Fallback for null genres list
     const genre = genres.find((genre)=>genre.id === genreId);
@@ -810,7 +801,7 @@ function getGenreFromId(genreId, genres) {
 async function addCategoryFilter(category) {
     const genresList = await getCachedGenresList();
     const categoryId = genresList.find((genre)=>genre.name === category)?.id;
-    const url = (0, _api.apiUrl) + (categoryId ? `&with_genres=${categoryId}` : '');
+    const url = (0, _apiTs.apiUrl) + (categoryId ? `&with_genres=${categoryId}` : '');
     return url;
 }
 let cachedGenresList = null;
@@ -821,7 +812,7 @@ async function getCachedGenresList() {
     fetchingGenresList = (async ()=>{
         let genresList = JSON.parse(localStorage.getItem("genresList") || "null");
         if (!genresList) {
-            genresList = await (0, _api.getGenresList)();
+            genresList = await (0, _apiTs.getGenresList)();
             localStorage.setItem("genresList", JSON.stringify(genresList));
         }
         cachedGenresList = genresList;
@@ -830,8 +821,54 @@ async function getCachedGenresList() {
     })();
     return await fetchingGenresList;
 }
+let lovedMoviesArr = JSON.parse(localStorage.getItem("lovedMoviesArr") || "[]");
+function toggleFavorite(movie) {
+    const movieIndex = lovedMoviesArr.findIndex((m)=>m.id === movie.id);
+    if (movieIndex !== -1) // If movie is already a favorite, remove it
+    lovedMoviesArr.splice(movieIndex, 1);
+    else {
+        // Otherwise, add it as a favorite
+        movie.love = true;
+        lovedMoviesArr.push(movie);
+    }
+    // Update local storage for the favorites list
+    localStorage.setItem("lovedMoviesArr", JSON.stringify(lovedMoviesArr));
+    // Sync love property across all stored arrays
+    syncLovePropertyAcrossStoredArrays();
+}
+function isFavorite(movieId) {
+    return lovedMoviesArr.some((movie)=>movie.id === movieId);
+}
+function getFavoriteMovies() {
+    return lovedMoviesArr;
+}
+/**
+ * Sync the local storage and the in-memory `lovedMoviesArr` in case of external changes.
+ */ function storeDataArray(data, key) {
+    console.log(`Storing data for key: ${key}, Length: ${data.length}`);
+    localStorage.setItem(key, JSON.stringify(data));
+}
+function syncLovePropertyAcrossStoredArrays() {
+    // Get the favorite movies list
+    const lovedMoviesArr = JSON.parse(localStorage.getItem("lovedMoviesArr") || "[]");
+    // Dynamically fetch all stored array keys
+    const storedKeys = Object.keys(localStorage).filter((key)=>key.endsWith("movies"));
+    storedKeys.forEach((arrayKey)=>{
+        const array = JSON.parse(localStorage.getItem(arrayKey) || "[]");
+        const updatedArray = array.map((movie)=>{
+            const isLoved = lovedMoviesArr.some((favMovie)=>favMovie.id === movie.id);
+            return {
+                ...movie,
+                love: isLoved
+            }; // Ensure the love property is synced
+        });
+        // Save the updated array back to local storage
+        localStorage.setItem(arrayKey, JSON.stringify(updatedArray));
+    });
+    console.log("Love properties synced across stored arrays.");
+}
 
-},{"./api":"jGtCU","@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"amG76":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./api.ts":"jGtCU"}],"amG76":[function(require,module,exports,__globalThis) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -888,26 +925,32 @@ function renderMovieCard(movie, category) {
     const movieCardContainer = document.getElementById(`${category} movies`);
     const movieCard = document.createElement('article');
     movieCard.classList.add('movie-card');
+    // Check if the movie is a favorite
+    const isFavorited = (0, _utilsTs.isFavorite)(movie.id);
+    const favoriteClass = isFavorited ? 'loved' : '';
     movieCard.innerHTML = `
-
     <div class="movie-card-content">
-      <button class="love-button">
+      <button class="love-button ${favoriteClass}">
           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M12.62 20.8101C12.28 20.9301 11.72 20.9301 11.38 20.8101C8.48 19.8201 2 15.6901 2 8.6901C2 5.6001 4.49 3.1001 7.56 3.1001C9.38 3.1001 10.99 3.9801 12 5.3401C13.01 3.9801 14.63 3.1001 16.44 3.1001C19.51 3.1001 22 5.6001 22 8.6901C22 15.6901 15.52 19.8201 12.62 20.8101Z" fill="white" fill-opacity="0.4"/>
           </svg>
       </button>
       <img class="movie-card-poster" src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title} poster">
-        <h3 class="movie-card-title">${movie.title}</h3>
-        <div class="movie-card-information-container">
-          <p class="movie-card-genres">${movie.genres.map((genre)=>genre.name).join(', ')}</p>
-          <p class="movie-card-release-date">${movie.release_date}</p>
-          <p class="cto-view-details">View Details</p>
-        </div>
+      <h3 class="movie-card-title">${movie.title}</h3>
+      <div class="movie-card-information-container">
+        <p class="movie-card-genres">${movie.genres.map((genre)=>genre.name).join(', ')}</p>
+        <p class="movie-card-release-date">${movie.release_date}</p>
+        <p class="cto-view-details">View Details</p>
+      </div>
     </div>
-    `;
+  `;
     movieCardContainer.appendChild(movieCard);
-    movieCard.querySelector('.love-button').addEventListener('click', ()=>{
-        movieCard.classList.toggle('loved');
+    // Attach click event to toggle favorite
+    const loveButton = movieCard.querySelector('.love-button');
+    loveButton.addEventListener('click', ()=>{
+        (0, _utilsTs.toggleFavorite)(movie);
+        // Update button appearance
+        loveButton.classList.toggle('loved');
     });
 }
 function createCategorySection(category) {
@@ -940,30 +983,27 @@ async function fetchAndDisplayCategoryMovies(category) {
     try {
         const genresList = await (0, _utilsTs.getCachedGenresList)();
         const categoryUrl = await (0, _utilsTs.addCategoryFilter)(category);
-        console.log(categoryUrl);
+        console.log(`Fetching movies for category: ${category}, URL: ${categoryUrl}`);
         const categoryMovies = await (0, _apiTs.fetchMovies)(categoryUrl);
         if (!categoryMovies || categoryMovies.length === 0) {
-            console.error('No movies found or fetched data is invalid.');
+            console.error(`No movies found for category: ${category}`);
             return;
         }
-        (0, _apiTs.storeDataArray)(categoryMovies, `${category} movies`);
+        // Sync genres for the movies
         categoryMovies.forEach((movie)=>{
-            const listOfGenres = [];
-            movie.genres.forEach((genre)=>{
-                const genreName = (0, _utilsTs.getGenreFromId)(genre.id, genresList);
-                listOfGenres.push({
-                    id: genre.id,
-                    name: genreName
-                });
-            });
-            movie.genres = listOfGenres;
+            if (movie.genre_ids) movie.genres = movie.genre_ids.map((id)=>({
+                    id,
+                    name: (0, _utilsTs.getGenreFromId)(id, genresList)
+                }));
         });
+        // Save the fetched movies to local storage
+        (0, _apiTs.storeDataArray)(categoryMovies, `${category} movies`);
         createCategorySection(category);
         displayMovieCards(categoryMovies, category);
     } catch (error) {
-        console.error('An error occurred while fetching movies:', error);
+        console.error(`An error occurred while fetching movies for category: ${category}`, error);
     } finally{
-        console.log('Movies fetched and displayed successfully.');
+        console.log(`Movies fetched and displayed for category: ${category}`);
     }
 }
 

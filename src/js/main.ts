@@ -3,7 +3,7 @@ import { Movie, MovieData } from "./types.ts";
 import { fetchMovies, apiUrl, apiFeaturedMoviesUrl, displayErrorMessage, storeDataArray, getGenresList } from './api.ts';
 import { displayMovieCards, fetchAndDisplayCategoryMovies } from './dom.ts';
 import { createMovieModal } from './modal.ts';
-import { addCategoryFilter, getGenreFromId, getCachedGenresList } from "./utils.ts";  
+import { addCategoryFilter, getGenreFromId, getCachedGenresList, syncLovePropertyAcrossStoredArrays } from "./utils.ts";  
 
 // Mock Movie Data
 const mockMovie: Movie = {
@@ -40,67 +40,25 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 async function main() {
   try {
+    // Fetch genres and sync love property on page load
+    await getCachedGenresList();
+    syncLovePropertyAcrossStoredArrays();
 
-    getGenresList();
-
+    // Fetch and display featured movies
     const featuredMovies = await fetchMovies(apiUrl);
-    if (!featuredMovies || featuredMovies.length === 0) {
-      console.error('No movies found or fetched data is invalid.');
-      return;
+    if (featuredMovies && featuredMovies.length > 0) {
+      storeDataArray(featuredMovies, "featuredMovies");
+      displayMovieCards(featuredMovies, "featured");
     }
-    
-    storeDataArray(featuredMovies, "featuredMovies");
-    displayMovieCards(featuredMovies, "featured");
 
+    // Fetch and display category movies
+    const categories = ["Action", "Adventure", "Comedy", "Drama", "Horror", "Romance", "Thriller"];
+    categories.forEach((category) => fetchAndDisplayCategoryMovies(category));
 
-    fetchAndDisplayCategoryMovies("Action");
-    fetchAndDisplayCategoryMovies("Adventure");
-    fetchAndDisplayCategoryMovies("Comedy");
-    fetchAndDisplayCategoryMovies("Drama");
-    fetchAndDisplayCategoryMovies("Horror");
-    fetchAndDisplayCategoryMovies("Romance");
-    fetchAndDisplayCategoryMovies("Thriller");
-
+    // Example of rendering a modal with mock data
     createMovieModal(mockMovie);
   } catch (error) {
-    console.error('Error during main execution:', error);
+    console.error("Error during main execution:", error);
   }
 }
 
-
-function scrollToBottom() {
-  window.scrollTo({
-    top: document.body.scrollHeight,
-    behavior: 'smooth'
-  });
-}
-
-function markMovieAsFavorite(movie: MovieData) {
-  movie.love = !movie.love;
-  displayMovieCards(storedMoviesArr, "featured");
-}
-
-
-let lovedMoviesArr: Movie[] = [];
-localStorage.setItem("lovedMoviesArr", JSON.stringify(lovedMoviesArr));
-function saveMovieToFavoriteList(movie: Movie) {
-  movie.love = true;
-  lovedMoviesArr.push(movie);
-  localStorage.setItem("lovedMoviesArr", JSON.stringify(lovedMoviesArr));
-}
-
-
-function checkFavoriteList(movieId: number): boolean {
-  lovedMoviesArr = JSON.parse(localStorage.getItem("lovedMoviesArr") || "[]");
-
-  if (!lovedMoviesArr) {
-    lovedMoviesArr = [];
-    return false;
-  }
-
-  if (lovedMoviesArr.some((movie: Movie) => movie.id === movieId)) {
-  return true;
-  }
-
-  return false; // Return false if the movie is not found in the list
-}
