@@ -663,6 +663,26 @@ function scrollToBottom() {
         behavior: 'smooth'
     });
 }
+function markMovieAsFavorite(movie) {
+    movie.love = !movie.love;
+    (0, _domTs.displayMovieCards)(storedMoviesArr, "featured");
+}
+let lovedMoviesArr = [];
+localStorage.setItem("lovedMoviesArr", JSON.stringify(lovedMoviesArr));
+function saveMovieToFavoriteList(movie) {
+    movie.love = true;
+    lovedMoviesArr.push(movie);
+    localStorage.setItem("lovedMoviesArr", JSON.stringify(lovedMoviesArr));
+}
+function checkFavoriteList(movieId) {
+    lovedMoviesArr = JSON.parse(localStorage.getItem("lovedMoviesArr") || "[]");
+    if (!lovedMoviesArr) {
+        lovedMoviesArr = [];
+        return false;
+    }
+    if (lovedMoviesArr.some((movie)=>movie.id === movieId)) return true;
+    return false; // Return false if the movie is not found in the list
+}
 
 },{"./api.ts":"jGtCU","./dom.ts":"eWIKv","./modal.ts":"5pIqC"}],"jGtCU":[function(require,module,exports,__globalThis) {
 //api.ts

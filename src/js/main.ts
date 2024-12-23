@@ -32,6 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
       scrollToBottom();
     });
   }
+
   
   main();
   
@@ -72,4 +73,34 @@ function scrollToBottom() {
     top: document.body.scrollHeight,
     behavior: 'smooth'
   });
+}
+
+function markMovieAsFavorite(movie: MovieData) {
+  movie.love = !movie.love;
+  displayMovieCards(storedMoviesArr, "featured");
+}
+
+
+let lovedMoviesArr: Movie[] = [];
+localStorage.setItem("lovedMoviesArr", JSON.stringify(lovedMoviesArr));
+function saveMovieToFavoriteList(movie: Movie) {
+  movie.love = true;
+  lovedMoviesArr.push(movie);
+  localStorage.setItem("lovedMoviesArr", JSON.stringify(lovedMoviesArr));
+}
+
+
+function checkFavoriteList(movieId: number): boolean {
+  lovedMoviesArr = JSON.parse(localStorage.getItem("lovedMoviesArr") || "[]");
+
+  if (!lovedMoviesArr) {
+    lovedMoviesArr = [];
+    return false;
+  }
+
+  if (lovedMoviesArr.some((movie: Movie) => movie.id === movieId)) {
+  return true;
+  }
+
+  return false; // Return false if the movie is not found in the list
 }
