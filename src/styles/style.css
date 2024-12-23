@@ -34,26 +34,28 @@ header{
     background-color: black;
 }
 
-.navButton {
+.nav-button {
     border-radius: 0px 0px 20px 20px;
-    background: #FFF;
+    background: inherit;
 }
 
-.navButton:hover{
+.nav-button:hover{
     border-radius: 0px 0px 20px 20px;
     background: var(--brand-color2-5, #70B3B6);
 }
 
-.navButton #active{
+
+
+.nav-button #active{
     border-radius: 0px 0px 20px 20px;
-    background: #FFF;
+    background-color: inherit;
     border-right: 2px solid var(--brand-color2, #5F9EA0);
     border-bottom: 2px solid var(--brand-color2, #5F9EA0);
     border-left: 2px solid var(--brand-color2, #5F9EA0);
 }
 
 header nav ul li a {
-    color: var(--text-dark);
+    color: var(--text-light);
     font-size: var(--sds-typography-body-size-medium);
     text-decoration: none;
     font-weight: var(--sds-typography-body-font-weight-regular);
@@ -176,10 +178,14 @@ main {
 }
 
 .movie-card:hover {
-    transform: scale(1.05);
+    transform: translateY(16px) scale(1.05);
     z-index: 10;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+
 }
+
+
 
 .movie-card .love-button {
     position: absolute;
@@ -266,6 +272,10 @@ flex-shrink: 0;
     font-weight: 700;
 }
 
+.movie-card:hover .movie-card-content .cto-view-details {
+    text-decoration: underline;
+    color: var(--brand-color4, #E93DAD);
+}
 
 #top-movie-list {
     display: flex;

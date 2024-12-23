@@ -1,13 +1,30 @@
 //dom.ts
 
 import { Movie, MovieData } from "./types.ts";
+import { addCategoryFilter, getGenreFromId } from "./utils.ts";
+import { storeDataArray, fetchMovies } from "./api.ts";
+import { getCachedGenresList } from "./utils.ts";
 
 const mainElement = document.querySelector('main');
-const topMovieWrapper = document.getElementById('featured') as HTMLAreaElement;
-const movieCardContainer = document.querySelector('.movie-card-container') as HTMLAreaElement;
 
-  export function renderMovieCard (movie: Movie) {
+// Single Movie Card Function
+export function displayMovieCards(movies: MovieData, category: string) {
+  try {
+    movies.forEach(movie => {
+      renderMovieCard(movie, category);
+  });
+    
+  } catch (error) {
+    console.error('An error occurred while displaying the movie cards:', error);
+  }
+  finally {
+    console.log('Movie cards displayed successfully.');
+}
+}
 
+
+  export function renderMovieCard (movie: Movie, category: string) {
+    const movieCardContainer = document.getElementById(`${category} movies`) as HTMLAreaElement;
     const movieCard = document.createElement('article');
     movieCard.classList.add('movie-card');
     movieCard.innerHTML = `
@@ -38,6 +55,11 @@ const movieCardContainer = document.querySelector('.movie-card-container') as HT
 
 
   export function createCategorySection(category: string) {
+    if (document.getElementById(`${category} movies`)) {
+      console.warn(`Category section for '${category}' already exists.`);
+      return; // Avoid duplicate sections
+    }
+  
     const section = document.createElement('section');
     section.classList.add('section-header');
     section.innerHTML = `
@@ -52,19 +74,50 @@ const movieCardContainer = document.querySelector('.movie-card-container') as HT
   
     mainElement.appendChild(section);
   
-  
-  
     const topMoviesCategoryWrapper = document.createElement('section');
     topMoviesCategoryWrapper.classList.add('top-movies-wrapper');
     topMoviesCategoryWrapper.innerHTML = `
-      <div class="movie-card-container">
-      
+      <div class="movie-card-scroll-container"> 
+        <div class="movie-card-container" id="${category} movies">
+        </div>
       </div>
     `;
   
     mainElement.appendChild(topMoviesCategoryWrapper);
   }
-
-
   
 
+
+  export async function fetchAndDisplayCategoryMovies(category: string) {
+    try {
+      const genresList = await getCachedGenresList();
+  
+      const categoryUrl = await addCategoryFilter(category);
+      console.log(categoryUrl);
+  
+      const categoryMovies = await fetchMovies(categoryUrl);
+      if (!categoryMovies || categoryMovies.length === 0) {
+        console.error('No movies found or fetched data is invalid.');
+        return;
+      }
+  
+      storeDataArray(categoryMovies, `${category} movies`);
+  
+      categoryMovies.forEach(movie => {
+        const listOfGenres: { id: number; name: string }[] = [];
+        movie.genres.forEach(genre => {
+          const genreName = getGenreFromId(genre.id, genresList);
+          listOfGenres.push({ id: genre.id, name: genreName });
+        });
+        movie.genres = listOfGenres;
+      });
+  
+      createCategorySection(category);
+      displayMovieCards(categoryMovies, category);
+    } catch (error) {
+      console.error('An error occurred while fetching movies:', error);
+    } finally {
+      console.log('Movies fetched and displayed successfully.');
+    }
+  }
+  

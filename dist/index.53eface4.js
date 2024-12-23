@@ -600,7 +600,6 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 var _apiTs = require("./api.ts");
 var _domTs = require("./dom.ts");
 var _modalTs = require("./modal.ts");
-var _utilsTs = require("./utils.ts");
 // Mock Movie Data
 const mockMovie = {
     title: "EXAMPLE: The Shawshank Redemption",
@@ -634,52 +633,21 @@ document.addEventListener('DOMContentLoaded', ()=>{
 });
 async function main() {
     try {
-        // Fetch and display featured movies
         const featuredMovies = await (0, _apiTs.fetchMovies)((0, _apiTs.apiUrl));
         if (!featuredMovies || featuredMovies.length === 0) {
             console.error('No movies found or fetched data is invalid.');
             return;
         }
         (0, _apiTs.storeDataArray)(featuredMovies, "featuredMovies");
-        const genresList = await (0, _apiTs.getGenresList)();
-        if (featuredMovies) {
-            featuredMovies.forEach((movie)=>{
-                const listOfGenres = [];
-                movie.genres.forEach((genre)=>{
-                    const genreName = (0, _utilsTs.getGenreFromId)(genre.id, genresList);
-                    listOfGenres.push({
-                        id: genre.id,
-                        name: genreName
-                    });
-                });
-                movie.genres = listOfGenres;
-            });
-            // Display movie cards if movies are available
-            displayMovieCards(featuredMovies);
-        } else console.error('No movies found!');
-        // Display categories
-        (0, _domTs.createCategorySection)('Action');
-        (0, _domTs.createCategorySection)('Drama');
-        // Example of rendering a modal with mock data (for testing)
+        (0, _domTs.displayMovieCards)(featuredMovies, "featured");
+        (0, _domTs.fetchAndDisplayCategoryMovies)("Action");
         (0, _modalTs.createMovieModal)(mockMovie);
     } catch (error) {
         console.error('Error during main execution:', error);
     }
 }
-// Single Movie Card Function
-function displayMovieCards(movies) {
-    try {
-        movies.forEach((movie)=>{
-            (0, _domTs.renderMovieCard)(movie);
-        });
-    } catch (error) {
-        console.error('An error occurred while displaying the movie cards:', error);
-    } finally{
-        console.log('Movie cards displayed successfully.');
-    }
-}
 
-},{"./api.ts":"jGtCU","./dom.ts":"eWIKv","./modal.ts":"5pIqC","./utils.ts":"8NGW9"}],"jGtCU":[function(require,module,exports,__globalThis) {
+},{"./api.ts":"jGtCU","./dom.ts":"eWIKv","./modal.ts":"5pIqC"}],"jGtCU":[function(require,module,exports,__globalThis) {
 //api.ts
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -693,16 +661,15 @@ parcelHelpers.export(exports, "fetchMovies", ()=>fetchMovies);
  */ parcelHelpers.export(exports, "displayErrorMessage", ()=>displayErrorMessage);
 parcelHelpers.export(exports, "storeDataArray", ()=>storeDataArray);
 parcelHelpers.export(exports, "getGenresList", ()=>getGenresList);
+/**
+ ** Fetch movies from The Movie Database API.
+ */ var _utilsTs = require("./utils.ts");
 const API_KEY_tmdb = "6369fcc46c83ecd475d3f734321f2a0b"; //themoviedb.org
 const apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc`;
-const apiFeaturedMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_watch_providers=netflix%20OR%20prime%20OR%20svt&year=2024`;
+const apiFeaturedMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_watch_providers=netflix%20OR%20prime%20OR%20svt&year=2024`;
 async function fetchMovies(url) {
     try {
-        const genresList = await getGenresList(); // Fetch genres once
-        if (!genresList || genresList.length === 0) {
-            console.error('Failed to fetch genres list.');
-            return null;
-        }
+        const genresList = await (0, _utilsTs.getCachedGenresList)();
         const response = await fetch(url);
         if (!response.ok) {
             displayErrorMessage(response.status);
@@ -782,6 +749,7 @@ async function getGenresList() {
     try {
         const response = await fetch(url);
         const json = await response.json();
+        storeDataArray(json.genres, "genresList");
         return json.genres || []; // Extract genres array
     } catch (error) {
         console.error('Error fetching genres:', error);
@@ -789,7 +757,7 @@ async function getGenresList() {
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"amG76":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./utils.ts":"8NGW9"}],"amG76":[function(require,module,exports,__globalThis) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -819,16 +787,68 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"eWIKv":[function(require,module,exports,__globalThis) {
+},{}],"8NGW9":[function(require,module,exports,__globalThis) {
+//utils.ts
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getGenreFromId", ()=>getGenreFromId);
+parcelHelpers.export(exports, "addCategoryFilter", ()=>addCategoryFilter);
+parcelHelpers.export(exports, "getCachedGenresList", ()=>getCachedGenresList);
+var _api = require("./api");
+function getGenreFromId(genreId, genres) {
+    if (!genres) return 'Unknown Genre'; // Fallback for null genres list
+    const genre = genres.find((genre)=>genre.id === genreId);
+    return genre ? genre.name : 'Unknown Genre'; // Fallback for missing genre ID
+}
+async function addCategoryFilter(category) {
+    const genresList = await getCachedGenresList();
+    const categoryId = genresList.find((genre)=>genre.name === category)?.id;
+    const url = (0, _api.apiUrl) + (categoryId ? `&with_genres=${categoryId}` : '');
+    return url;
+}
+let cachedGenresList = null;
+let fetchingGenresList = null;
+async function getCachedGenresList() {
+    if (cachedGenresList) return cachedGenresList;
+    if (fetchingGenresList) return await fetchingGenresList;
+    fetchingGenresList = (async ()=>{
+        let genresList = JSON.parse(localStorage.getItem("genresList") || "null");
+        if (!genresList) {
+            genresList = await (0, _api.getGenresList)();
+            localStorage.setItem("genresList", JSON.stringify(genresList));
+        }
+        cachedGenresList = genresList;
+        fetchingGenresList = null; // Clear the fetching promise after completion
+        return genresList;
+    })();
+    return await fetchingGenresList;
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./api":"jGtCU"}],"eWIKv":[function(require,module,exports,__globalThis) {
 //dom.ts
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+// Single Movie Card Function
+parcelHelpers.export(exports, "displayMovieCards", ()=>displayMovieCards);
 parcelHelpers.export(exports, "renderMovieCard", ()=>renderMovieCard);
 parcelHelpers.export(exports, "createCategorySection", ()=>createCategorySection);
+parcelHelpers.export(exports, "fetchAndDisplayCategoryMovies", ()=>fetchAndDisplayCategoryMovies);
+var _utilsTs = require("./utils.ts");
+var _apiTs = require("./api.ts");
 const mainElement = document.querySelector('main');
-const topMovieWrapper = document.getElementById('featured');
-const movieCardContainer = document.querySelector('.movie-card-container');
-function renderMovieCard(movie) {
+function displayMovieCards(movies, category) {
+    try {
+        movies.forEach((movie)=>{
+            renderMovieCard(movie, category);
+        });
+    } catch (error) {
+        console.error('An error occurred while displaying the movie cards:', error);
+    } finally{
+        console.log('Movie cards displayed successfully.');
+    }
+}
+function renderMovieCard(movie, category) {
+    const movieCardContainer = document.getElementById(`${category} movies`);
     const movieCard = document.createElement('article');
     movieCard.classList.add('movie-card');
     movieCard.innerHTML = `
@@ -854,6 +874,10 @@ function renderMovieCard(movie) {
     });
 }
 function createCategorySection(category) {
+    if (document.getElementById(`${category} movies`)) {
+        console.warn(`Category section for '${category}' already exists.`);
+        return; // Avoid duplicate sections
+    }
     const section = document.createElement('section');
     section.classList.add('section-header');
     section.innerHTML = `
@@ -868,14 +892,45 @@ function createCategorySection(category) {
     const topMoviesCategoryWrapper = document.createElement('section');
     topMoviesCategoryWrapper.classList.add('top-movies-wrapper');
     topMoviesCategoryWrapper.innerHTML = `
-      <div class="movie-card-container">
-      
+      <div class="movie-card-scroll-container"> 
+        <div class="movie-card-container" id="${category} movies">
+        </div>
       </div>
     `;
     mainElement.appendChild(topMoviesCategoryWrapper);
 }
+async function fetchAndDisplayCategoryMovies(category) {
+    try {
+        const genresList = await (0, _utilsTs.getCachedGenresList)();
+        const categoryUrl = await (0, _utilsTs.addCategoryFilter)(category);
+        console.log(categoryUrl);
+        const categoryMovies = await (0, _apiTs.fetchMovies)(categoryUrl);
+        if (!categoryMovies || categoryMovies.length === 0) {
+            console.error('No movies found or fetched data is invalid.');
+            return;
+        }
+        (0, _apiTs.storeDataArray)(categoryMovies, `${category} movies`);
+        categoryMovies.forEach((movie)=>{
+            const listOfGenres = [];
+            movie.genres.forEach((genre)=>{
+                const genreName = (0, _utilsTs.getGenreFromId)(genre.id, genresList);
+                listOfGenres.push({
+                    id: genre.id,
+                    name: genreName
+                });
+            });
+            movie.genres = listOfGenres;
+        });
+        createCategorySection(category);
+        displayMovieCards(categoryMovies, category);
+    } catch (error) {
+        console.error('An error occurred while fetching movies:', error);
+    } finally{
+        console.log('Movies fetched and displayed successfully.');
+    }
+}
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"5pIqC":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./utils.ts":"8NGW9","./api.ts":"jGtCU"}],"5pIqC":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 /* TODO replace with star icon and heart icon */ parcelHelpers.export(exports, "createMovieModal", ()=>createMovieModal);
@@ -938,17 +993,6 @@ function createMovieModal(movie) {
     if (closeButton) closeButton.addEventListener('click', ()=>{
         movieModal.remove();
     });
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"8NGW9":[function(require,module,exports,__globalThis) {
-//utils.ts
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "getGenreFromId", ()=>getGenreFromId);
-function getGenreFromId(genreId, genres) {
-    if (!genres) return 'Unknown Genre'; // Fallback for null genres list
-    const genre = genres.find((genre)=>genre.id === genreId);
-    return genre ? genre.name : 'Unknown Genre'; // Fallback for missing genre ID
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}]},["lI3Wn","gfLib"], "gfLib", "parcelRequire94c2")
