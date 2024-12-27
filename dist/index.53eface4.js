@@ -704,9 +704,8 @@ function renderMovieCard(movie, category) {
         // Select all buttons with the same movie ID
         const loveButtons = document.querySelectorAll(`.love-button[data-movie-id="${movie.id}"]`);
         loveButtons.forEach((button)=>button.classList.toggle('loved'));
-        // Re-run main function
-        main();
-    });
+    /*  // Re-run main function
+    main(); */ });
 }
 function displayMovieCards(movies, category) {
     try {

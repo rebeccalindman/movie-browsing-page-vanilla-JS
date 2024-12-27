@@ -118,8 +118,8 @@ export function renderMovieCard(movie: Movie, category: string) {
     const loveButtons = document.querySelectorAll(`.love-button[data-movie-id="${movie.id}"]`);
     loveButtons.forEach(button => button.classList.toggle('loved'));
 
-    // Re-run main function
-    main();
+   /*  // Re-run main function
+    main(); */
 
 
   });
