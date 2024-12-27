@@ -42,6 +42,7 @@ async function main() {
   try {
     // Fetch genres and sync love property on page load
     await getCachedGenresList();
+
     syncLovePropertyAcrossStoredArrays();
 
     // Fetch and display featured movies
@@ -53,6 +54,8 @@ async function main() {
 
     // Fetch and display category movies
     const categories = ["Action", "Adventure", "Comedy", "Drama", "Horror", "Romance", "Thriller"];
+
+
     categories.forEach((category) => fetchAndDisplayCategoryMovies(category));
 
     // Example of rendering a modal with mock data
