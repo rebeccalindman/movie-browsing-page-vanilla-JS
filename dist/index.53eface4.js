@@ -597,10 +597,15 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 
 },{}],"gfLib":[function(require,module,exports,__globalThis) {
 //main.ts
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "renderMovieCard", ()=>renderMovieCard);
+parcelHelpers.export(exports, "displayMovieCards", ()=>displayMovieCards);
+parcelHelpers.export(exports, "fetchAndDisplayCategoryMovies", ()=>fetchAndDisplayCategoryMovies);
+parcelHelpers.export(exports, "createCategorySection", ()=>createCategorySection);
 var _apiTs = require("./api.ts");
-var _domTs = require("./dom.ts");
-var _modalTs = require("./modal.ts");
 var _utilsTs = require("./utils.ts");
+const mainElement = document.querySelector('main');
 // Mock Movie Data
 const mockMovie = {
     title: "EXAMPLE: The Shawshank Redemption",
@@ -634,7 +639,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
     if (contactNavButton) contactNavButton.addEventListener('click', ()=>{
         scrollToBottom();
     });
-    main();
+    if (window.location.pathname === '/index.html') main();
+    if (window.location.pathname === '/savedmovies.html') savedMoviesMain();
 });
 async function main() {
     try {
@@ -645,7 +651,8 @@ async function main() {
         const featuredMovies = await (0, _apiTs.fetchMovies)((0, _apiTs.apiUrl));
         if (featuredMovies && featuredMovies.length > 0) {
             (0, _apiTs.storeDataArray)(featuredMovies, "featuredMovies");
-            (0, _domTs.displayMovieCards)(featuredMovies, "featured");
+            (0, _utilsTs.syncLovePropertyAcrossStoredArrays)();
+            displayMovieCards(featuredMovies, "featured");
         }
         // Fetch and display category movies
         const categories = [
@@ -657,15 +664,118 @@ async function main() {
             "Romance",
             "Thriller"
         ];
-        categories.forEach((category)=>(0, _domTs.fetchAndDisplayCategoryMovies)(category));
-        // Example of rendering a modal with mock data
-        (0, _modalTs.createMovieModal)(mockMovie);
+        categories.forEach((category)=>fetchAndDisplayCategoryMovies(category));
     } catch (error) {
         console.error("Error during main execution:", error);
     }
 }
+async function savedMoviesMain() {
+    const favoriteMovies = await (0, _utilsTs.getFavoriteMovies)();
+    if (favoriteMovies && favoriteMovies.length > 0) displayMovieCards(favoriteMovies, "saved");
+}
+function renderMovieCard(movie, category) {
+    const movieCardContainer = document.getElementById(`${category} movies`);
+    const movieCard = document.createElement('article');
+    movieCard.classList.add('movie-card');
+    // Check if the movie is a favorite
+    const isFavorited = (0, _utilsTs.isFavorite)(movie.id);
+    const favoriteClass = isFavorited ? 'loved' : '';
+    movieCard.innerHTML = `
+    <div class="movie-card-content">
+      <button class="love-button ${favoriteClass}" data-movie-id="${movie.id}">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12.62 20.8101C12.28 20.9301 11.72 20.9301 11.38 20.8101C8.48 19.8201 2 15.6901 2 8.6901C2 5.6001 4.49 3.1001 7.56 3.1001C9.38 3.1001 10.99 3.9801 12 5.3401C13.01 3.9801 14.63 3.1001 16.44 3.1001C19.51 3.1001 22 5.6001 22 8.6901C22 15.6901 15.52 19.8201 12.62 20.8101Z" fill="white" fill-opacity="0.4"/>
+          </svg>
+      </button>
+      <img class="movie-card-poster" src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title} poster">
+      <h3 class="movie-card-title">${movie.title}</h3>
+      <div class="movie-card-information-container">
+        <p class="movie-card-genres">${movie.genres.map((genre)=>genre.name).join(', ')}</p>
+        <p class="movie-card-release-date">${movie.release_date}</p>
+        <p class="cto-view-details">View Details</p>
+      </div>
+    </div>
+  `;
+    movieCardContainer.appendChild(movieCard);
+    // Attach click event to toggle favorite
+    const loveButton = movieCard.querySelector('.love-button');
+    loveButton.addEventListener('click', ()=>{
+        (0, _utilsTs.toggleFavorite)(movie);
+        // Select all buttons with the same movie ID
+        const loveButtons = document.querySelectorAll(`.love-button[data-movie-id="${movie.id}"]`);
+        loveButtons.forEach((button)=>button.classList.toggle('loved'));
+        // Re-run main function
+        main();
+    });
+}
+function displayMovieCards(movies, category) {
+    try {
+        movies.forEach((movie)=>{
+            renderMovieCard(movie, category);
+        });
+    } catch (error) {
+        console.error('An error occurred while displaying the movie cards:', error);
+    } finally{
+        console.log('Movie cards displayed successfully.');
+    }
+}
+async function fetchAndDisplayCategoryMovies(category) {
+    try {
+        const genresList = await (0, _utilsTs.getCachedGenresList)();
+        const categoryUrl = await (0, _utilsTs.addCategoryFilter)(category);
+        console.log(`Fetching movies for category: ${category}, URL: ${categoryUrl}`);
+        const categoryMovies = await (0, _apiTs.fetchMovies)(categoryUrl);
+        if (!categoryMovies || categoryMovies.length === 0) {
+            console.error(`No movies found for category: ${category}`);
+            return;
+        }
+        // Sync genres for the movies
+        categoryMovies.forEach((movie)=>{
+            if (movie.genre_ids) movie.genres = movie.genre_ids.map((id)=>({
+                    id,
+                    name: (0, _utilsTs.getGenreFromId)(id, genresList)
+                }));
+        });
+        // Save the fetched movies to local storage
+        (0, _apiTs.storeDataArray)(categoryMovies, `${category} movies`);
+        // Sync love property
+        (0, _utilsTs.syncLovePropertyAcrossStoredArrays)();
+        createCategorySection(category);
+        displayMovieCards(categoryMovies, category);
+    } catch (error) {
+        console.error(`An error occurred while fetching movies for category: ${category}`, error);
+    } finally{
+        console.log(`Movies fetched and displayed for category: ${category}`);
+    }
+}
+function createCategorySection(category) {
+    if (document.getElementById(`${category} movies`)) {
+        console.warn(`Category section for '${category}' already exists.`);
+        return; // Avoid duplicate sections
+    }
+    const section = document.createElement('section');
+    section.classList.add('section-header');
+    section.innerHTML = `
+    <h2>${category}</h2>
+    <p>Click on a movie card to view more details and find a streaming site.</p>
+  `;
+    if (!mainElement) {
+        console.error("Error: 'main' element not found in the DOM.");
+        return;
+    }
+    mainElement.appendChild(section);
+    const topMoviesCategoryWrapper = document.createElement('section');
+    topMoviesCategoryWrapper.classList.add('top-movies-wrapper');
+    topMoviesCategoryWrapper.innerHTML = `
+    <div class="movie-card-scroll-container"> 
+      <div class="movie-card-container" id="${category} movies">
+      </div>
+    </div>
+  `;
+    mainElement.appendChild(topMoviesCategoryWrapper);
+}
 
-},{"./api.ts":"jGtCU","./dom.ts":"eWIKv","./modal.ts":"5pIqC","./utils.ts":"8NGW9"}],"jGtCU":[function(require,module,exports,__globalThis) {
+},{"./api.ts":"jGtCU","./utils.ts":"8NGW9","@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"jGtCU":[function(require,module,exports,__globalThis) {
 //api.ts
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -791,7 +901,12 @@ parcelHelpers.export(exports, "getCachedGenresList", ()=>getCachedGenresList);
 /**
  * Get the current list of favorite movies.
  */ parcelHelpers.export(exports, "getFavoriteMovies", ()=>getFavoriteMovies);
-parcelHelpers.export(exports, "syncLovePropertyAcrossStoredArrays", ()=>syncLovePropertyAcrossStoredArrays);
+/**
+ * Sync the local storage and the in-memory `lovedMoviesArr` in case of external changes.
+ */ /* export function storeDataArray(data: Movie[], key: string): void {
+    console.log(`Storing data for key: ${key}, Length: ${data.length}`);
+    localStorage.setItem(key, JSON.stringify(data));
+  } */ parcelHelpers.export(exports, "syncLovePropertyAcrossStoredArrays", ()=>syncLovePropertyAcrossStoredArrays);
 var _apiTs = require("./api.ts");
 function getGenreFromId(genreId, genres) {
     if (!genres) return 'Unknown Genre'; // Fallback for null genres list
@@ -842,12 +957,6 @@ function isFavorite(movieId) {
 function getFavoriteMovies() {
     return lovedMoviesArr;
 }
-/**
- * Sync the local storage and the in-memory `lovedMoviesArr` in case of external changes.
- */ function storeDataArray(data, key) {
-    console.log(`Storing data for key: ${key}, Length: ${data.length}`);
-    localStorage.setItem(key, JSON.stringify(data));
-}
 function syncLovePropertyAcrossStoredArrays() {
     // Get the favorite movies list
     const lovedMoviesArr = JSON.parse(localStorage.getItem("lovedMoviesArr") || "[]");
@@ -868,7 +977,7 @@ function syncLovePropertyAcrossStoredArrays() {
     console.log("Love properties synced across stored arrays.");
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./api.ts":"jGtCU"}],"amG76":[function(require,module,exports,__globalThis) {
+},{"./api.ts":"jGtCU","@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"amG76":[function(require,module,exports,__globalThis) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
@@ -898,180 +1007,6 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"eWIKv":[function(require,module,exports,__globalThis) {
-//dom.ts
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-// Single Movie Card Function
-parcelHelpers.export(exports, "displayMovieCards", ()=>displayMovieCards);
-parcelHelpers.export(exports, "renderMovieCard", ()=>renderMovieCard);
-parcelHelpers.export(exports, "createCategorySection", ()=>createCategorySection);
-parcelHelpers.export(exports, "fetchAndDisplayCategoryMovies", ()=>fetchAndDisplayCategoryMovies);
-var _utilsTs = require("./utils.ts");
-var _apiTs = require("./api.ts");
-const mainElement = document.querySelector('main');
-function displayMovieCards(movies, category) {
-    try {
-        movies.forEach((movie)=>{
-            renderMovieCard(movie, category);
-        });
-    } catch (error) {
-        console.error('An error occurred while displaying the movie cards:', error);
-    } finally{
-        console.log('Movie cards displayed successfully.');
-    }
-}
-function renderMovieCard(movie, category) {
-    const movieCardContainer = document.getElementById(`${category} movies`);
-    const movieCard = document.createElement('article');
-    movieCard.classList.add('movie-card');
-    // Check if the movie is a favorite
-    const isFavorited = (0, _utilsTs.isFavorite)(movie.id);
-    const favoriteClass = isFavorited ? 'loved' : '';
-    movieCard.innerHTML = `
-    <div class="movie-card-content">
-      <button class="love-button ${favoriteClass}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M12.62 20.8101C12.28 20.9301 11.72 20.9301 11.38 20.8101C8.48 19.8201 2 15.6901 2 8.6901C2 5.6001 4.49 3.1001 7.56 3.1001C9.38 3.1001 10.99 3.9801 12 5.3401C13.01 3.9801 14.63 3.1001 16.44 3.1001C19.51 3.1001 22 5.6001 22 8.6901C22 15.6901 15.52 19.8201 12.62 20.8101Z" fill="white" fill-opacity="0.4"/>
-          </svg>
-      </button>
-      <img class="movie-card-poster" src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title} poster">
-      <h3 class="movie-card-title">${movie.title}</h3>
-      <div class="movie-card-information-container">
-        <p class="movie-card-genres">${movie.genres.map((genre)=>genre.name).join(', ')}</p>
-        <p class="movie-card-release-date">${movie.release_date}</p>
-        <p class="cto-view-details">View Details</p>
-      </div>
-    </div>
-  `;
-    movieCardContainer.appendChild(movieCard);
-    // Attach click event to toggle favorite
-    const loveButton = movieCard.querySelector('.love-button');
-    loveButton.addEventListener('click', ()=>{
-        (0, _utilsTs.toggleFavorite)(movie);
-        // Update button appearance
-        loveButton.classList.toggle('loved');
-    });
-}
-function createCategorySection(category) {
-    if (document.getElementById(`${category} movies`)) {
-        console.warn(`Category section for '${category}' already exists.`);
-        return; // Avoid duplicate sections
-    }
-    const section = document.createElement('section');
-    section.classList.add('section-header');
-    section.innerHTML = `
-      <h2>${category}</h2>
-      <p>Click on a movie card to view more details and find a streaming site.</p>
-    `;
-    if (!mainElement) {
-        console.error("Error: 'main' element not found in the DOM.");
-        return;
-    }
-    mainElement.appendChild(section);
-    const topMoviesCategoryWrapper = document.createElement('section');
-    topMoviesCategoryWrapper.classList.add('top-movies-wrapper');
-    topMoviesCategoryWrapper.innerHTML = `
-      <div class="movie-card-scroll-container"> 
-        <div class="movie-card-container" id="${category} movies">
-        </div>
-      </div>
-    `;
-    mainElement.appendChild(topMoviesCategoryWrapper);
-}
-async function fetchAndDisplayCategoryMovies(category) {
-    try {
-        const genresList = await (0, _utilsTs.getCachedGenresList)();
-        const categoryUrl = await (0, _utilsTs.addCategoryFilter)(category);
-        console.log(`Fetching movies for category: ${category}, URL: ${categoryUrl}`);
-        const categoryMovies = await (0, _apiTs.fetchMovies)(categoryUrl);
-        if (!categoryMovies || categoryMovies.length === 0) {
-            console.error(`No movies found for category: ${category}`);
-            return;
-        }
-        // Sync genres for the movies
-        categoryMovies.forEach((movie)=>{
-            if (movie.genre_ids) movie.genres = movie.genre_ids.map((id)=>({
-                    id,
-                    name: (0, _utilsTs.getGenreFromId)(id, genresList)
-                }));
-        });
-        // Save the fetched movies to local storage
-        (0, _apiTs.storeDataArray)(categoryMovies, `${category} movies`);
-        createCategorySection(category);
-        displayMovieCards(categoryMovies, category);
-    } catch (error) {
-        console.error(`An error occurred while fetching movies for category: ${category}`, error);
-    } finally{
-        console.log(`Movies fetched and displayed for category: ${category}`);
-    }
-}
-
-},{"./utils.ts":"8NGW9","./api.ts":"jGtCU","@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"5pIqC":[function(require,module,exports,__globalThis) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-/* TODO replace with star icon and heart icon */ parcelHelpers.export(exports, "createMovieModal", ()=>createMovieModal);
-function createMovieModal(movie) {
-    const movieModal = document.createElement('div');
-    movieModal.classList.add('movie-modal');
-    movieModal.innerHTML = `
-    <button type="button" class="movie-modal-close">X</button>
-    <div class="movie-modal-backdrop" aria-label="${movie.title} movie backdrop">
-      <svg class ="ux-shape-divider" viewBox="0 0 1000 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-                    <path class="ux-shape-fill dark" d="M0 0C0 0 200 50 500 50C800 50 1000 0 1000 0V101H0V1V0Z"></path>
-                </svg>
-    </div>
-    <section class="movie-modal-title-container">
-        <h3 class="movie-modal-title">${movie.title}</h3>
-    </section>
-    <section class="rating-container">
-        <div class="rating-group">
-            <p class="star-icon">\u{2B50}\u{FE0F}</p> <!-- todo replace with star icon -->
-            <p class="movie-modal-rating">${movie.vote_average}/10</p> 
-            <p class="vote-count">(${movie.vote_count} votes)</p> 
-        </div>
-        <button type="button" class="love-button">\u{2764}\u{FE0F}</button> 
-    </section>
-    <section class="information-container">
-        <ul class="movie-genres">
-            ${movie.genres.map((genre)=>`<li>${genre}</li>`).join('')}
-        </ul>
-        <p class="movie-modal-overview">${movie.overview}</p>
-        <p class="movie-modal-release-date">${movie.release_date}</p>
-        
-        <div class="movie-modal-links">
-            <h4>Links</h4>
-            <ul>
-                <li><a href="#">IMDb</a></li>
-                <li><a href="#">Rotten Tomatoes</a></li>
-            </ul>
-        
-            <h4>Watch on</h4>
-            <ul class="movie-modal-links">
-                <li><a href="#">Netflix</a></li>
-                <li><a href="#">Amazon Prime</a></li>
-            </ul>
-        </div>
-        
-        <section class="actors-section">
-            <ol>
-                ${movie.cast ? movie.cast.map((actor)=>`
-                        <li class="actor-list-item">
-                            <img class="actor-image" src="${actor.profile_path}" alt="${actor.name}">
-                            <span>${actor.name}</span>
-                        </li>
-                    `).join('') : '<li>No cast information available</li>'}
-            </ol>
-        </section>
-    </section>
-    `;
-    document.body.appendChild(movieModal);
-    const closeButton = movieModal.querySelector('.movie-modal-close');
-    if (closeButton) closeButton.addEventListener('click', ()=>{
-        movieModal.remove();
-    });
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}]},["lI3Wn","gfLib"], "gfLib", "parcelRequire94c2")
+},{}]},["lI3Wn","gfLib"], "gfLib", "parcelRequire94c2")
 
 //# sourceMappingURL=index.53eface4.js.map

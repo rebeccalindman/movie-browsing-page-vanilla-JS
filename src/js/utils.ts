@@ -83,10 +83,10 @@ export function getFavoriteMovies(): Movie[] {
 /**
  * Sync the local storage and the in-memory `lovedMoviesArr` in case of external changes.
  */
-function storeDataArray(data: Movie[], key: string): void {
+/* export function storeDataArray(data: Movie[], key: string): void {
     console.log(`Storing data for key: ${key}, Length: ${data.length}`);
     localStorage.setItem(key, JSON.stringify(data));
-  }
+  } */
   
   export function syncLovePropertyAcrossStoredArrays(): void {
     // Get the favorite movies list

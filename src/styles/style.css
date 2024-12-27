@@ -230,11 +230,11 @@ main {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.movie-card.loved .love-button {
+.movie-card .love-button.loved {
     background: var(--brand-color3);
 }
 
-.movie-card.loved .love-button svg path {
+.movie-card .love-button.loved svg path {
     fill: var(--brand-color4);
     fill-opacity: 1;
 }
