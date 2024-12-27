@@ -19,6 +19,7 @@ main {
     --brand-color3: #D3D3FF; /*lilac*/
     --brand-color3-8: #D3D3FFCC; /* lilac 80% opacity */
     --brand-color4: #E93DAD; /* hot pink */
+    --brand-color4-darker: #d7369f; /* darker hot pink */
 
     --brand-color7: #FE671D; /* orange */
     --text-color-dark: #16181a;
@@ -45,7 +46,7 @@ header{
 }
 
 /* Colors for nav bar */
-.nav-button:nth-child(1){
+.nav-button:nth-child(3){
     background: var(--brand-color7);
 }
 
@@ -78,7 +79,7 @@ header nav ul li a {
 }
 
 /* Layout */
-body{
+body {
 display: flex;
 width: 100vw;
 flex-direction: column;
@@ -92,6 +93,16 @@ background: repeating-linear-gradient(
         #51888a 160px /* Total stripe width (alternates back to first color) */
     );
 
+}
+
+#savedmovies-body {
+    background: repeating-linear-gradient(
+        135deg, /* Direction: 90 degrees creates vertical stripes */
+        var(--brand-color4), /* First stripe color */
+        var(--brand-color4) 80px, /* Stripe width */
+        var(--brand-color4-darker) 80px, /* Gap between stripes (starts second color) */
+        var(--brand-color4-darker) 160px /* Total stripe width (alternates back to first color) */
+    );
 }
 
 header {
@@ -143,6 +154,11 @@ main {
 .dark {
     background-color: var(--background-dark-base, #16181A);
     color: var(--brand-color1, #FC0);
+}
+
+.white {
+    background-color: var(--brand-color3, #FC0);
+    color: var(--background-dark-base, #16181A);
 }
 
 .section-header p {
@@ -571,17 +587,18 @@ flex-shrink: 0;
 
 /** UX Shape Dividers **/
 
- #background-image-wrapper {
-    position: relative; /* Container for relative positioning */
+/*  #background-wrapper {
+    position: relative;
     height: 200px;
     background: repeating-linear-gradient(
-        135deg, /* Direction: 90 degrees creates vertical stripes */
-        var(--brand-color2-5), /* First stripe color */
-        var(--brand-color2-5) 50px, /* Stripe width */
-        var(--brand-color2) 50px, /* Gap between stripes (starts second color) */
-        var(--brand-color2) 100px /* Total stripe width (alternates back to first color) */
+        135deg,
+        var(--brand-color2-5),
+        var(--brand-color2-5) 50px,
+        var(--brand-color2) 50px,
+        var(--brand-color2) 100px
     );
 }
+ */
 
 #background-image img {
     display: block; /* Ensure no unexpected spacing issues */

@@ -17,6 +17,7 @@ main {
   --brand-color3: #d3d3ff;
   --brand-color3-8: #d3d3ffcc;
   --brand-color4: #e93dad;
+  --brand-color4-darker: #d7369f;
   --brand-color7: #fe671d;
   --text-color-dark: #16181a;
   --sds-typography-body-size-medium: 16px;
@@ -40,7 +41,7 @@ header {
   border-radius: 0 0 20px 20px;
 }
 
-.nav-button:first-child {
+.nav-button:nth-child(3) {
   background: var(--brand-color7);
 }
 
@@ -74,6 +75,10 @@ body {
   gap: 10px;
   width: 100vw;
   display: flex;
+}
+
+#savedmovies-body {
+  background: repeating-linear-gradient(135deg, var(--brand-color4), var(--brand-color4) 80px, var(--brand-color4-darker) 80px, var(--brand-color4-darker) 160px);
 }
 
 header {
@@ -123,6 +128,11 @@ main {
 .dark {
   background-color: var(--background-dark-base, #16181a);
   color: var(--brand-color1, #fc0);
+}
+
+.white {
+  background-color: var(--brand-color3, #fc0);
+  color: var(--background-dark-base, #16181a);
 }
 
 .section-header p {
@@ -507,12 +517,6 @@ main {
   text-align: center;
   padding: 3rem 1rem;
   font-size: 2.5rem;
-}
-
-#background-image-wrapper {
-  background: repeating-linear-gradient(135deg, var(--brand-color2-5), var(--brand-color2-5) 50px, var(--brand-color2) 50px, var(--brand-color2) 100px);
-  height: 200px;
-  position: relative;
 }
 
 #background-image img {

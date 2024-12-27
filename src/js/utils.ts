@@ -110,5 +110,10 @@ export function getFavoriteMovies(): Movie[] {
     console.log("Love properties synced across stored arrays.");
   }
   
-  
+  export function scrollToBottom() {
+    window.scrollTo({
+      top: document.body.scrollHeight,
+      behavior: "smooth",
+    });
+  }
   

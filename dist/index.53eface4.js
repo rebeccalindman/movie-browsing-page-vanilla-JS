@@ -906,6 +906,7 @@ parcelHelpers.export(exports, "getCachedGenresList", ()=>getCachedGenresList);
     console.log(`Storing data for key: ${key}, Length: ${data.length}`);
     localStorage.setItem(key, JSON.stringify(data));
   } */ parcelHelpers.export(exports, "syncLovePropertyAcrossStoredArrays", ()=>syncLovePropertyAcrossStoredArrays);
+parcelHelpers.export(exports, "scrollToBottom", ()=>scrollToBottom);
 var _apiTs = require("./api.ts");
 function getGenreFromId(genreId, genres) {
     if (!genres) return 'Unknown Genre'; // Fallback for null genres list
@@ -975,8 +976,14 @@ function syncLovePropertyAcrossStoredArrays() {
     });
     console.log("Love properties synced across stored arrays.");
 }
+function scrollToBottom() {
+    window.scrollTo({
+        top: document.body.scrollHeight,
+        behavior: "smooth"
+    });
+}
 
-},{"./api.ts":"jGtCU","@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"amG76":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./api.ts":"jGtCU"}],"amG76":[function(require,module,exports,__globalThis) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a
