@@ -203,7 +203,7 @@ export function createCategorySection(category: string) {
   mainElement.appendChild(section);
 
   const topMoviesCategoryWrapper = document.createElement('section');
-  topMoviesCategoryWrapper.classList.add('top-movies-wrapper');
+  topMoviesCategoryWrapper.classList.add('movie-cards-wrapper');
   topMoviesCategoryWrapper.innerHTML = `
     <div class="movie-card-scroll-container"> 
       <div class="movie-card-container" id="${category} movies">

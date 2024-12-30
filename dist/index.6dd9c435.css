@@ -148,24 +148,23 @@ main {
   color: #fff;
 }
 
-.top-movies-wrapper {
+.movie-cards-wrapper {
   background-color: #fff;
   flex-direction: column;
   align-self: stretch;
   align-items: flex-start;
   gap: 52px;
-  padding-top: 30px;
+  padding: 30px 0;
   display: flex;
   position: relative;
   overflow-y: hidden;
 }
 
-.top-movies-wrapper #featured {
+.movie-cards-wrapper #featured {
   background: var(--background-dark-base, #16181a);
 }
 
 .movie-card-container {
-  align-self: stretch;
   align-items: flex-start;
   gap: 20px;
   width: fit-content;
@@ -175,8 +174,10 @@ main {
 }
 
 .movie-card-scroll-container {
+  align-items: center;
   width: 100vw;
-  height: 500px;
+  height: 540px;
+  display: flex;
   overflow-x: scroll;
 }
 
@@ -195,7 +196,7 @@ main {
 .movie-card:hover {
   z-index: 10;
   cursor: pointer;
-  transform: translateY(16px)scale(1.05);
+  transform: scale(1.05);
   box-shadow: 0 0 10px #0003;
 }
 
@@ -538,7 +539,7 @@ main {
   width: 100%;
   line-height: 0;
   position: fixed;
-  bottom: 0;
+  bottom: -30px;
   left: 0;
 }
 
@@ -546,7 +547,7 @@ main {
   top: 300px;
 }
 
-.top-movies-wrapper#featured .ux-shape-divider {
+.movie-cards-wrapper#featured .ux-shape-divider {
   z-index: 0;
   position: relative;
   top: clamp(470px, 100%, 480px);

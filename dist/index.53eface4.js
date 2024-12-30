@@ -764,7 +764,7 @@ function createCategorySection(category) {
     }
     mainElement.appendChild(section);
     const topMoviesCategoryWrapper = document.createElement('section');
-    topMoviesCategoryWrapper.classList.add('top-movies-wrapper');
+    topMoviesCategoryWrapper.classList.add('movie-cards-wrapper');
     topMoviesCategoryWrapper.innerHTML = `
     <div class="movie-card-scroll-container"> 
       <div class="movie-card-container" id="${category} movies">
@@ -884,7 +884,37 @@ async function getGenresList() {
     }
 }
 
-},{"./utils.ts":"8NGW9","@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"8NGW9":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./utils.ts":"8NGW9"}],"amG76":[function(require,module,exports,__globalThis) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, '__esModule', {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"8NGW9":[function(require,module,exports,__globalThis) {
 //utils.ts
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -983,36 +1013,6 @@ function scrollToBottom() {
     });
 }
 
-},{"./api.ts":"jGtCU","@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"amG76":[function(require,module,exports,__globalThis) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, '__esModule', {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}]},["lI3Wn","gfLib"], "gfLib", "parcelRequire94c2")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./api.ts":"jGtCU"}]},["lI3Wn","gfLib"], "gfLib", "parcelRequire94c2")
 
 //# sourceMappingURL=index.53eface4.js.map

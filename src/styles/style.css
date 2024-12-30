@@ -170,10 +170,10 @@ main {
     color: white;
 }
 
-.top-movies-wrapper {
+.movie-cards-wrapper {
     position: relative;
     display: flex;
-    padding-top: 30px;
+    padding: 30px 0px;
     flex-direction: column;
     align-items: flex-start;
     align-self: stretch;
@@ -183,7 +183,7 @@ main {
     background-color: white;
 }
 
-.top-movies-wrapper #featured {
+.movie-cards-wrapper #featured {
     background: var(--background-dark-base, #16181A);
 }
 
@@ -192,7 +192,6 @@ main {
     padding-left: 20px;
     align-items: flex-start;
     gap: 20px;
-    align-self: stretch;
     width: fit-content;
     height: fit-content;
 
@@ -201,7 +200,9 @@ main {
 .movie-card-scroll-container {
     overflow-x: scroll;
     width: 100vw;
-    height: 500px;
+    height: 540px;
+    display: flex;
+    align-items: center;
 }
 
 .movie-card {
@@ -218,7 +219,7 @@ main {
 }
 
 .movie-card:hover {
-    transform: translateY(16px) scale(1.05);
+    transform: scale(1.05);
     z-index: 10;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     cursor: pointer;
@@ -611,8 +612,8 @@ flex-shrink: 0;
 .ux-shape-divider {
     position: fixed; /* Position relative to #background-image-wrapper */
     left: 0; /* Align to the left */
+    bottom: -30px; /* compensates for wrapper padding */
     z-index: 1; /* Ensure it's on top of the scrolling cards */
-    bottom: 0;
     width: 100%; /* Match image width */
     z-index: 1; /* Ensure it's on top of the image */
     line-height: 0; /* Remove line height spacing */
@@ -623,7 +624,7 @@ flex-shrink: 0;
     top: 300px; /* Stick to the bottom of the image */
 }
 
-.top-movies-wrapper#featured .ux-shape-divider {
+.movie-cards-wrapper#featured .ux-shape-divider {
     position: relative; /* Position relative to #background-image-wrapper */
     top: clamp(470px, 100%, 480px);
     z-index: 0;
