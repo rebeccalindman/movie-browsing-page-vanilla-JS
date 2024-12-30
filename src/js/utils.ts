@@ -115,5 +115,7 @@ export function getFavoriteMovies(): Movie[] {
       top: document.body.scrollHeight,
       behavior: "smooth",
     });
+    console.log("Scrolling to bottom");
+    
   }
   

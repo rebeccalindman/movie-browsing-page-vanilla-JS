@@ -7,7 +7,7 @@ import { Movie } from "./types.ts";
     movieModal.classList.add('movie-modal');
     movieModal.innerHTML = `
     <button type="button" class="movie-modal-close">X</button>
-    <div class="movie-modal-backdrop" aria-label="${movie.title} movie backdrop">
+    <div class="movie-modal-backdrop" style="background-image: url('https://image.tmdb.org/t/p/w500/${movie.backdrop_path}')" aria-label="${movie.title} movie backdrop">
       <svg class ="ux-shape-divider" viewBox="0 0 1000 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
                     <path class="ux-shape-fill dark" d="M0 0C0 0 200 50 500 50C800 50 1000 0 1000 0V101H0V1V0Z"></path>
                 </svg>
@@ -25,7 +25,7 @@ import { Movie } from "./types.ts";
     </section>
     <section class="information-container">
         <ul class="movie-genres">
-            ${movie.genres.map(genre => `<li>${genre}</li>`).join('')}
+            ${movie.genres.map(genre => `<li>${genre.name}</li>`).join('- ')}
         </ul>
         <p class="movie-modal-overview">${movie.overview}</p>
         <p class="movie-modal-release-date">${movie.release_date}</p>

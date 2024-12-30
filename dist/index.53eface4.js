@@ -599,52 +599,36 @@ function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
 //main.ts
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+// Render Movie Card
 parcelHelpers.export(exports, "renderMovieCard", ()=>renderMovieCard);
 parcelHelpers.export(exports, "displayMovieCards", ()=>displayMovieCards);
 parcelHelpers.export(exports, "fetchAndDisplayCategoryMovies", ()=>fetchAndDisplayCategoryMovies);
 parcelHelpers.export(exports, "createCategorySection", ()=>createCategorySection);
 var _apiTs = require("./api.ts");
+var _modalTs = require("./modal.ts");
 var _utilsTs = require("./utils.ts");
 const mainElement = document.querySelector('main');
-// Mock Movie Data
-const mockMovie = {
-    title: "EXAMPLE: The Shawshank Redemption",
-    overview: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.",
-    backdrop_path: "/5KvYhSZuRzrcXzWjVO4J3q4b2qU.jpg",
-    poster_path: "/q6y0Go1tsGEsmtFryIEreULOSLp.jpg",
-    release_date: "1994-09-23",
-    id: 1,
-    love: false,
-    vote_average: 9.2,
-    vote_count: 2500,
-    genres: [
-        {
-            id: 1,
-            name: "Drama"
-        }
-    ],
-    cast: [
-        {
-            profile_path: "#",
-            name: "Tim Robbins"
-        },
-        {
-            profile_path: "#",
-            name: "Morgan Freeman"
-        }
-    ]
-};
-document.addEventListener('DOMContentLoaded', ()=>{
-    const contactNavButton = document.getElementById('contact-nav-button');
-    if (contactNavButton) contactNavButton.addEventListener('click', ()=>{
-        scrollToBottom();
+document.addEventListener("DOMContentLoaded", async ()=>{
+    const contactNavButton = document.getElementById("contact-nav-button");
+    if (contactNavButton) contactNavButton.addEventListener("click", async ()=>{
+        await main(); // Ensure main() completes before scrolling
+        (0, _utilsTs.scrollToBottom)();
     });
-    if (window.location.pathname === '/index.html') main();
-    if (window.location.pathname === '/savedmovies.html') savedMoviesMain();
-    const homeLogo = document.getElementById('logo');
-    if (homeLogo) homeLogo.addEventListener('click', ()=>{
-        window.location.href = 'index.html';
+    const homeLogo = document.getElementById("logo");
+    if (homeLogo) homeLogo.addEventListener("click", ()=>{
+        window.location.href = "index.html";
     });
+    const hamburgerButton = document.getElementById("hamburger-button");
+    if (hamburgerButton) hamburgerButton.addEventListener("click", ()=>{
+        hamburgerButton.classList.toggle("active");
+        const hamburgerMenu = document.getElementById("hamburger-menu");
+        if (hamburgerMenu) {
+            hamburgerMenu.classList.toggle("open");
+            hamburgerMenu.classList.toggle("close");
+        }
+    });
+    if (window.location.pathname === "/index.html") await main(); // Ensure dynamic content is fully rendered
+    if (window.location.pathname === "/savedmovies.html") await savedMoviesMain(); // Ensure saved movies are fully loaded
 });
 async function main() {
     try {
@@ -668,7 +652,7 @@ async function main() {
             "Romance",
             "Thriller"
         ];
-        categories.forEach((category)=>fetchAndDisplayCategoryMovies(category));
+        await Promise.all(categories.map((category)=>fetchAndDisplayCategoryMovies(category)));
     } catch (error) {
         console.error("Error during main execution:", error);
     }
@@ -679,37 +663,40 @@ async function savedMoviesMain() {
 }
 function renderMovieCard(movie, category) {
     const movieCardContainer = document.getElementById(`${category} movies`);
-    const movieCard = document.createElement('article');
-    movieCard.classList.add('movie-card');
+    const movieCard = document.createElement("article");
+    movieCard.classList.add("movie-card");
     // Check if the movie is a favorite
     const isFavorited = (0, _utilsTs.isFavorite)(movie.id);
-    const favoriteClass = isFavorited ? 'loved' : '';
+    const favoriteClass = isFavorited ? "loved" : "";
     movieCard.innerHTML = `
     <div class="movie-card-content">
       <button class="love-button ${favoriteClass}" data-movie-id="${movie.id}">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M12.62 20.8101C12.28 20.9301 11.72 20.9301 11.38 20.8101C8.48 19.8201 2 15.6901 2 8.6901C2 5.6001 4.49 3.1001 7.56 3.1001C9.38 3.1001 10.99 3.9801 12 5.3401C13.01 3.9801 14.63 3.1001 16.44 3.1001C19.51 3.1001 22 5.6001 22 8.6901C22 15.6901 15.52 19.8201 12.62 20.8101Z" fill="white" fill-opacity="0.4"/>
-          </svg>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M12.62 20.8101C12.28 20.9301 11.72 20.9301 11.38 20.8101C8.48 19.8201 2 15.6901 2 8.6901C2 5.6001 4.49 3.1001 7.56 3.1001C9.38 3.1001 10.99 3.9801 12 5.3401C13.01 3.9801 14.63 3.1001 16.44 3.1001C19.51 3.1001 22 5.6001 22 8.6901C22 15.6901 15.52 19.8201 12.62 20.8101Z" fill="white" fill-opacity="0.4"/>
+        </svg>
       </button>
       <img class="movie-card-poster" src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title} poster">
       <h3 class="movie-card-title">${movie.title}</h3>
       <div class="movie-card-information-container">
-        <p class="movie-card-genres">${movie.genres.map((genre)=>genre.name).join(', ')}</p>
+        <p class="movie-card-genres">${movie.genres.map((genre)=>genre.name).join(", ")}</p>
         <p class="movie-card-release-date">${movie.release_date}</p>
         <p class="cto-view-details">View Details</p>
       </div>
     </div>
   `;
     movieCardContainer.appendChild(movieCard);
+    // Attach click event to view details for the entire card
+    movieCard.addEventListener("click", ()=>{
+        (0, _modalTs.createMovieModal)(movie);
+    });
     // Attach click event to toggle favorite
-    const loveButton = movieCard.querySelector('.love-button');
-    loveButton.addEventListener('click', ()=>{
+    const loveButton = movieCard.querySelector(".love-button");
+    loveButton.addEventListener("click", ()=>{
         (0, _utilsTs.toggleFavorite)(movie);
         // Select all buttons with the same movie ID
         const loveButtons = document.querySelectorAll(`.love-button[data-movie-id="${movie.id}"]`);
-        loveButtons.forEach((button)=>button.classList.toggle('loved'));
-    /*  // Re-run main function
-    main(); */ });
+        loveButtons.forEach((button)=>button.classList.toggle("loved"));
+    });
 }
 function displayMovieCards(movies, category) {
     try {
@@ -778,7 +765,7 @@ function createCategorySection(category) {
     mainElement.appendChild(topMoviesCategoryWrapper);
 }
 
-},{"./api.ts":"jGtCU","./utils.ts":"8NGW9","@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"jGtCU":[function(require,module,exports,__globalThis) {
+},{"./api.ts":"jGtCU","./utils.ts":"8NGW9","@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./modal.ts":"5pIqC"}],"jGtCU":[function(require,module,exports,__globalThis) {
 //api.ts
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -1015,8 +1002,74 @@ function scrollToBottom() {
         top: document.body.scrollHeight,
         behavior: "smooth"
     });
+    console.log("Scrolling to bottom");
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./api.ts":"jGtCU"}]},["lI3Wn","gfLib"], "gfLib", "parcelRequire94c2")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./api.ts":"jGtCU"}],"5pIqC":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+/* TODO replace with star icon and heart icon */ parcelHelpers.export(exports, "createMovieModal", ()=>createMovieModal);
+function createMovieModal(movie) {
+    const movieModal = document.createElement('div');
+    movieModal.classList.add('movie-modal');
+    movieModal.innerHTML = `
+    <button type="button" class="movie-modal-close">X</button>
+    <div class="movie-modal-backdrop" style="background-image: url('https://image.tmdb.org/t/p/w500/${movie.backdrop_path}')" aria-label="${movie.title} movie backdrop">
+      <svg class ="ux-shape-divider" viewBox="0 0 1000 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                    <path class="ux-shape-fill dark" d="M0 0C0 0 200 50 500 50C800 50 1000 0 1000 0V101H0V1V0Z"></path>
+                </svg>
+    </div>
+    <section class="movie-modal-title-container">
+        <h3 class="movie-modal-title">${movie.title}</h3>
+    </section>
+    <section class="rating-container">
+        <div class="rating-group">
+            <p class="star-icon">\u{2B50}\u{FE0F}</p> <!-- todo replace with star icon -->
+            <p class="movie-modal-rating">${movie.vote_average}/10</p> 
+            <p class="vote-count">(${movie.vote_count} votes)</p> 
+        </div>
+        <button type="button" class="love-button">\u{2764}\u{FE0F}</button> 
+    </section>
+    <section class="information-container">
+        <ul class="movie-genres">
+            ${movie.genres.map((genre)=>`<li>${genre.name}</li>`).join('- ')}
+        </ul>
+        <p class="movie-modal-overview">${movie.overview}</p>
+        <p class="movie-modal-release-date">${movie.release_date}</p>
+        
+        <div class="movie-modal-links">
+            <h4>Links</h4>
+            <ul>
+                <li><a href="#">IMDb</a></li>
+                <li><a href="#">Rotten Tomatoes</a></li>
+            </ul>
+        
+            <h4>Watch on</h4>
+            <ul class="movie-modal-links">
+                <li><a href="#">Netflix</a></li>
+                <li><a href="#">Amazon Prime</a></li>
+            </ul>
+        </div>
+        
+        <section class="actors-section">
+            <ol>
+                ${movie.cast ? movie.cast.map((actor)=>`
+                        <li class="actor-list-item">
+                            <img class="actor-image" src="${actor.profile_path}" alt="${actor.name}">
+                            <span>${actor.name}</span>
+                        </li>
+                    `).join('') : '<li>No cast information available</li>'}
+            </ol>
+        </section>
+    </section>
+    `;
+    document.body.appendChild(movieModal);
+    const closeButton = movieModal.querySelector('.movie-modal-close');
+    if (closeButton) closeButton.addEventListener('click', ()=>{
+        movieModal.remove();
+    });
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}]},["lI3Wn","gfLib"], "gfLib", "parcelRequire94c2")
 
 //# sourceMappingURL=index.53eface4.js.map

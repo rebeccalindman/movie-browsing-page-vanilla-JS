@@ -46,7 +46,7 @@ header #logo:hover {
   transform: scale(.95);
 }
 
-#hamburger, #hamburger-ul {
+#hamburger-button {
   display: none;
 }
 
@@ -67,6 +67,10 @@ header nav ul {
   padding: 0;
   display: flex;
   overflow: hidden;
+}
+
+#hamburger-menu {
+  display: none;
 }
 
 .nav-button a {
@@ -97,7 +101,7 @@ header nav ul {
   border-radius: 0 0 20px 20px;
 }
 
-.nav-button#active {
+.nav-button.active {
   background-color: inherit;
 }
 
@@ -319,9 +323,9 @@ main {
   align-self: stretch;
   align-items: center;
   gap: 10px;
-  height: clamp(50px, 7vw, 70px);
+  height: clamp(70px, 7vw, 90px);
   padding: 15px 10px;
-  font-size: clamp(12px, 3vw, 24px);
+  font-size: clamp(12px, 3vw, 18px);
   font-weight: 700;
   display: flex;
 }
@@ -570,6 +574,7 @@ main {
 }
 
 footer {
+  visibility: visible;
   background-color: var(--brand-color1);
   width: 100vw;
   color: var(--text-dark);
@@ -657,35 +662,51 @@ footer p {
   }
 
   .movie-card-title {
-    height: clamp(40px, 7vw, 80px);
-    font-size: clamp(12px, 3vw, 18px);
+    height: clamp(60px, 7vw, 80px);
+    font-size: clamp(12px, 3vw, 14px);
   }
 
   header {
     align-items: center;
     height: clamp(50px, 20vw, 80px);
+    padding: 2vw 4vw;
   }
 
   nav {
+    border-radius: 20px;
     flex-direction: column;
     align-self: baseline;
-    align-items: center;
-    margin-top: 10px;
+    align-items: end;
     display: flex;
+    overflow: hidden;
+    box-shadow: 0 0 10px #000;
   }
 
-  #hamburger-ul {
-    background-color: var(--brand-color1);
+  #hamburger-menu.open {
+    display: block;
+  }
+
+  #hamburger-menu.close {
+    display: none;
+  }
+
+  #hamburger-menu {
     z-index: 10;
+    background-color: #000;
+    border-radius: 20px;
     flex-direction: column;
     gap: 0;
     width: 100%;
     height: auto;
     padding: 0;
-    display: block;
     position: relative;
     right: 0;
-    transform: translateX(10%);
+    overflow: hidden;
+  }
+
+  #hamburger-menu li {
+    border-radius: 0;
+    justify-self: stretch;
   }
 
   header nav ul {
@@ -697,11 +718,21 @@ footer p {
     height: auto;
   }
 
-  #hamburger {
+  #hamburger-button {
     box-sizing: content-box;
     width: 30px;
     padding: 10px;
     display: block;
+  }
+
+  #hamburger-button.active path {
+    stroke: #51888a;
+    stroke-width: 4px;
+  }
+
+  #hamburger-button.rest path {
+    stroke: #fff;
+    stroke-width: 3px;
   }
 }
 /*# sourceMappingURL=index.6dd9c435.css.map */

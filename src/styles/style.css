@@ -53,10 +53,7 @@ header #logo:hover {
 }
 
 
-#hamburger {
-    display: none;
-}
-#hamburger-ul {
+#hamburger-button {
     display: none;
 }
 
@@ -78,6 +75,10 @@ header nav ul { /* nav bar button menu */
     background: var(--brand-color2);
     padding: 0;
     overflow: hidden;
+}
+
+#hamburger-menu {
+    display: none;
 }
 
 .nav-button a {
@@ -109,7 +110,7 @@ header nav ul { /* nav bar button menu */
     cursor: pointer
 }
 
-.nav-button#active{
+.nav-button.active{
     background-color: inherit;
 }
 
@@ -359,8 +360,8 @@ main {
     background: var(--brand-color1, #FC0);
     color: var(--text-dark, #16181A);
     font-weight: 700;
-    font-size: clamp(12px, 3vw, 24px);
-    height: clamp(50px, 7vw, 70px);
+    font-size: clamp(12px, 3vw, 18px);
+    height: clamp(70px, 7vw, 90px);
 
     text-align: center;
     line-clamp: 3;
@@ -659,7 +660,7 @@ main {
 
 
 footer {
-
+    visibility: visible;
     position: relative;
     bottom: 0;
     display: flex;
@@ -726,7 +727,6 @@ footer p {
 }
 
 
-
 /* Debugging start */
 /* header {
     border: 2px solid red;
@@ -769,52 +769,80 @@ main {
     }
 
     .movie-card-title {
-        font-size: clamp(12px, 3vw, 18px);
-        height: clamp(40px, 7vw, 80px);
+        height: clamp(60px, 7vw, 80px);
+        font-size: clamp(12px, 3vw, 14px);
     }
 
     header {
         align-items: center;
         height: clamp(50px, 20vw, 80px);
+        padding: 2vw 4vw;
     }
 
     nav {
         display: flex;
-        align-items: center;
+        align-items: end;
         flex-direction: column;
         align-self: baseline;
-        margin-top: 10px;
+   /*      margin-top: 2vw; */
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: #000000 0px 0px 10px;
+    }
+
+    #hamburger-menu.open {
+        display: block;
+    }
+
+    #hamburger-menu.close {
+        display: none;
     }
 
 
-    #hamburger-ul {
-        display: block;
+    #hamburger-menu {
         position: relative;
         right: 0;
         width: 100%;
         height: auto;
-        background-color: var(--brand-color1);
+        background-color: black;
         flex-direction: column;
         gap: 0;
         padding: 0;
         z-index: 10;
-        transform: translateX(10%);
-        
+        border-radius: 20px;
+        overflow: hidden;
     }
+
+    #hamburger-menu li {
+        border-radius: 0;
+        justify-self: stretch;
+    }
+
 
     header nav ul {
         display: none;
     }
+    
 
     #logo {
         width: clamp(150px, 50vw, 300px);
         height: auto;
     }
 
-    #hamburger {
+    #hamburger-button {
         box-sizing: content-box;
         display: block;
         padding: 10px;
         width: 30px;
+    }
+
+    #hamburger-button.active path {
+        stroke: #51888a;
+        stroke-width: 4px;
+    }
+
+    #hamburger-button.rest path {
+        stroke: #ffffff;
+        stroke-width: 3px;
     }
 }
