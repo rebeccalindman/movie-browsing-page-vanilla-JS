@@ -195,6 +195,7 @@ main {
     overflow-y: hidden;
     gap: 52px;
     background-color: white;
+    height: fit-content;
 }
 
 .movie-cards-wrapper #featured {
@@ -208,13 +209,14 @@ main {
     gap: 20px;
     width: fit-content;
     height: fit-content;
+    margin: 2% 0;
 
 }
 
 .movie-card-scroll-container {
     overflow-x: scroll;
     width: 100vw;
-    height: 540px;
+    height: fit-content;
     display: flex;
     align-items: center;
 }
@@ -762,7 +764,8 @@ main {
     }
 
     .movie-cards-wrapper {
-        height: clamp(470px, 70vh, 600px);
+      
+        height: fit-content;
     }
 
     .movie-card-title {

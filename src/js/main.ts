@@ -102,8 +102,11 @@ export function renderMovieCard(movie: Movie, category: string): void {
   movieCardContainer.appendChild(movieCard);
 
   // Attach click event to view details for the entire card
-  movieCard.addEventListener("click", () => {
-    createMovieModal(movie);
+  movieCard.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+    if (!target.closest(".love-button")) {
+      createMovieModal(movie);
+    }
   });
 
   // Attach click event to toggle favorite

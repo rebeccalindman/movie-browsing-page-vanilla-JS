@@ -686,8 +686,9 @@ function renderMovieCard(movie, category) {
   `;
     movieCardContainer.appendChild(movieCard);
     // Attach click event to view details for the entire card
-    movieCard.addEventListener("click", ()=>{
-        (0, _modalTs.createMovieModal)(movie);
+    movieCard.addEventListener("click", (event)=>{
+        const target = event.target;
+        if (!target.closest(".love-button")) (0, _modalTs.createMovieModal)(movie);
     });
     // Attach click event to toggle favorite
     const loveButton = movieCard.querySelector(".love-button");
