@@ -983,7 +983,7 @@ function scrollToBottom() {
     });
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./api.ts":"jGtCU"}],"amG76":[function(require,module,exports,__globalThis) {
+},{"./api.ts":"jGtCU","@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"amG76":[function(require,module,exports,__globalThis) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a

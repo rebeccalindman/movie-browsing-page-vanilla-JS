@@ -40,9 +40,38 @@ header{
     width: 100vw;
 }
 
+header nav ul { /* nav bar button menu */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+
 .nav-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 0px 0px 20px 20px;
     background: var(--brand-color2);
+    padding: 0;
+    overflow: hidden;
+}
+
+.nav-button a {
+    display: flex; /* fills the space */
+    height: 100%;
+    width: 100%;
+    padding: 20px 24px; /* Add padding to make the button area larger */
+    color: var(--text-light);
+    font-size: var(--sds-typography-body-size-medium);
+    text-decoration: none;
+    font-weight: var(--sds-typography-body-font-weight-regular);
+    line-height: 100%; /* 16px */
+    text-wrap-mode: nowrap;
+    outline: red 1px solid;
 }
 
 /* Colors for nav bar */
@@ -54,28 +83,14 @@ header{
     background-color: #E93DAD;
 }
 
-
-
-
 .nav-button:hover{
     border-radius: 0px 0px 20px 20px;
     background: var(--brand-color2-5, #70B3B6);
     cursor: pointer
 }
 
-
-
 .nav-button#active{
     background-color: inherit;
-}
-
-header nav ul li a {
-    color: var(--text-light);
-    font-size: var(--sds-typography-body-size-medium);
-    text-decoration: none;
-    font-weight: var(--sds-typography-body-font-weight-regular);
-    line-height: 100%; /* 16px */
-    text-wrap-mode: nowrap;
 }
 
 /* Layout */
@@ -113,20 +128,6 @@ header {
     align-self: stretch;
 }
 
-header nav ul{
-    display: flex;
-    align-items: center;
-    gap: 21px;
-}
-
-.nav-button {
-    display: flex;
-    padding: 20px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: var(--sds-size-space-200);
-    
-}
 
 
 main {
