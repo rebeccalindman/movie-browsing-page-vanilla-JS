@@ -42,6 +42,13 @@ document.addEventListener('DOMContentLoaded', () => {
   if (window.location.pathname === '/savedmovies.html') {
     savedMoviesMain();
   }
+
+  const homeLogo = document.getElementById('logo');
+  if (homeLogo) {
+    homeLogo.addEventListener('click', () => {
+      window.location.href = 'index.html';
+    });
+  }
   
 
 });

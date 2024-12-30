@@ -40,6 +40,11 @@ header{
     width: 100vw;
 }
 
+header #logo:hover {
+    cursor: pointer;
+    transform: scale(0.95);
+}
+
 header nav ul { /* nav bar button menu */
     list-style: none;
     padding: 0;
@@ -144,9 +149,9 @@ main {
     display: flex;
     flex-direction: column;
     width: 100%;
-    padding: 24px 80px;
+    padding: clamp(20px, 3vw, 24px);
     gap: 10px;
-    font-size: 36px;
+    font-size: clamp(16px, 3vw, 36px);
     font-weight: 700;
     background-color: var(--brand-color2);
     z-index: 1;
@@ -189,7 +194,7 @@ main {
 
 .movie-card-container {
     display: flex;
-    padding-left: 20px;
+    padding: 0px 20px;
     align-items: flex-start;
     gap: 20px;
     width: fit-content;
@@ -259,36 +264,22 @@ main {
 
 .movie-card-content {
     display: flex;
-    width: 254px;
-    height: 452px;
+    width: inherit;
+    height: auto;
     flex-direction: column;
     align-items: center;
     flex-shrink: 0;
 }
 
 .movie-card-content img { /* todo check if necessary? */
-    width: 254px;
-height: 351px;
-flex-shrink: 0;
+    width: inherit;
+    height: auto;
+    flex-shrink: 0;
 }
 
 
 
-.movie-card-content h3 {
-    display: flex;
-    padding: 15px 10px;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    align-self: stretch;
 
-    background: var(--brand-color1, #FC0);
-
-    color: var(--text-dark, #16181A);
-    font-size: 16px;
-    font-weight: 700;
-}
 
 .movie-card-information-container {
     display: flex;
@@ -296,21 +287,25 @@ flex-shrink: 0;
     flex-direction: column;
     align-items: center;
     gap: 5px;
-    align-self: stretch;
 }
 
 .movie-card-genres {
-    font-size: 13px;
+    font-size: clamp(10px, 2vw, 13px);
     font-weight: 400;
     width: 75%;
-    height: 30px;
     text-align: center;
+    overflow: hidden;
+    display: -webkit-box;
+    line-clamp: 2;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
 }
 
-.cto-view-details {
+.movie-card .cto-view-details {
     color: var(--brand-color2, #5F9EA0);
-    font-size: 12px;
+    font-size: clamp(10px, 2.5vw, 14px);
     font-weight: 700;
+    text-align: center;
 }
 
 .movie-card:hover .movie-card-content .cto-view-details {
@@ -324,7 +319,7 @@ flex-shrink: 0;
     flex-direction: column;
     align-items: flex-start;
     gap: 52px;
-    align-self: stretch;
+   /*  align-self: stretch; */
 }
 
 #featured {
@@ -338,23 +333,33 @@ flex-shrink: 0;
     gap: 15px;
 }
 
-.movie-card-poster {
-    width: 250px;
-    height: 375px;
+.movie-card-poster { /* todo ! not used ?  */
+    width: inherit;
+    height: auto;
 }
 
 .movie-card-title {
-    font-size: clamp(16px, 2.5vw, 24px);
+    display: flex;
+    padding: 15px 10px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    align-self: stretch;
+    
+    background: var(--brand-color1, #FC0);
+    color: var(--text-dark, #16181A);
     font-weight: 700;
-    line-height: normal;
+    font-size: clamp(12px, 3vw, 24px);
+    height: clamp(50px, 10vw, 100px);
+
     text-align: center;
-    display: -webkit-box;
-    line-clamp: 2;
-    -webkit-line-clamp: 2;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
-    overflow: hidden;
     text-overflow: ellipsis;
 }
+
 
 .rating-container {
     display: flex;
@@ -626,8 +631,8 @@ flex-shrink: 0;
 
 .movie-cards-wrapper#featured .ux-shape-divider {
     position: relative; /* Position relative to #background-image-wrapper */
-    top: clamp(470px, 100%, 480px);
-    z-index: 0;
+    bottom: -30px;
+    z-index: 10;
 }
 
 .ux-shape-divider .dark {
@@ -724,13 +729,34 @@ main {
 
 /* Media Queries */
 
-@media screen and (max-width: 850px) {
+@media screen and (max-width: 800px) {
     .movie-modal {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
         scale: 0.8;
     }
+
+    .movie-card {
+        width: clamp(150px, 25vw, 500px);
+        padding-bottom: 10px;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .movie-card-information-container {
+        gap: 10px;
+        height: 70px;
+    }
+
+    .movie-card-container {
+        gap: 10px;
+    }
+
+    .movie-cards-wrapper {
+        height: clamp(470px, 70vh, 600px);
+    }
+
 }
 
 @media screen and (max-width: 500px) {
