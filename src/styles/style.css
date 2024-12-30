@@ -38,11 +38,26 @@ header{
     position: fixed;
     z-index: 100;
     width: 100vw;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    align-self: stretch;
+
+    padding: 0px 2vw;
 }
 
 header #logo:hover {
     cursor: pointer;
     transform: scale(0.95);
+}
+
+
+#hamburger {
+    display: none;
+}
+#hamburger-ul {
+    display: none;
 }
 
 header nav ul { /* nav bar button menu */
@@ -125,13 +140,6 @@ background: repeating-linear-gradient(
     );
 }
 
-header {
-    display: flex;
-    padding: 0px 60px;
-    justify-content: space-between;
-    align-items: flex-start;
-    align-self: stretch;
-}
 
 
 
@@ -213,14 +221,15 @@ main {
 .movie-card {
     position: relative; /* sets positioning context for children */
     display: flex;
-    width: 254px;
+    width: 220px;
     padding-bottom: 15px;
     align-items: center;
     gap: 10px;
     padding-bottom: 20px;
     overflow: hidden;
     border-radius: 20px;
-    background: #FFF;   
+    background: #FFF; 
+    border: 1px solid var(--brand-color3-8);  
 }
 
 .movie-card:hover {
@@ -351,7 +360,7 @@ main {
     color: var(--text-dark, #16181A);
     font-weight: 700;
     font-size: clamp(12px, 3vw, 24px);
-    height: clamp(50px, 10vw, 100px);
+    height: clamp(50px, 7vw, 70px);
 
     text-align: center;
     line-clamp: 3;
@@ -729,19 +738,21 @@ main {
 
 /* Media Queries */
 
-@media screen and (max-width: 800px) {
+
+@media screen and (max-width: 700px) {
     .movie-modal {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        scale: 0.8;
+        scale: 0.5;
     }
 
     .movie-card {
-        width: clamp(150px, 25vw, 500px);
+        width: clamp(150px, 20vw, 400px);
         padding-bottom: 10px;
         align-items: center;
         gap: 10px;
+        max-height: 370px;
     }
 
     .movie-card-information-container {
@@ -757,13 +768,53 @@ main {
         height: clamp(470px, 70vh, 600px);
     }
 
-}
+    .movie-card-title {
+        font-size: clamp(12px, 3vw, 18px);
+        height: clamp(40px, 7vw, 80px);
+    }
 
-@media screen and (max-width: 500px) {
-    .movie-modal {
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        scale: 0.5;
+    header {
+        align-items: center;
+        height: clamp(50px, 20vw, 80px);
+    }
+
+    nav {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        align-self: baseline;
+        margin-top: 10px;
+    }
+
+
+    #hamburger-ul {
+        display: block;
+        position: relative;
+        right: 0;
+        width: 100%;
+        height: auto;
+        background-color: var(--brand-color1);
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+        z-index: 10;
+        transform: translateX(10%);
+        
+    }
+
+    header nav ul {
+        display: none;
+    }
+
+    #logo {
+        width: clamp(150px, 50vw, 300px);
+        height: auto;
+    }
+
+    #hamburger {
+        box-sizing: content-box;
+        display: block;
+        padding: 10px;
+        width: 30px;
     }
 }
