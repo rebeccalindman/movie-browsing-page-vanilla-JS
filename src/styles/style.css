@@ -263,11 +263,11 @@ main {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.movie-card .love-button.loved {
+.love-button.loved {
     background: var(--brand-color3);
 }
 
-.movie-card .love-button.loved svg path {
+.love-button.loved svg path {
     fill: var(--brand-color4);
     fill-opacity: 1;
 }
@@ -440,13 +440,10 @@ main {
 }
 
 .movie-modal-backdrop {
-    grid-area: movie-modal-backdrop;
+/*     grid-area: movie-modal-backdrop; */
     width: 100%;
     height: 350px;
     flex-shrink: 0;
-
-    /* style */
-    background: url(https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fstatic.booktopia.com.au%2Finternals%2F9781608871131-1.jpg&f=1&nofb=1&ipt=4d23876e259ed9df3db786251f55600226d8a5d7bfe4c38fef70b203ad7df282&ipo=images>) lightgray 50% / cover no-repeat;
 }
 
 /* rating container */
