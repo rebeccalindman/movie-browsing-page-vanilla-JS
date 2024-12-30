@@ -4,55 +4,53 @@ export const API_KEY_tmdb = "6369fcc46c83ecd475d3f734321f2a0b"; //themoviedb.org
 
 export const apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc`;
 
-export const apiFeaturedMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_watch_providers=netflix%20OR%20prime%20OR%20svt&year=2024`;
+export const apiFeaturedMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_watch_providers=netflix%20OR%20prime%20OR%20svt&year=2024`;
 
 
 /**
  ** Fetch movies from The Movie Database API.
  */
- import { getGenresList } from './api.ts';
 
-export async function fetchMovies(url: string): Promise<MovieData | null> {
-  try {
-    const genresList = await getGenresList(); // Fetch genres once
-    if (!genresList || genresList.length === 0) {
-      console.error('Failed to fetch genres list.');
-      return null;
-    }
+ import { getCachedGenresList } from './utils.ts';
 
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      displayErrorMessage(response.status);
-      return null;
-    }
-
-    const json = await response.json();
-
-    const movies: MovieData = json.results.map((movie: any) => ({
-      title: movie.title,
-      overview: movie.overview,
-      backdrop_path: movie.backdrop_path,
-      poster_path: movie.poster_path,
-      release_date: movie.release_date,
-      id: movie.id,
-      love: movie.love || false,
-      vote_average: movie.vote_average,
-      vote_count: movie.vote_count,
-      genres: movie.genre_ids.map((genreId: number) => {
-        const genre = genresList.find((g) => g.id === genreId);
-        return genre ? { id: genre.id, name: genre.name } : { id: genreId, name: 'Unknown Genre' };
-      }),
-      cast: Array.isArray(movie.cast) ? movie.cast : [], // Ensure cast is an array
-    }));
-
-    return movies;
-  } catch (error) {
-    console.error('Error during fetchMovies execution:', error);
-    displayErrorMessage(0);
-    return null;
-  }
-}
+ export async function fetchMovies(url: string): Promise<MovieData | null> {
+   try {
+     const genresList = await getCachedGenresList();
+ 
+     const response = await fetch(url);
+ 
+     if (!response.ok) {
+       displayErrorMessage(response.status);
+       return null;
+     }
+ 
+     const json = await response.json();
+ 
+     const movies: MovieData = json.results.map((movie: any) => ({
+       title: movie.title,
+       overview: movie.overview,
+       backdrop_path: movie.backdrop_path,
+       poster_path: movie.poster_path,
+       release_date: movie.release_date,
+       id: movie.id,
+       love: movie.love || false,
+       vote_average: movie.vote_average,
+       vote_count: movie.vote_count,
+       genres: movie.genre_ids.map((genreId: number) => {
+         const genre = genresList.find((g) => g.id === genreId);
+         return genre ? { id: genre.id, name: genre.name } : { id: genreId, name: 'Unknown Genre' };
+       }),
+       cast: Array.isArray(movie.cast) ? movie.cast : [],
+     }));
+ 
+     return movies;
+   } catch (error) {
+     console.error('Error during fetchMovies execution:', error);
+     displayErrorMessage(0);
+     return null;
+   }
+ }
+ 
 
 
 
@@ -110,6 +108,8 @@ export async function getGenresList(): Promise<{ id: number; name: string }[] | 
   try {
     const response = await fetch(url);
     const json = await response.json();
+    storeDataArray(json.genres, "genresList");
+
     return json.genres || []; // Extract genres array
   } catch (error) {
     console.error('Error fetching genres:', error);

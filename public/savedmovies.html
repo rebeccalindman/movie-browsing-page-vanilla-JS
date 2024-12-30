@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../src/styles/style.css">
-    <title>Filmkväll - Home</title>
+    <title>Filmkväll - Saved Movies</title>
     <!-- todo add favicon -->
      <!-- todo add package.json dependencies if needed -->
 </head>
-<body>
+<body id="savedmovies-body">
     <header>
         <!-- logo -->
          <img src="../src/assets/brand/logo.png" alt="hemmakväll-logo" width="300px">
@@ -16,9 +16,9 @@
         <!-- navigation links -->
         <nav>
             <ul>
-                <li class="nav-button" id="active"><a id="home-nav-button" href="#">Home</a></li>
-                <li class="nav-button" id="saved-movies-nav-button"><a href="./savedmovies.html">Saved Movies</a></li>
-                <li class="nav-button" id="contact-nav-button"><a href="#">Contact</a></li>
+                <li class="nav-button"><a id="home-nav-button" href="./index.html">Home</a></li>
+                <li class="nav-button" id="active"><a id="saved-movies-nav-button" href="#">Saved Movies</a></li>
+                <li class="nav-button"><a id="contact-nav-button" href="#">Contact</a></li>
             </ul>
         </nav>
 
@@ -26,21 +26,18 @@
 
     <main>
         
-            <section class="section-header dark">
-                <h2>Featured</h2>
+            <section class="section-header white">
+                <h2>My Favorite Movies</h2>
                 <p>Click on a movie card to view more details and find a streaming site.</p>
             </section>
-            <section class="top-movies-wrapper" id="featured">
+            <section class="top-movies-wrapper" id="saved">
 
               <div class="movie-card-scroll-container">
-                <div class="movie-card-container" id="featured movies">
+                <div class="movie-card-container" id="saved movies">
                   <!-- Movie cards here -->
                 </div>
               </div>
-                
-              <svg class ="ux-shape-divider" viewBox="0 0 1000 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-                  <path class="ux-shape-fill" d="M0 0C0 0 200 50 500 50C800 50 1000 0 1000 0V101H0V1V0Z"></path>
-              </svg>
+
 
                     
             </section>

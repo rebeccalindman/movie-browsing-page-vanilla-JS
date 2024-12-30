@@ -19,6 +19,9 @@ main {
     --brand-color3: #D3D3FF; /*lilac*/
     --brand-color3-8: #D3D3FFCC; /* lilac 80% opacity */
     --brand-color4: #E93DAD; /* hot pink */
+    --brand-color4-darker: #d7369f; /* darker hot pink */
+
+    --brand-color7: #FE671D; /* orange */
     --text-color-dark: #16181a;
 
     --sds-typography-body-size-medium: 16px;
@@ -32,41 +35,89 @@ font-family: "Inria Sans", sans-serif;
 
 header{
     background-color: black;
+    position: fixed;
+    z-index: 100;
+    width: 100vw;
 }
 
-.navButton {
+header nav ul { /* nav bar button menu */
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+
+.nav-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     border-radius: 0px 0px 20px 20px;
-    background: #FFF;
+    background: var(--brand-color2);
+    padding: 0;
+    overflow: hidden;
 }
 
-.navButton:hover{
-    border-radius: 0px 0px 20px 20px;
-    background: var(--brand-color2-5, #70B3B6);
-}
-
-.navButton #active{
-    border-radius: 0px 0px 20px 20px;
-    background: #FFF;
-    border-right: 2px solid var(--brand-color2, #5F9EA0);
-    border-bottom: 2px solid var(--brand-color2, #5F9EA0);
-    border-left: 2px solid var(--brand-color2, #5F9EA0);
-}
-
-header nav ul li a {
-    color: var(--text-dark);
+.nav-button a {
+    display: flex; /* fills the space */
+    height: 100%;
+    width: 100%;
+    padding: 20px 24px; /* Add padding to make the button area larger */
+    color: var(--text-light);
     font-size: var(--sds-typography-body-size-medium);
     text-decoration: none;
     font-weight: var(--sds-typography-body-font-weight-regular);
     line-height: 100%; /* 16px */
+    text-wrap-mode: nowrap;
+    outline: red 1px solid;
+}
+
+/* Colors for nav bar */
+.nav-button:nth-child(3){
+    background: var(--brand-color7);
+}
+
+.nav-button:nth-child(2){
+    background-color: #E93DAD;
+}
+
+.nav-button:hover{
+    border-radius: 0px 0px 20px 20px;
+    background: var(--brand-color2-5, #70B3B6);
+    cursor: pointer
+}
+
+.nav-button#active{
+    background-color: inherit;
 }
 
 /* Layout */
-body{
+body {
 display: flex;
 width: 100vw;
 flex-direction: column;
 align-items: center;
 gap: 10px;
+background: repeating-linear-gradient(
+        135deg, /* Direction: 90 degrees creates vertical stripes */
+        #569092, /* First stripe color */
+        #569092 80px, /* Stripe width */
+        #51888a 80px, /* Gap between stripes (starts second color) */
+        #51888a 160px /* Total stripe width (alternates back to first color) */
+    );
+
+}
+
+#savedmovies-body {
+    background: repeating-linear-gradient(
+        135deg, /* Direction: 90 degrees creates vertical stripes */
+        var(--brand-color4), /* First stripe color */
+        var(--brand-color4) 80px, /* Stripe width */
+        var(--brand-color4-darker) 80px, /* Gap between stripes (starts second color) */
+        var(--brand-color4-darker) 160px /* Total stripe width (alternates back to first color) */
+    );
 }
 
 header {
@@ -77,20 +128,6 @@ header {
     align-self: stretch;
 }
 
-header nav ul{
-    display: flex;
-    align-items: center;
-    gap: 21px;
-}
-
-.nav-button {
-    display: flex;
-    padding: 20px 16px;
-    justify-content: center;
-    align-items: center;
-    gap: var(--sds-size-space-200);
-    
-}
 
 
 main {
@@ -100,7 +137,7 @@ main {
     align-self: center;
     width: clamp(300px, 100%, 1400px);
     min-height: 100vh;
-
+    margin-top: 84px;
 }
 
 .section-header {
@@ -118,6 +155,11 @@ main {
 .dark {
     background-color: var(--background-dark-base, #16181A);
     color: var(--brand-color1, #FC0);
+}
+
+.white {
+    background-color: var(--brand-color3, #FC0);
+    color: var(--background-dark-base, #16181A);
 }
 
 .section-header p {
@@ -176,10 +218,14 @@ main {
 }
 
 .movie-card:hover {
-    transform: scale(1.05);
+    transform: translateY(16px) scale(1.05);
     z-index: 10;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+
 }
+
+
 
 .movie-card .love-button {
     position: absolute;
@@ -201,11 +247,11 @@ main {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
-.movie-card.loved .love-button {
+.movie-card .love-button.loved {
     background: var(--brand-color3);
 }
 
-.movie-card.loved .love-button svg path {
+.movie-card .love-button.loved svg path {
     fill: var(--brand-color4);
     fill-opacity: 1;
 }
@@ -266,6 +312,10 @@ flex-shrink: 0;
     font-weight: 700;
 }
 
+.movie-card:hover .movie-card-content .cto-view-details {
+    text-decoration: underline;
+    color: var(--brand-color4, #E93DAD);
+}
 
 #top-movie-list {
     display: flex;
@@ -334,7 +384,7 @@ flex-shrink: 0;
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translate(-50%, -35%);
 
     display: flex;
     width: 664px;
@@ -538,17 +588,18 @@ flex-shrink: 0;
 
 /** UX Shape Dividers **/
 
- #background-image-wrapper {
-    position: relative; /* Container for relative positioning */
+/*  #background-wrapper {
+    position: relative;
     height: 200px;
     background: repeating-linear-gradient(
-        135deg, /* Direction: 90 degrees creates vertical stripes */
-        var(--brand-color2-5), /* First stripe color */
-        var(--brand-color2-5) 50px, /* Stripe width */
-        var(--brand-color2) 50px, /* Gap between stripes (starts second color) */
-        var(--brand-color2) 100px /* Total stripe width (alternates back to first color) */
+        135deg,
+        var(--brand-color2-5),
+        var(--brand-color2-5) 50px,
+        var(--brand-color2) 50px,
+        var(--brand-color2) 100px
     );
 }
+ */
 
 #background-image img {
     display: block; /* Ensure no unexpected spacing issues */
@@ -669,3 +720,23 @@ footer p {
 main {
     border: 2px solid blue;
 } */
+
+/* Media Queries */
+
+@media screen and (max-width: 850px) {
+    .movie-modal {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        scale: 0.8;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .movie-modal {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        scale: 0.5;
+    }
+}

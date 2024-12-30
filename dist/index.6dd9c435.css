@@ -17,6 +17,8 @@ main {
   --brand-color3: #d3d3ff;
   --brand-color3-8: #d3d3ffcc;
   --brand-color4: #e93dad;
+  --brand-color4-darker: #d7369f;
+  --brand-color7: #fe671d;
   --text-color-dark: #16181a;
   --sds-typography-body-size-medium: 16px;
   --sds-typography-body-font-weight-regular: 400;
@@ -28,41 +30,74 @@ body {
 }
 
 header {
+  z-index: 100;
   background-color: #000;
+  width: 100vw;
+  position: fixed;
 }
 
-.navButton {
-  background: #fff;
+header nav ul {
+  align-items: center;
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+}
+
+.nav-button {
+  background: var(--brand-color2);
   border-radius: 0 0 20px 20px;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  display: flex;
+  overflow: hidden;
 }
 
-.navButton:hover {
-  background: var(--brand-color2-5, #70b3b6);
-  border-radius: 0 0 20px 20px;
-}
-
-.navButton #active {
-  border-right: 2px solid var(--brand-color2, #5f9ea0);
-  border-bottom: 2px solid var(--brand-color2, #5f9ea0);
-  border-left: 2px solid var(--brand-color2, #5f9ea0);
-  background: #fff;
-  border-radius: 0 0 20px 20px;
-}
-
-header nav ul li a {
-  color: var(--text-dark);
+.nav-button a {
+  width: 100%;
+  height: 100%;
+  color: var(--text-light);
   font-size: var(--sds-typography-body-size-medium);
   font-weight: var(--sds-typography-body-font-weight-regular);
+  text-wrap-mode: nowrap;
+  outline: 1px solid red;
+  padding: 20px 24px;
   line-height: 100%;
   text-decoration: none;
+  display: flex;
+}
+
+.nav-button:nth-child(3) {
+  background: var(--brand-color7);
+}
+
+.nav-button:nth-child(2) {
+  background-color: #e93dad;
+}
+
+.nav-button:hover {
+  background: var(--brand-color2-5, #70b3b6);
+  cursor: pointer;
+  border-radius: 0 0 20px 20px;
+}
+
+.nav-button#active {
+  background-color: inherit;
 }
 
 body {
+  background: repeating-linear-gradient(135deg, #569092, #569092 80px, #51888a 80px 160px);
   flex-direction: column;
   align-items: center;
   gap: 10px;
   width: 100vw;
   display: flex;
+}
+
+#savedmovies-body {
+  background: repeating-linear-gradient(135deg, var(--brand-color4), var(--brand-color4) 80px, var(--brand-color4-darker) 80px, var(--brand-color4-darker) 160px);
 }
 
 header {
@@ -73,26 +108,13 @@ header {
   display: flex;
 }
 
-header nav ul {
-  align-items: center;
-  gap: 21px;
-  display: flex;
-}
-
-.nav-button {
-  justify-content: center;
-  align-items: center;
-  gap: var(--sds-size-space-200);
-  padding: 20px 16px;
-  display: flex;
-}
-
 main {
   flex-direction: column;
   align-self: center;
   align-items: center;
   width: clamp(300px, 100%, 1400px);
   min-height: 100vh;
+  margin-top: 84px;
   display: flex;
 }
 
@@ -111,6 +133,11 @@ main {
 .dark {
   background-color: var(--background-dark-base, #16181a);
   color: var(--brand-color1, #fc0);
+}
+
+.white {
+  background-color: var(--brand-color3, #fc0);
+  color: var(--background-dark-base, #16181a);
 }
 
 .section-header p {
@@ -167,7 +194,8 @@ main {
 
 .movie-card:hover {
   z-index: 10;
-  transform: scale(1.05);
+  cursor: pointer;
+  transform: translateY(16px)scale(1.05);
   box-shadow: 0 0 10px #0003;
 }
 
@@ -190,11 +218,11 @@ main {
   box-shadow: 0 0 10px #0003;
 }
 
-.movie-card.loved .love-button {
+.movie-card .love-button.loved {
   background: var(--brand-color3);
 }
 
-.movie-card.loved .love-button svg path {
+.movie-card .love-button.loved svg path {
   fill: var(--brand-color4);
   fill-opacity: 1;
 }
@@ -249,6 +277,11 @@ main {
   color: var(--brand-color2, #5f9ea0);
   font-size: 12px;
   font-weight: 700;
+}
+
+.movie-card:hover .movie-card-content .cto-view-details {
+  color: var(--brand-color4, #e93dad);
+  text-decoration: underline;
 }
 
 #top-movie-list {
@@ -324,7 +357,7 @@ main {
   top: 50%;
   left: 50%;
   overflow: hidden;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -35%);
 }
 
 .movie-modal-close {
@@ -491,12 +524,6 @@ main {
   font-size: 2.5rem;
 }
 
-#background-image-wrapper {
-  background: repeating-linear-gradient(135deg, var(--brand-color2-5), var(--brand-color2-5) 50px, var(--brand-color2) 50px, var(--brand-color2) 100px);
-  height: 200px;
-  position: relative;
-}
-
 #background-image img {
   z-index: 0;
   width: 100%;
@@ -595,5 +622,21 @@ footer p {
 
 .footer-bottom {
   text-align: center;
+}
+
+@media screen and (width <= 850px) {
+  .movie-modal {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%)scale3d(.8, .8, 1);
+  }
+}
+
+@media screen and (width <= 500px) {
+  .movie-modal {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%)scale3d(.5, .5, 1);
+  }
 }
 /*# sourceMappingURL=index.6dd9c435.css.map */
