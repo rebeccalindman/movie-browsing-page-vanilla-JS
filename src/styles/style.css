@@ -374,15 +374,6 @@ main {
 }
 
 
-.rating-container {
-    grid-area: rating-container;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    background: var(--brand-color3, #E6E6FA);
-}
 
 
 .love-button {
@@ -406,26 +397,37 @@ main {
     position: fixed;
     display: grid;
     grid-template-columns: 1fr 2fr; /* Adjust proportions here */
-    grid-template-rows: auto auto auto;
+    grid-template-rows: 10% auto auto auto;
     grid-template-areas: 
         "movie-modal-backdrop movie-modal-title-container"
-        "movie-modal-backdrop rating-container"
-        "movie-modal-backdrop information-container";
+        "movie-modal-backdrop information-container"
+        "rating-container movie-modal-links"
+        "actors-section actors-section"
+        ;
     width: 70vw;
-    height: 90vh;
+    height: auto;
     overflow: hidden;
-    border-radius: 20px;
+    border-radius: 30px;
     box-sizing: border-box;
-    border: 2px solid white;
+    border: 10px solid white;
     background: #FFF;
+}
+
+.movie-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
 }
 
 .movie-modal-backdrop {
     grid-area: movie-modal-backdrop;
-    width: 100%;
-    height: 100%;
-    background-size: cover;
-    background-position: center;
+    width: auto; /* adjusts to aspect ratio + width of column */
+    height: fit-content; /* Automatically adjust the height to preserve aspect ratio */
+    aspect-ratio: 3 / 5; 
 }
 
 .movie-modal-close {
@@ -455,14 +457,13 @@ main {
     grid-area: rating-container;
     display: flex;
     flex-direction: row;
-    padding: 10px 20px;
+    padding: 8px;
+    align-items: center;
+    width: 100%;
+    height: auto;
+
     justify-content: space-between;
     align-items: center;
-/*     align-self: stretch; */
-    width: 100%;
-    height: fit-content;
-
-    /* style */
     background: var(--brand-color3, #E6E6FA);
 }
 
@@ -472,33 +473,25 @@ main {
     font-style: normal;
     line-height: normal;
     gap: 8px;
+    padding: 10px; /* same as heart icon */
     color: var(--text-dark);
 }
 
-/* .movie-modal-title-container {
-    grid: movie-modal-title-container;
-    display: flex;
-    padding: 15px 40px;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    z-index: 2;
-   
-} */
-
 .movie-modal-title-container {
     grid-area: movie-modal-title-container;
+    width: 100%;
+    height: auto;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+/*     align-items: center; */
     padding: 10px;
-    background: var(--background-dark-base, #16181A);
+/*     background: var(--background-dark-base, #16181A); */
 }
 
 .movie-modal-title {
-    color: var(--brand-color1, #FC0);
-    text-align: center;
+   /*  color: var(--brand-color1, #FC0); */
+  /*   text-align: center; */
     font-size: 24px;
     font-weight: 700;
     width: 100%;
@@ -506,13 +499,13 @@ main {
 }
 
 .movie-modal-rating, .star-icon {
-    font-size: 26px;
+    font-size: 24px;
     font-weight: 700;
     
 }
 
 .vote-count {
-    font-size: 16px;
+    font-size: 12px;
     font-weight: 300;
 }
 
@@ -560,15 +553,16 @@ main {
     font-weight: 300;
 }
 
-.movie-modal .information-container h4 {
-    font-size: 16px;
-}
 
 .movie-modal-links {
+    grid-area: movie-modal-links;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
-    gap: 10px;
+    gap: 24px;
+    padding: 12px;
+    font-size: 12px;
+    line-height: 1.5;
 }
 
 .movie-modal-links li {
@@ -580,10 +574,11 @@ main {
 }
 
 /* actor list section */
-.movie-modal .actors-section {
+.actors-section {
     grid-area: actors-section;
     display: flex;
     padding: 12px;
+    margin-top: 10px;
     flex-direction: row;
     align-items: center;
     gap: 10px;
@@ -593,10 +588,8 @@ main {
 
     height: fit-content;
     max-width: 100%;
-
-    /* style */
-    border-radius: 20px;
-    border: 2px solid var(--brand-color3, #E6E6FA);
+    background-color: #efeff2;
+   /*  border: 2px solid var(--brand-color3, #E6E6FA); */
 }
 
 .actors-section ol {
@@ -606,6 +599,7 @@ main {
     flex-direction: row;
     align-items: start;
     gap: 10px;
+    font-size: clamp(8px, 2rem, 12px);
 }
 
 .actor-list-item {
@@ -783,17 +777,13 @@ main {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
+/*         gap: 10px; */
 
     }
 
     .movie-modal-backdrop {
         width: 100%;
-        height: 61vh;
-        display: flex;
-        align-self: flex-start;
-        justify-self: center;
-        
+        aspect-ratio: 16 / 9; /* Adjust aspect ratio for smaller screens */
     }
 
     .movie-card {

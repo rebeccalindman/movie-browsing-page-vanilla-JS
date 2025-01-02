@@ -333,16 +333,6 @@ main {
   display: flex;
 }
 
-.rating-container {
-  background: var(--brand-color3, #e6e6fa);
-  flex-direction: column;
-  grid-area: rating-container;
-  justify-content: center;
-  align-items: center;
-  padding: 10px;
-  display: flex;
-}
-
 .love-button {
   cursor: pointer;
   background-color: #0000;
@@ -361,25 +351,35 @@ main {
   z-index: 100;
   box-sizing: border-box;
   background: #fff;
-  border: 2px solid #fff;
-  border-radius: 20px;
-  grid-template: "movie-modal-backdrop movie-modal-title-container"
-                 "movie-modal-backdrop rating-container"
+  border: 10px solid #fff;
+  border-radius: 30px;
+  grid-template: "movie-modal-backdrop movie-modal-title-container" 10%
                  "movie-modal-backdrop information-container"
+                 "rating-container movie-modal-links"
+                 "actors-section actors-section"
                  / 1fr 2fr;
   width: 70vw;
-  height: 90vh;
+  height: auto;
   display: grid;
   position: fixed;
   overflow: hidden;
 }
 
-.movie-modal-backdrop {
-  background-position: center;
-  background-size: cover;
-  grid-area: movie-modal-backdrop;
+.movie-modal-overlay {
+  z-index: 10;
+  background-color: #00000080;
   width: 100%;
   height: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.movie-modal-backdrop {
+  aspect-ratio: 3 / 5;
+  grid-area: movie-modal-backdrop;
+  width: auto;
+  height: fit-content;
 }
 
 .movie-modal-close {
@@ -408,8 +408,8 @@ main {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: fit-content;
-  padding: 10px 20px;
+  height: auto;
+  padding: 8px;
   display: flex;
 }
 
@@ -417,36 +417,35 @@ main {
   color: var(--text-dark);
   align-items: center;
   gap: 8px;
+  padding: 10px;
   font-style: normal;
   line-height: normal;
   display: flex;
 }
 
 .movie-modal-title-container {
-  background: var(--background-dark-base, #16181a);
   flex-direction: column;
   grid-area: movie-modal-title-container;
   justify-content: center;
-  align-items: center;
+  width: 100%;
+  height: auto;
   padding: 10px;
   display: flex;
 }
 
 .movie-modal-title {
-  color: var(--brand-color1, #fc0);
-  text-align: center;
   width: 100%;
   font-size: 24px;
   font-weight: 700;
 }
 
 .movie-modal-rating, .star-icon {
-  font-size: 26px;
+  font-size: 24px;
   font-weight: 700;
 }
 
 .vote-count {
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 300;
 }
 
@@ -491,14 +490,14 @@ main {
   font-weight: 300;
 }
 
-.movie-modal .information-container h4 {
-  font-size: 16px;
-}
-
 .movie-modal-links {
-  flex-direction: column;
+  flex-direction: row;
+  grid-area: movie-modal-links;
   align-items: flex-start;
-  gap: 10px;
+  gap: 24px;
+  padding: 12px;
+  font-size: 12px;
+  line-height: 1.5;
   display: flex;
 }
 
@@ -510,15 +509,15 @@ main {
   color: var(--text-dark);
 }
 
-.movie-modal .actors-section {
-  border: 2px solid var(--brand-color3, #e6e6fa);
-  border-radius: 20px;
+.actors-section {
+  background-color: #efeff2;
   flex-direction: row;
   grid-area: actors-section;
   align-items: center;
   gap: 10px;
   max-width: 100%;
   height: fit-content;
+  margin-top: 10px;
   padding: 12px;
   display: flex;
   overflow-x: scroll;
@@ -530,6 +529,7 @@ main {
   gap: 10px;
   width: fit-content;
   height: fit-content;
+  font-size: clamp(8px, 2rem, 12px);
   display: flex;
 }
 
@@ -660,7 +660,6 @@ footer p {
   .movie-modal {
     flex-direction: column;
     align-items: center;
-    gap: 10px;
     width: 90vw;
     height: 90vh;
     display: flex;
@@ -669,10 +668,8 @@ footer p {
   }
 
   .movie-modal-backdrop {
-    place-self: flex-start center;
+    aspect-ratio: 16 / 9;
     width: 100%;
-    height: 61vh;
-    display: flex;
   }
 
   .movie-card {

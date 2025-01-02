@@ -1060,16 +1060,15 @@ function createMovieModal(movie) {
     movieModalOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
     movieModal.innerHTML = `
     <button type="button" class="movie-modal-close">X</button>
-    <div class="movie-modal-backdrop" style="background: url('https://image.tmdb.org/t/p/w500/${movie.poster_path}') lightgray 50% / cover no-repeat" aria-label="${movie.title} movie backdrop">
+    <div class="movie-modal-backdrop" style="background: url('https://image.tmdb.org/t/p/w500/${movie.poster_path}') lightgray 50% center / cover no-repeat" aria-label="${movie.title} movie backdrop">
     </div>
     <section class="movie-modal-title-container">
         <h3 class="movie-modal-title">${movie.title}</h3>
     </section>
     <section class="rating-container">
         <div class="rating-group">
-            <p class="star-icon">\u{2B50}\u{FE0F}</p> <!-- todo replace with star icon -->
             <p class="movie-modal-rating">${movie.vote_average}/10</p> 
-            <p class="vote-count">(${movie.vote_count} votes)</p> 
+            <p class="vote-count">(${movie.vote_count})</p> 
         </div>
         <button class="love-button ${favoriteClass}" data-movie-id="${movie.id}">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
@@ -1079,35 +1078,39 @@ function createMovieModal(movie) {
     </section>
     <section class="information-container">
         <ul class="movie-genres">
-            ${movie.genres.map((genre)=>`<li>${genre.name}</li>`).join('- ')}
+        ${movie.genres.map((genre)=>`<li>${genre.name}</li>`).join('- ')}
         </ul>
+        <p class="movie-modal-release-date">${movie.release_date}</p>   
         <p class="movie-modal-overview">${movie.overview}</p>
-        <p class="movie-modal-release-date">${movie.release_date}</p>
         
-        <div class="movie-modal-links">
-            <h4>Links</h4>
-            <ul>
-                <li><a href="#">IMDb</a></li>
-                <li><a href="#">Rotten Tomatoes</a></li>
-            </ul>
-        
-            <h4>Watch on</h4>
-            <ul class="movie-modal-links">
-                <li><a href="#">Netflix</a></li>
-                <li><a href="#">Amazon Prime</a></li>
-            </ul>
-        </div>
-        
-        <section class="actors-section">
-            <ol>
-                ${movie.cast ? movie.cast.map((actor)=>`
-                        <li class="actor-list-item">
-                            <img class="actor-image" src="${actor.profile_path}" alt="${actor.name}">
-                            <span aria-label="Actor name">${actor.name}</span>
+       
+    </section>
+    <section class="movie-modal-links">
+            <div class="links-container">
+                <h4>Links</h4>
+                <ul>
+                    <li><a href="#">IMDb</a></li>
+                    <li><a href="#">Rotten Tomatoes</a></li>
+                </ul>
+            </div>
+            <div class="watch-container">
+                <h4>Watch on</h4>
+                <ul>
+                    <li><a href="#">Netflix</a></li>
+                    <li><a href="#">Amazon Prime</a></li>
+                </ul>
+            </div>
+    </section>
+    <section class="actors-section">
+        <ol>
+            ${movie.cast ? movie.cast.map((actor)=>`
+                     <li class="actor-list-item">
+                        <img class="actor-image" src="${actor.profile_path}" alt="${actor.name}">
+                        <span aria-label="Role" style="font-weight: bold;">${actor.character}</span>
+                        <span aria-label="Actor name">${actor.name}</span>
                         </li>
-                    `).join('') : '<li>No cast information available</li>'}
-            </ol>
-        </section>
+                `).join('') : '<li>No cast information available</li>'}
+        </ol>
     </section>
     `;
     document.body.appendChild(movieModal);
