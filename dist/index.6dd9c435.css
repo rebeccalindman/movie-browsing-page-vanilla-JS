@@ -36,13 +36,63 @@ header {
   align-self: stretch;
   align-items: flex-start;
   width: 100vw;
+  height: fit-content;
   padding: 0 2vw;
   display: flex;
   position: fixed;
 }
 
+.search-bar-container {
+  border-radius: 20px;
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+}
+
+.search-bar-container * {
+  color: #fff;
+  opacity: .8;
+  background-color: var(--text-dark);
+  border: none;
+  padding: 12px;
+  font-size: 14px;
+}
+
+.search-bar-container input {
+  border-radius: inherit;
+  opacity: 1;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+.search-bar-container button {
+  justify-content: center;
+  align-self: center;
+  align-items: center;
+  width: 80px;
+  height: 100%;
+  display: flex;
+}
+
+.search-bar-container button:hover {
+  opacity: 1;
+  background-color: var(--brand-color2);
+  outline: 1px solid #ffffffb9;
+}
+
 header #logo:hover {
   cursor: pointer;
+  grid-area: logo;
   transform: scale(.95);
 }
 
@@ -362,7 +412,7 @@ main {
   height: auto;
   display: grid;
   position: fixed;
-  overflow: hidden;
+  overflow-y: scroll;
 }
 
 .movie-modal-overlay {
@@ -517,6 +567,7 @@ main {
   gap: 10px;
   max-width: 100%;
   height: fit-content;
+  min-height: 100px;
   margin-top: 10px;
   padding: 12px;
   display: flex;
@@ -702,6 +753,7 @@ footer p {
     align-items: center;
     height: clamp(50px, 20vw, 80px);
     padding: 2vw 4vw;
+    display: flex;
   }
 
   nav {
@@ -712,6 +764,10 @@ footer p {
     display: flex;
     overflow: hidden;
     box-shadow: 0 0 10px #000;
+  }
+
+  .search-bar-container {
+    width: 90%;
   }
 
   #hamburger-menu.open {

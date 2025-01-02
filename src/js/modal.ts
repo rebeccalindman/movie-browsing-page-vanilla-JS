@@ -75,7 +75,7 @@ import { isFavorite, toggleFavorite } from "./utils.ts";
                         <span aria-label="Actor name">${actor.name}</span>
                         </li>
                 `).join('')
-                : '<li>No cast information available</li>'
+                : '<li class="actor-list-item">No cast information available</li>'
             }
         </ol>
     </section>

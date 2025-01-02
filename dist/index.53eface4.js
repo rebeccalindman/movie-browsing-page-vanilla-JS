@@ -630,6 +630,8 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     });
     if (window.location.pathname === "/index.html") await main(); // Ensure dynamic content is fully rendered
     if (window.location.pathname === "/savedmovies.html") await savedMoviesMain(); // Ensure saved movies are fully loaded
+    // Initialize the search functionality
+    handleMovieSearch();
 });
 async function main() {
     try {
@@ -668,6 +670,10 @@ async function savedMoviesMain() {
 }
 function renderMovieCard(movie, category) {
     const movieCardContainer = document.getElementById(`${category} movies`);
+    if (!movieCardContainer) {
+        console.error(`Error: Movie card container for category '${category}' not found.`);
+        return; // Prevent rendering if the container is missing
+    }
     const movieCard = document.createElement("article");
     movieCard.classList.add("movie-card");
     // Check if the movie is a favorite
@@ -690,11 +696,6 @@ function renderMovieCard(movie, category) {
     </div>
   `;
     movieCardContainer.appendChild(movieCard);
-    // Attach click event to view details for the entire card
-    movieCard.addEventListener("click", (event)=>{
-        const target = event.target;
-        if (!target.closest(".love-button")) (0, _modalTs.createMovieModal)(movie);
-    });
     // Attach click event to toggle favorite
     const loveButton = movieCard.querySelector(".love-button");
     if (!loveButton) throw new Error("Love button not found");
@@ -703,6 +704,11 @@ function renderMovieCard(movie, category) {
         // Select all buttons with the same movie ID
         const loveButtons = document.querySelectorAll(`.love-button[data-movie-id="${movie.id}"]`);
         loveButtons.forEach((button)=>button.classList.toggle("loved"));
+    });
+    // Attach click event to view details
+    movieCard.addEventListener("click", (event)=>{
+        const target = event.target;
+        if (!target.closest(".love-button")) (0, _modalTs.createMovieModal)(movie);
     });
 }
 function displayMovieCards(movies, category) {
@@ -733,11 +739,12 @@ async function fetchAndDisplayCategoryMovies(category) {
                     name: (0, _utilsTs.getGenreFromId)(id, genresList)
                 }));
         });
+        // Ensure the category section exists before displaying cards
+        createCategorySection(category);
         // Save the fetched movies to local storage
         (0, _apiTs.storeDataArray)(categoryMovies, `${category} movies`);
         // Sync love property
         (0, _utilsTs.syncLovePropertyAcrossStoredArrays)();
-        createCategorySection(category);
         displayMovieCards(categoryMovies, category);
     } catch (error) {
         console.error(`An error occurred while fetching movies for category: ${category}`, error);
@@ -746,30 +753,63 @@ async function fetchAndDisplayCategoryMovies(category) {
     }
 }
 function createCategorySection(category) {
-    if (document.getElementById(`${category} movies`)) {
+    const existingSection = document.getElementById(`${category} movies`);
+    if (existingSection) {
         console.warn(`Category section for '${category}' already exists.`);
         return; // Avoid duplicate sections
     }
-    const section = document.createElement('section');
-    section.classList.add('section-header');
+    const section = document.createElement("section");
+    section.classList.add("section-header");
     section.innerHTML = `
     <h2>${category}</h2>
     <p>Click on a movie card to view more details and find a streaming site.</p>
   `;
-    if (!mainElement) {
-        console.error("Error: 'main' element not found in the DOM.");
-        return;
-    }
-    mainElement.appendChild(section);
-    const topMoviesCategoryWrapper = document.createElement('section');
-    topMoviesCategoryWrapper.classList.add('movie-cards-wrapper');
-    topMoviesCategoryWrapper.innerHTML = `
-    <div class="movie-card-scroll-container"> 
-      <div class="movie-card-container" id="${category} movies">
-      </div>
+    const movieCardsWrapper = document.createElement("section");
+    movieCardsWrapper.classList.add("movie-cards-wrapper");
+    movieCardsWrapper.innerHTML = `
+    <div class="movie-card-scroll-container">
+      <div class="movie-card-container" id="${category} movies"></div>
     </div>
   `;
-    mainElement.appendChild(topMoviesCategoryWrapper);
+    if (mainElement) {
+        mainElement.appendChild(section);
+        mainElement.appendChild(movieCardsWrapper);
+    } else console.error("Error: 'main' element not found in the DOM.");
+}
+function handleMovieSearch() {
+    const searchInput = document.getElementById("searchInput");
+    const searchButton = document.getElementById("search-button");
+    const searchResultsContainer = document.getElementById("searchResult movies");
+    const fetchAndDisplayMovies = async (query)=>{
+        if (query.trim().length < 3) {
+            (0, _domTs.displayUserMessage)("Search query too short.", "Please enter at least 3 characters for your search!");
+            return;
+        }
+        const apiSearchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${(0, _apiTs.API_KEY_tmdb)}&query=${encodeURIComponent(query)}`;
+        try {
+            const searchResult = await (0, _apiTs.fetchMovies)(apiSearchUrl);
+            // Clear previous search results
+            if (searchResultsContainer) searchResultsContainer.innerHTML = "";
+            if (searchResult && searchResult.length > 0) {
+                (0, _apiTs.storeDataArray)(searchResult, "searchResult");
+                (0, _utilsTs.syncLovePropertyAcrossStoredArrays)();
+                displayMovieCards(searchResult, "searchResult");
+            } else (0, _domTs.displayUserMessage)(`No results found for "${query}".`, "Try a different keyword or check the spelling!");
+        } catch (error) {
+            console.error("Error fetching movies:", error);
+            (0, _domTs.displayUserMessage)("An error occurred during the search.", "Please try again later!");
+        }
+    };
+    if (searchInput) searchInput.addEventListener("input", ()=>{
+        const query = searchInput.value.trim();
+        if (query.length >= 3) fetchAndDisplayMovies(query);
+    });
+    if (searchButton) searchButton.addEventListener("click", ()=>{
+        if (searchInput) {
+            const query = searchInput.value.trim();
+            fetchAndDisplayMovies(query);
+        }
+    });
 }
 
 },{"./api.ts":"jGtCU","./utils.ts":"8NGW9","@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./modal.ts":"5pIqC","./dom.ts":"eWIKv"}],"jGtCU":[function(require,module,exports,__globalThis) {
@@ -1109,7 +1149,7 @@ function createMovieModal(movie) {
                         <span aria-label="Role" style="font-weight: bold;">${actor.character}</span>
                         <span aria-label="Actor name">${actor.name}</span>
                         </li>
-                `).join('') : '<li>No cast information available</li>'}
+                `).join('') : '<li class="actor-list-item">No cast information available</li>'}
         </ol>
     </section>
     `;

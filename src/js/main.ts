@@ -1,6 +1,6 @@
 //main.ts
 import { Movie, MovieData } from "./types.ts";
-import { fetchMovies, apiUrl, storeDataArray } from './api.ts';
+import { fetchMovies, apiUrl, storeDataArray, API_KEY_tmdb } from './api.ts';
 import { displayUserMessage } from "./dom.ts";
 import { createMovieModal } from './modal.ts';
 import { addCategoryFilter, getGenreFromId, getCachedGenresList, syncLovePropertyAcrossStoredArrays, toggleFavorite, isFavorite, getFavoriteMovies, scrollToBottom } from "./utils.ts";  
@@ -23,6 +23,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
+
+
   const hamburgerButton = document.getElementById("hamburger-button");
   if (hamburgerButton) {
     hamburgerButton.addEventListener("click", () => {
@@ -42,6 +44,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (window.location.pathname === "/savedmovies.html") {
     await savedMoviesMain(); // Ensure saved movies are fully loaded
   }
+
+  // Initialize the search functionality
+  handleMovieSearch();
 });
 
 async function main(): Promise<void> {
@@ -79,7 +84,13 @@ async function savedMoviesMain(): Promise<void> {
 
 // Render Movie Card
 export function renderMovieCard(movie: Movie, category: string): void {
-  const movieCardContainer = document.getElementById(`${category} movies`) as HTMLAreaElement;
+  const movieCardContainer = document.getElementById(`${category} movies`) as HTMLDivElement | null;
+
+  if (!movieCardContainer) {
+    console.error(`Error: Movie card container for category '${category}' not found.`);
+    return; // Prevent rendering if the container is missing
+  }
+
   const movieCard = document.createElement("article");
   movieCard.classList.add("movie-card");
 
@@ -106,14 +117,6 @@ export function renderMovieCard(movie: Movie, category: string): void {
 
   movieCardContainer.appendChild(movieCard);
 
-  // Attach click event to view details for the entire card
-  movieCard.addEventListener("click", (event) => {
-    const target = event.target as HTMLElement;
-    if (!target.closest(".love-button")) {
-      createMovieModal(movie);
-    }
-  });
-
   // Attach click event to toggle favorite
   const loveButton = movieCard.querySelector(".love-button");
   if (!loveButton) {
@@ -126,7 +129,16 @@ export function renderMovieCard(movie: Movie, category: string): void {
     const loveButtons = document.querySelectorAll(`.love-button[data-movie-id="${movie.id}"]`);
     loveButtons.forEach((button) => button.classList.toggle("loved"));
   });
+
+  // Attach click event to view details
+  movieCard.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement;
+    if (!target.closest(".love-button")) {
+      createMovieModal(movie);
+    }
+  });
 }
+
 
 export function displayMovieCards(movies: MovieData, category: string) {
   try {
@@ -145,11 +157,11 @@ export function displayMovieCards(movies: MovieData, category: string) {
 
 
 
-export async function fetchAndDisplayCategoryMovies(category: string) {
+export async function fetchAndDisplayCategoryMovies(category: string): Promise<void> {
   try {
     const genresList = await getCachedGenresList();
-
     const categoryUrl = await addCategoryFilter(category);
+
     console.log(`Fetching movies for category: ${category}, URL: ${categoryUrl}`);
 
     const categoryMovies = await fetchMovies(categoryUrl);
@@ -161,12 +173,15 @@ export async function fetchAndDisplayCategoryMovies(category: string) {
     // Sync genres for the movies
     categoryMovies.forEach((movie) => {
       if (movie.genres) {
-        movie.genres = movie.genres.map(({id}) => ({
+        movie.genres = movie.genres.map(({ id }) => ({
           id,
           name: getGenreFromId(id, genresList),
         }));
       }
     });
+
+    // Ensure the category section exists before displaying cards
+    createCategorySection(category);
 
     // Save the fetched movies to local storage
     storeDataArray(categoryMovies, `${category} movies`);
@@ -174,7 +189,6 @@ export async function fetchAndDisplayCategoryMovies(category: string) {
     // Sync love property
     syncLovePropertyAcrossStoredArrays();
 
-    createCategorySection(category);
     displayMovieCards(categoryMovies, category);
   } catch (error) {
     console.error(`An error occurred while fetching movies for category: ${category}`, error);
@@ -185,42 +199,95 @@ export async function fetchAndDisplayCategoryMovies(category: string) {
 
 
 
-export function createCategorySection(category: string) {
-  if (document.getElementById(`${category} movies`)) {
+export function createCategorySection(category: string): void {
+  const existingSection = document.getElementById(`${category} movies`);
+  if (existingSection) {
     console.warn(`Category section for '${category}' already exists.`);
     return; // Avoid duplicate sections
   }
 
-  const section = document.createElement('section');
-  section.classList.add('section-header');
+  const section = document.createElement("section");
+  section.classList.add("section-header");
   section.innerHTML = `
     <h2>${category}</h2>
     <p>Click on a movie card to view more details and find a streaming site.</p>
   `;
 
-  if (!mainElement) {
-    console.error("Error: 'main' element not found in the DOM.");
-    return;
-  }
-
-  mainElement.appendChild(section);
-
-  const topMoviesCategoryWrapper = document.createElement('section');
-  topMoviesCategoryWrapper.classList.add('movie-cards-wrapper');
-  topMoviesCategoryWrapper.innerHTML = `
-    <div class="movie-card-scroll-container"> 
-      <div class="movie-card-container" id="${category} movies">
-      </div>
+  const movieCardsWrapper = document.createElement("section");
+  movieCardsWrapper.classList.add("movie-cards-wrapper");
+  movieCardsWrapper.innerHTML = `
+    <div class="movie-card-scroll-container">
+      <div class="movie-card-container" id="${category} movies"></div>
     </div>
   `;
 
-  mainElement.appendChild(topMoviesCategoryWrapper);
+  if (mainElement) {
+    mainElement.appendChild(section);
+    mainElement.appendChild(movieCardsWrapper);
+  } else {
+    console.error("Error: 'main' element not found in the DOM.");
+  }
 }
 
 
 
+function handleMovieSearch() {
+  const searchInput = document.getElementById("searchInput") as HTMLInputElement | null;
+  const searchButton = document.getElementById("search-button");
+  const searchResultsContainer = document.getElementById("searchResult movies");
 
+  const fetchAndDisplayMovies = async (query: string) => {
+    if (query.trim().length < 3) {
+      displayUserMessage(
+        "Search query too short.",
+        "Please enter at least 3 characters for your search!"
+      );
+      return;
+    }
 
-   
-  
+    const apiSearchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY_tmdb}&query=${encodeURIComponent(query)}`;
+
+    try {
+      const searchResult = await fetchMovies(apiSearchUrl);
+
+      // Clear previous search results
+      if (searchResultsContainer) {
+        searchResultsContainer.innerHTML = "";
+      }
+
+      if (searchResult && searchResult.length > 0) {
+        storeDataArray(searchResult, "searchResult");
+        syncLovePropertyAcrossStoredArrays();
+        displayMovieCards(searchResult, "searchResult");
+      } else {
+        displayUserMessage(
+          `No results found for "${query}".`,
+          "Try a different keyword or check the spelling!"
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching movies:", error);
+      displayUserMessage(
+        "An error occurred during the search.",
+        "Please try again later!"
+      );
+    }
+  };
+
+  if (searchInput) {
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.trim();
+      if (query.length >= 3) fetchAndDisplayMovies(query);
+    });
+  }
+
+  if (searchButton) {
+    searchButton.addEventListener("click", () => {
+      if (searchInput) {
+        const query = searchInput.value.trim();
+        fetchAndDisplayMovies(query);
+      }
+    });
+  }
+}
 
