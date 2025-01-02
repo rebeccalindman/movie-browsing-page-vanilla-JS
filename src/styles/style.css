@@ -375,11 +375,15 @@ main {
 
 
 .rating-container {
+    grid-area: rating-container;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    gap: 10px;
+    padding: 10px;
+    background: var(--brand-color3, #E6E6FA);
 }
+
 
 .love-button {
     background-color: transparent;
@@ -399,33 +403,29 @@ main {
 /***** MODAL *****/
 .movie-modal {
     z-index: 100;
-
     position: fixed;
-    top: 40%;
-    left: 50%;
-    transform: translate(-50%, -40%);
-
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto auto auto auto;
+    grid-template-columns: 1fr 2fr; /* Adjust proportions here */
+    grid-template-rows: auto auto auto;
     grid-template-areas: 
-    "movie-modal-backdrop movie-modal-title-container"
-    "movie-modal-backdrop rating-container"
-    "movie-modal-backdrop movie-modal-content"
-    "movie-modal-backdrop information-container";
-    width: 750px;
-  /*   flex-direction: column; */
-    align-items: center;
-
+        "movie-modal-backdrop movie-modal-title-container"
+        "movie-modal-backdrop rating-container"
+        "movie-modal-backdrop information-container";
+    width: 70vw;
+    height: 90vh;
     overflow: hidden;
-
-    /* style */
     border-radius: 20px;
     box-sizing: border-box;
     border: 2px solid white;
-    border-width: thick;
     background: #FFF;
+}
 
+.movie-modal-backdrop {
+    grid-area: movie-modal-backdrop;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
 }
 
 .movie-modal-close {
@@ -450,22 +450,17 @@ main {
     background-color: var(--brand-color1);
 }
 
-.movie-modal-backdrop {
-    grid-area: movie-modal-backdrop;
-    width: 100%;
-    height: 100%;
-    flex-shrink: 0;
-}
-
 /* rating container */
 .rating-container {
     grid-area: rating-container;
     display: flex;
-    padding: 15px 30px;
+    flex-direction: row;
+    padding: 10px 20px;
     justify-content: space-between;
     align-items: center;
 /*     align-self: stretch; */
     width: 100%;
+    height: fit-content;
 
     /* style */
     background: var(--brand-color3, #E6E6FA);
@@ -480,16 +475,24 @@ main {
     color: var(--text-dark);
 }
 
-.movie-modal-title-container {
+/* .movie-modal-title-container {
     grid: movie-modal-title-container;
     display: flex;
-   /*  width: 737px; */
     padding: 15px 40px;
     justify-content: center;
     align-items: center;
     gap: 10px;
     z-index: 2;
-    /* style */
+   
+} */
+
+.movie-modal-title-container {
+    grid-area: movie-modal-title-container;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
     background: var(--background-dark-base, #16181A);
 }
 
@@ -529,13 +532,11 @@ main {
 
 .information-container {
     grid-area: information-container;
+    padding: 12px;
+    gap: 12px;
     display: flex;
     flex-direction: column;
-    padding: 10px 30px 30px 30px;
-    color: var(--text-dark);
-    gap: 15px;
-    flex: 1 0 0;
-    width: 100%;
+    overflow-y: auto; /* Allow scrolling for overflow */
 }
 
 .movie-genres {
@@ -583,27 +584,49 @@ main {
     grid-area: actors-section;
     display: flex;
     padding: 12px;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     gap: 10px;
-    align-self: stretch;
+    /* align-self: stretch; */
 
-    overflow: scroll;
+    overflow-x: scroll;
+
+    height: fit-content;
+    max-width: 100%;
 
     /* style */
     border-radius: 20px;
     border: 2px solid var(--brand-color3, #E6E6FA);
 }
+
+.actors-section ol {
+    height: fit-content;
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    gap: 10px;
+}
+
 .actor-list-item {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 10px;
+    justify-content: center;
 }
+
+.actor-list-item span {
+    text-align: center;
+}
+
+
 
 .actor-list-item img {
     width: 100px;
     height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 #page-title {
@@ -612,6 +635,8 @@ main {
     text-align: center;
     font-size: 2.5rem;
 }
+
+
 
 
 
@@ -646,10 +671,6 @@ main {
     z-index: 1; /* Ensure it's on top of the image */
     line-height: 0; /* Remove line height spacing */
     pointer-events: none;
-}
-
-.movie-modal .ux-shape-divider {
-    top: 300px; /* Stick to the bottom of the image */
 }
 
 .movie-cards-wrapper#featured .ux-shape-divider {
@@ -754,10 +775,25 @@ main {
 
 @media screen and (max-width: 700px) {
     .movie-modal {
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        scale: 0.5;
+        position: fixed;
+        width: 90vw;
+        height: 90vh;
+        overflow-y: scroll;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+
+    }
+
+    .movie-modal-backdrop {
+        width: 100%;
+        height: 61vh;
+        display: flex;
+        align-self: flex-start;
+        justify-self: center;
+        
     }
 
     .movie-card {

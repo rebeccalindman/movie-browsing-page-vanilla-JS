@@ -334,9 +334,12 @@ main {
 }
 
 .rating-container {
-  flex-direction: row;
+  background: var(--brand-color3, #e6e6fa);
+  flex-direction: column;
+  grid-area: rating-container;
+  justify-content: center;
   align-items: center;
-  gap: 10px;
+  padding: 10px;
   display: flex;
 }
 
@@ -358,21 +361,25 @@ main {
   z-index: 100;
   box-sizing: border-box;
   background: #fff;
-  border: thick solid #fff;
+  border: 2px solid #fff;
   border-radius: 20px;
   grid-template: "movie-modal-backdrop movie-modal-title-container"
                  "movie-modal-backdrop rating-container"
-                 "movie-modal-backdrop movie-modal-content"
                  "movie-modal-backdrop information-container"
-                 / 1fr 1fr;
-  align-items: center;
-  width: 750px;
+                 / 1fr 2fr;
+  width: 70vw;
+  height: 90vh;
   display: grid;
   position: fixed;
-  top: 40%;
-  left: 50%;
   overflow: hidden;
-  transform: translate(-50%, -40%);
+}
+
+.movie-modal-backdrop {
+  background-position: center;
+  background-size: cover;
+  grid-area: movie-modal-backdrop;
+  width: 100%;
+  height: 100%;
 }
 
 .movie-modal-close {
@@ -394,20 +401,15 @@ main {
   background-color: var(--brand-color1);
 }
 
-.movie-modal-backdrop {
-  flex-shrink: 0;
-  grid-area: movie-modal-backdrop;
-  width: 100%;
-  height: 100%;
-}
-
 .rating-container {
   background: var(--brand-color3, #e6e6fa);
+  flex-direction: row;
   grid-area: rating-container;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 15px 30px;
+  height: fit-content;
+  padding: 10px 20px;
   display: flex;
 }
 
@@ -421,13 +423,12 @@ main {
 }
 
 .movie-modal-title-container {
-  grid: movie-modal-title-container;
-  z-index: 2;
   background: var(--background-dark-base, #16181a);
+  flex-direction: column;
+  grid-area: movie-modal-title-container;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  padding: 15px 40px;
+  padding: 10px;
   display: flex;
 }
 
@@ -461,14 +462,12 @@ main {
 }
 
 .information-container {
-  color: var(--text-dark);
   flex-direction: column;
-  flex: 1 0 0;
   grid-area: information-container;
-  gap: 15px;
-  width: 100%;
-  padding: 10px 30px 30px;
+  gap: 12px;
+  padding: 12px;
   display: flex;
+  overflow-y: auto;
 }
 
 .movie-genres {
@@ -514,24 +513,41 @@ main {
 .movie-modal .actors-section {
   border: 2px solid var(--brand-color3, #e6e6fa);
   border-radius: 20px;
-  flex-direction: column;
+  flex-direction: row;
   grid-area: actors-section;
-  align-self: stretch;
   align-items: center;
   gap: 10px;
+  max-width: 100%;
+  height: fit-content;
   padding: 12px;
   display: flex;
-  overflow: scroll;
+  overflow-x: scroll;
+}
+
+.actors-section ol {
+  flex-direction: row;
+  align-items: start;
+  gap: 10px;
+  width: fit-content;
+  height: fit-content;
+  display: flex;
 }
 
 .actor-list-item {
   flex-direction: column;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   gap: 10px;
   display: flex;
 }
 
+.actor-list-item span {
+  text-align: center;
+}
+
 .actor-list-item img {
+  object-fit: cover;
+  border-radius: 50%;
   width: 100px;
   height: 100px;
 }
@@ -559,10 +575,6 @@ main {
   position: fixed;
   bottom: -30px;
   left: 0;
-}
-
-.movie-modal .ux-shape-divider {
-  top: 300px;
 }
 
 .movie-cards-wrapper#featured .ux-shape-divider {
@@ -646,9 +658,21 @@ footer p {
 
 @media screen and (width <= 700px) {
   .movie-modal {
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%)scale3d(.5, .5, 1);
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    width: 90vw;
+    height: 90vh;
+    display: flex;
+    position: fixed;
+    overflow-y: scroll;
+  }
+
+  .movie-modal-backdrop {
+    place-self: flex-start center;
+    width: 100%;
+    height: 61vh;
+    display: flex;
   }
 
   .movie-card {

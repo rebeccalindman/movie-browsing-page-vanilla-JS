@@ -68,6 +68,8 @@ async function getCastInformationForMovie(movieId: number): Promise<CastMember[]
     }
 
     const data = await response.json();
+    const placeholderImageUrl = "https://via.placeholder.com/500x750?text=No+Image";
+
 
     // Map cast members
     return data.cast.map((castMember: any) => ({
@@ -75,8 +77,8 @@ async function getCastInformationForMovie(movieId: number): Promise<CastMember[]
       name: castMember.name,
       character: castMember.character,
       profile_path: castMember.profile_path
-        ? `${imageBaseUrl}${castMember.profile_path}`
-        : null, // Handle missing profile images
+      ? `${imageBaseUrl}${castMember.profile_path}`
+      : placeholderImageUrl, // Use placeholder for missing profile pictures
       cast_id: castMember.cast_id,
       gender: castMember.gender,
       order: castMember.order,

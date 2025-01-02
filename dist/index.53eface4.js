@@ -841,12 +841,13 @@ async function getCastInformationForMovie(movieId) {
             return null;
         }
         const data = await response.json();
+        const placeholderImageUrl = "https://via.placeholder.com/500x750?text=No+Image";
         // Map cast members
         return data.cast.map((castMember)=>({
                 id: castMember.id,
                 name: castMember.name,
                 character: castMember.character,
-                profile_path: castMember.profile_path ? `${imageBaseUrl}${castMember.profile_path}` : null,
+                profile_path: castMember.profile_path ? `${imageBaseUrl}${castMember.profile_path}` : placeholderImageUrl,
                 cast_id: castMember.cast_id,
                 gender: castMember.gender,
                 order: castMember.order
@@ -1102,7 +1103,7 @@ function createMovieModal(movie) {
                 ${movie.cast ? movie.cast.map((actor)=>`
                         <li class="actor-list-item">
                             <img class="actor-image" src="${actor.profile_path}" alt="${actor.name}">
-                            <span>${actor.name}</span>
+                            <span aria-label="Actor name">${actor.name}</span>
                         </li>
                     `).join('') : '<li>No cast information available</li>'}
             </ol>
