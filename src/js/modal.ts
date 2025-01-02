@@ -1,5 +1,6 @@
 import { Movie } from "./types.ts";
-import { isFavorite } from "./utils.ts";
+import { isFavorite, toggleFavorite } from "./utils.ts";
+
 
 
   /* TODO replace with star icon and heart icon */
@@ -11,12 +12,19 @@ import { isFavorite } from "./utils.ts";
 
     const movieModal = document.createElement('div');
     movieModal.classList.add('movie-modal');
+    
+    const movieModalOverlay = document.createElement('div');
+    movieModalOverlay.classList.add('movie-modal-overlay');
+    movieModalOverlay.style.width = '100vw';
+    movieModalOverlay.style.height = '100vh';
+    movieModalOverlay.style.top = '0';
+    movieModalOverlay.style.left = '0';
+    movieModalOverlay.style.position = 'fixed';
+    movieModalOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+
     movieModal.innerHTML = `
     <button type="button" class="movie-modal-close">X</button>
-    <div class="movie-modal-backdrop" style="background: url('https://image.tmdb.org/t/p/w500/${movie.backdrop_path}') lightgray 50% / cover no-repeat" aria-label="${movie.title} movie backdrop">
-      <svg class ="ux-shape-divider" viewBox="0 0 1000 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-                    <path class="ux-shape-fill dark" d="M0 0C0 0 200 50 500 50C800 50 1000 0 1000 0V101H0V1V0Z"></path>
-                </svg>
+    <div class="movie-modal-backdrop" style="background: url('https://image.tmdb.org/t/p/w500/${movie.poster_path}') lightgray 50% / cover no-repeat" aria-label="${movie.title} movie backdrop">
     </div>
     <section class="movie-modal-title-container">
         <h3 class="movie-modal-title">${movie.title}</h3>
@@ -70,11 +78,33 @@ import { isFavorite } from "./utils.ts";
     </section>
     `;
     document.body.appendChild(movieModal);
+    document.body.appendChild(movieModalOverlay);
 
-    const closeButton = movieModal.querySelector('.movie-modal-close');
-    if (closeButton) {
-      closeButton.addEventListener('click', () => {
+    const closeModal = () => {
         movieModal.remove();
+        movieModalOverlay.remove();
+      };
+    
+      // Close when clicking on the close button or outside the modal
+      document.addEventListener("click", (e) => {
+        const target = e.target as HTMLElement;
+        if (target.classList.contains("movie-modal-overlay") || target.classList.contains("movie-modal-close")) {
+          closeModal();
+        }
       });
-    }
+    
+      // Attach click event to toggle favorite
+      const loveButton = movieModal.querySelector(".love-button");
+      if (!loveButton) {
+        console.error("Love button not found");
+        return;
+      }
+      
+      loveButton.addEventListener("click", () => {
+        toggleFavorite(movie);
+    
+        // Select all buttons with the same movie ID
+        const loveButtons = document.querySelectorAll(`.love-button[data-movie-id="${movie.id}"]`);
+        loveButtons.forEach((button) => button.classList.toggle("loved"));
+    });
 }

@@ -227,7 +227,7 @@ main {
   right: 10px;
 }
 
-.movie-card:hover .love-button:hover {
+.love-button:hover {
   transform: scale(1.1);
   box-shadow: 0 0 10px #0003;
 }
@@ -251,16 +251,16 @@ main {
 }
 
 .movie-card-content img {
-  width: inherit;
   flex-shrink: 0;
+  width: 100%;
   height: auto;
 }
 
 .movie-card-information-container {
   flex-direction: column;
   align-items: center;
-  gap: 5px;
-  padding-top: 10px;
+  gap: 16px;
+  padding-top: 16px;
   display: flex;
 }
 
@@ -272,6 +272,7 @@ main {
   width: 75%;
   font-size: clamp(10px, 2vw, 13px);
   font-weight: 400;
+  line-height: 1.5;
   display: -webkit-box;
   overflow: hidden;
 }
@@ -359,18 +360,23 @@ main {
   background: #fff;
   border: thick solid #fff;
   border-radius: 20px;
-  flex-direction: column;
+  grid-template: "movie-modal-backdrop movie-modal-title-container"
+                 "movie-modal-backdrop rating-container"
+                 "movie-modal-backdrop movie-modal-content"
+                 "movie-modal-backdrop information-container"
+                 / 1fr 1fr;
   align-items: center;
-  width: 664px;
-  display: flex;
+  width: 750px;
+  display: grid;
   position: fixed;
-  top: 50%;
+  top: 40%;
   left: 50%;
   overflow: hidden;
-  transform: translate(-50%, -35%);
+  transform: translate(-50%, -40%);
 }
 
 .movie-modal-close {
+  z-index: 10;
   cursor: pointer;
   background-color: var(--brand-color3);
   opacity: .8;
@@ -381,7 +387,7 @@ main {
   height: 28px;
   position: absolute;
   top: 16px;
-  right: 16px;
+  left: 16px;
 }
 
 .movie-modal-close:hover {
@@ -390,16 +396,17 @@ main {
 
 .movie-modal-backdrop {
   flex-shrink: 0;
+  grid-area: movie-modal-backdrop;
   width: 100%;
-  height: 350px;
+  height: 100%;
 }
 
 .rating-container {
   background: var(--brand-color3, #e6e6fa);
   grid-area: rating-container;
   justify-content: space-between;
-  align-self: stretch;
   align-items: center;
+  width: 100%;
   padding: 15px 30px;
   display: flex;
 }
@@ -420,7 +427,6 @@ main {
   justify-content: center;
   align-items: center;
   gap: 10px;
-  width: 737px;
   padding: 15px 40px;
   display: flex;
 }
@@ -428,6 +434,7 @@ main {
 .movie-modal-title {
   color: var(--brand-color1, #fc0);
   text-align: center;
+  width: 100%;
   font-size: 24px;
   font-weight: 700;
 }
@@ -455,20 +462,17 @@ main {
 
 .information-container {
   color: var(--text-dark);
+  flex-direction: column;
   flex: 1 0 0;
-  grid-template: "movie-genres actors-section"
-                 "movie-modal-overview actors-section"
-                 "movie-modal-release-date actors-section"
-                 "movie-modal-links actors-section"
-                 "movie-modal-links actors-section"
-                 / 2fr 1fr;
+  grid-area: information-container;
   gap: 15px;
+  width: 100%;
   padding: 10px 30px 30px;
-  display: grid;
+  display: flex;
 }
 
 .movie-genres {
-  font-size: 24px;
+  font-size: 18px;
   font-weight: 200;
 }
 
@@ -480,6 +484,7 @@ main {
 .movie-modal-overview {
   font-size: 14px;
   font-weight: 400;
+  line-height: 1.5;
 }
 
 .movie-modal-release-date {
@@ -516,6 +521,7 @@ main {
   gap: 10px;
   padding: 12px;
   display: flex;
+  overflow: scroll;
 }
 
 .actor-list-item {
@@ -523,6 +529,11 @@ main {
   align-items: flex-start;
   gap: 10px;
   display: flex;
+}
+
+.actor-list-item img {
+  width: 100px;
+  height: 100px;
 }
 
 #page-title {

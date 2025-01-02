@@ -605,6 +605,7 @@ parcelHelpers.export(exports, "displayMovieCards", ()=>displayMovieCards);
 parcelHelpers.export(exports, "fetchAndDisplayCategoryMovies", ()=>fetchAndDisplayCategoryMovies);
 parcelHelpers.export(exports, "createCategorySection", ()=>createCategorySection);
 var _apiTs = require("./api.ts");
+var _domTs = require("./dom.ts");
 var _modalTs = require("./modal.ts");
 var _utilsTs = require("./utils.ts");
 const mainElement = document.querySelector('main');
@@ -660,6 +661,10 @@ async function main() {
 async function savedMoviesMain() {
     const favoriteMovies = await (0, _utilsTs.getFavoriteMovies)();
     if (favoriteMovies && favoriteMovies.length > 0) displayMovieCards(favoriteMovies, "saved");
+    else {
+        (0, _domTs.displayUserMessage)(`No favorite movies found.`, ` Go back to the home page and add some favorites!`);
+        console.log("No favorite movies found.");
+    }
 }
 function renderMovieCard(movie, category) {
     const movieCardContainer = document.getElementById(`${category} movies`);
@@ -692,6 +697,7 @@ function renderMovieCard(movie, category) {
     });
     // Attach click event to toggle favorite
     const loveButton = movieCard.querySelector(".love-button");
+    if (!loveButton) throw new Error("Love button not found");
     loveButton.addEventListener("click", ()=>{
         (0, _utilsTs.toggleFavorite)(movie);
         // Select all buttons with the same movie ID
@@ -722,7 +728,7 @@ async function fetchAndDisplayCategoryMovies(category) {
         }
         // Sync genres for the movies
         categoryMovies.forEach((movie)=>{
-            if (movie.genre_ids) movie.genres = movie.genre_ids.map((id)=>({
+            if (movie.genres) movie.genres = movie.genres.map(({ id })=>({
                     id,
                     name: (0, _utilsTs.getGenreFromId)(id, genresList)
                 }));
@@ -766,7 +772,7 @@ function createCategorySection(category) {
     mainElement.appendChild(topMoviesCategoryWrapper);
 }
 
-},{"./api.ts":"jGtCU","./utils.ts":"8NGW9","@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./modal.ts":"5pIqC"}],"jGtCU":[function(require,module,exports,__globalThis) {
+},{"./api.ts":"jGtCU","./utils.ts":"8NGW9","@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./modal.ts":"5pIqC","./dom.ts":"eWIKv"}],"jGtCU":[function(require,module,exports,__globalThis) {
 //api.ts
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -795,7 +801,8 @@ async function fetchMovies(url) {
             return null;
         }
         const json = await response.json();
-        const movies = json.results.map((movie)=>({
+        // Map movies and fetch cast information asynchronously
+        const movies = await Promise.all(json.results.map(async (movie)=>({
                 title: movie.title,
                 overview: movie.overview,
                 backdrop_path: movie.backdrop_path,
@@ -803,7 +810,7 @@ async function fetchMovies(url) {
                 release_date: movie.release_date,
                 id: movie.id,
                 love: movie.love || false,
-                vote_average: movie.vote_average,
+                vote_average: Number(movie.vote_average).toFixed(1),
                 vote_count: movie.vote_count,
                 genres: movie.genre_ids.map((genreId)=>{
                     const genre = genresList.find((g)=>g.id === genreId);
@@ -815,12 +822,37 @@ async function fetchMovies(url) {
                         name: 'Unknown Genre'
                     };
                 }),
-                cast: Array.isArray(movie.cast) ? movie.cast : []
-            }));
+                cast: await getCastInformationForMovie(movie.id) || []
+            })));
         return movies;
     } catch (error) {
         console.error('Error during fetchMovies execution:', error);
         displayErrorMessage(0);
+        return null;
+    }
+}
+async function getCastInformationForMovie(movieId) {
+    const url = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY_tmdb}&language=en-US`;
+    const imageBaseUrl = "https://image.tmdb.org/t/p/w500";
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            console.error(`Error fetching cast information for movie ID ${movieId}:`, response.status);
+            return null;
+        }
+        const data = await response.json();
+        // Map cast members
+        return data.cast.map((castMember)=>({
+                id: castMember.id,
+                name: castMember.name,
+                character: castMember.character,
+                profile_path: castMember.profile_path ? `${imageBaseUrl}${castMember.profile_path}` : null,
+                cast_id: castMember.cast_id,
+                gender: castMember.gender,
+                order: castMember.order
+            }));
+    } catch (error) {
+        console.error(`Error fetching cast information for movie ID ${movieId}:`, error);
         return null;
     }
 }
@@ -1017,12 +1049,17 @@ function createMovieModal(movie) {
     const favoriteClass = isFavorited ? "loved" : "";
     const movieModal = document.createElement('div');
     movieModal.classList.add('movie-modal');
+    const movieModalOverlay = document.createElement('div');
+    movieModalOverlay.classList.add('movie-modal-overlay');
+    movieModalOverlay.style.width = '100vw';
+    movieModalOverlay.style.height = '100vh';
+    movieModalOverlay.style.top = '0';
+    movieModalOverlay.style.left = '0';
+    movieModalOverlay.style.position = 'fixed';
+    movieModalOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
     movieModal.innerHTML = `
     <button type="button" class="movie-modal-close">X</button>
-    <div class="movie-modal-backdrop" style="background: url('https://image.tmdb.org/t/p/w500/${movie.backdrop_path}') lightgray 50% / cover no-repeat" aria-label="${movie.title} movie backdrop">
-      <svg class ="ux-shape-divider" viewBox="0 0 1000 100" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-                    <path class="ux-shape-fill dark" d="M0 0C0 0 200 50 500 50C800 50 1000 0 1000 0V101H0V1V0Z"></path>
-                </svg>
+    <div class="movie-modal-backdrop" style="background: url('https://image.tmdb.org/t/p/w500/${movie.poster_path}') lightgray 50% / cover no-repeat" aria-label="${movie.title} movie backdrop">
     </div>
     <section class="movie-modal-title-container">
         <h3 class="movie-modal-title">${movie.title}</h3>
@@ -1073,12 +1110,59 @@ function createMovieModal(movie) {
     </section>
     `;
     document.body.appendChild(movieModal);
-    const closeButton = movieModal.querySelector('.movie-modal-close');
-    if (closeButton) closeButton.addEventListener('click', ()=>{
+    document.body.appendChild(movieModalOverlay);
+    const closeModal = ()=>{
         movieModal.remove();
+        movieModalOverlay.remove();
+    };
+    // Close when clicking on the close button or outside the modal
+    document.addEventListener("click", (e)=>{
+        const target = e.target;
+        if (target.classList.contains("movie-modal-overlay") || target.classList.contains("movie-modal-close")) closeModal();
+    });
+    // Attach click event to toggle favorite
+    const loveButton = movieModal.querySelector(".love-button");
+    if (!loveButton) {
+        console.error("Love button not found");
+        return;
+    }
+    loveButton.addEventListener("click", ()=>{
+        (0, _utilsTs.toggleFavorite)(movie);
+        // Select all buttons with the same movie ID
+        const loveButtons = document.querySelectorAll(`.love-button[data-movie-id="${movie.id}"]`);
+        loveButtons.forEach((button)=>button.classList.toggle("loved"));
     });
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./utils.ts":"8NGW9"}]},["lI3Wn","gfLib"], "gfLib", "parcelRequire94c2")
+},{"./utils.ts":"8NGW9","@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"eWIKv":[function(require,module,exports,__globalThis) {
+//dom.ts
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "displayUserMessage", ()=>displayUserMessage);
+function displayUserMessage(userMessage1, userMessage2) {
+    // Remove empty movie cards wrapper
+    const movieCardsWrapper = document.querySelector('.movie-cards-wrapper');
+    if (movieCardsWrapper) {
+        const movieCardContainers = movieCardsWrapper.querySelectorAll('.movie-card-container');
+        if (Array.from(movieCardContainers).every((container)=>container.children.length === 0)) movieCardsWrapper.remove();
+    }
+    // Adds user message
+    const userMessageContainer = document.createElement('div');
+    userMessageContainer.style.backgroundColor = 'white';
+    userMessageContainer.style.padding = '20px';
+    userMessageContainer.style.width = '100%';
+    userMessageContainer.style.textAlign = 'center';
+    let userMessageElement = document.createElement('p');
+    userMessageElement.textContent = userMessage2;
+    userMessageContainer.appendChild(userMessageElement);
+    // Update section header and add user message
+    const sectionHeader = document.querySelector('.section-header');
+    if (sectionHeader) {
+        sectionHeader.textContent = userMessage1;
+        sectionHeader.parentElement?.insertBefore(userMessageContainer, sectionHeader.nextSibling);
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}]},["lI3Wn","gfLib"], "gfLib", "parcelRequire94c2")
 
 //# sourceMappingURL=index.53eface4.js.map

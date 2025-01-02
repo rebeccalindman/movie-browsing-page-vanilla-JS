@@ -9,12 +9,18 @@ export type Movie = {
     vote_average: number;
     vote_count: number;
     genres: { id: number; name: string }[];
-    cast: Cast[];
+    cast: CastMember[];
   };
+
   
-  export type Cast = {
+  export type CastMember = {
     profile_path: string;
+    gender: number;
     name: string;
+    id: number;
+    cast_id: number;
+    character: string;
+    order: number;
   }
   
   export type MovieData = Movie[];

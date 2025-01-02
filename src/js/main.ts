@@ -1,6 +1,7 @@
 //main.ts
 import { Movie, MovieData } from "./types.ts";
-import { fetchMovies, apiUrl, apiFeaturedMoviesUrl, displayErrorMessage, storeDataArray, getGenresList } from './api.ts';
+import { fetchMovies, apiUrl, storeDataArray } from './api.ts';
+import { displayUserMessage } from "./dom.ts";
 import { createMovieModal } from './modal.ts';
 import { addCategoryFilter, getGenreFromId, getCachedGenresList, syncLovePropertyAcrossStoredArrays, toggleFavorite, isFavorite, getFavoriteMovies, scrollToBottom } from "./utils.ts";  
 
@@ -70,6 +71,10 @@ async function savedMoviesMain(): Promise<void> {
   if (favoriteMovies && favoriteMovies.length > 0) {
     displayMovieCards(favoriteMovies, "saved");
   }
+  else {
+    displayUserMessage(`No favorite movies found.`, ` Go back to the home page and add some favorites!`);
+    console.log("No favorite movies found.");
+  }
 }
 
 // Render Movie Card
@@ -111,6 +116,9 @@ export function renderMovieCard(movie: Movie, category: string): void {
 
   // Attach click event to toggle favorite
   const loveButton = movieCard.querySelector(".love-button");
+  if (!loveButton) {
+    throw new Error("Love button not found");
+  }
   loveButton.addEventListener("click", () => {
     toggleFavorite(movie);
 
@@ -152,8 +160,8 @@ export async function fetchAndDisplayCategoryMovies(category: string) {
 
     // Sync genres for the movies
     categoryMovies.forEach((movie) => {
-      if (movie.genre_ids) {
-        movie.genres = movie.genre_ids.map((id: number) => ({
+      if (movie.genres) {
+        movie.genres = movie.genres.map(({id}) => ({
           id,
           name: getGenreFromId(id, genresList),
         }));
