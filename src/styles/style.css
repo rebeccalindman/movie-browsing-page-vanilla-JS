@@ -140,9 +140,6 @@ header{
 }
 
 
-
-
-
 header #logo:hover {
     grid-area: logo;
     cursor: pointer;
@@ -699,7 +696,7 @@ main {
     display: flex;
     flex-direction: row;
     align-items: start;
-    gap: 10px;
+    gap: 16px;
     font-size: clamp(8px, 2rem, 12px);
 }
 
