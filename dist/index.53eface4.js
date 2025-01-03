@@ -921,7 +921,7 @@ async function fetchMovies(url) {
     }
 }
 async function getCastInformationForMovie(movieId) {
-    const url = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY_tmdb}&language=en-US`;
+    const url = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY_tmdb}&include_adult=false&language=en-US,sv-SE`;
     const imageBaseUrl = "https://image.tmdb.org/t/p/w500";
     try {
         const response = await fetch(url);

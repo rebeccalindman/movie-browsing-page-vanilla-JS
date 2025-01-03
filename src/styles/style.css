@@ -454,6 +454,7 @@ main {
 .movie-modal {
     z-index: 100;
     position: fixed;
+    top: 5vh;
     display: grid;
     grid-template-columns: 1fr 2fr; /* Adjust proportions here */
     grid-template-rows: 10% auto auto auto;
@@ -761,6 +762,7 @@ footer {
     gap: 20px;
 
     padding: 40px;
+    margin-top: 10px;
 
     background-color: var(--brand-color1);
     color: var(--text-dark);
