@@ -14,19 +14,27 @@
          <img id="logo" src="/logo.83cd1399.png" alt="hemmakväll-logo" width="300px">
 
             <!-- search bar -->
-        <div class="search-bar-container">
+        <div id="search-bar-container">
           <input type="text" id="searchInput" placeholder="Search for a movie">
           <button id="search-button">Search</button>
         </div>
+        <!-- search icon button for smaller screens -->
+        <button id="search-icon-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewbox="0 0 25 24" fill="none">
+            <path d="M22.5 22L20.5 20M21.5 11.5C21.5 16.7467 17.2467 21 12 21C6.75329 21 2.5 16.7467 2.5 11.5C2.5 6.25329 6.75329 2 12 2C17.2467 2 21.5 6.25329 21.5 11.5Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+        </button>
 
         
         <!-- navigation menu -->
         <nav>
 
           <!-- hamburger -->
-          <svg id="hamburger-button" class="" xmlns="http://www.w3.org/2000/svg" width="38" height="30" viewbox="0 0 38 30" fill="none">
-            <path d="M2 2H36M2 15H36M2 28H36" stroke="#A2A2A2" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
-            </svg>
+          <button id="hamburger-button">
+            <svg class="" xmlns="http://www.w3.org/2000/svg" width="38" height="30" viewbox="0 0 38 30" fill="none">
+              <path d="M2 2H36M2 15H36M2 28H36" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+              </svg>
+          </button>
             <!-- Hamburger -->
             <ul id="hamburger-menu" class="close">
                 <li class="nav-button active"><a id="home-nav-button" href="/index.html">Home</a></li>

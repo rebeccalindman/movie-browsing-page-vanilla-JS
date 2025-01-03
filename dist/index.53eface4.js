@@ -612,6 +612,7 @@ const mainElement = document.querySelector('main');
 document.addEventListener("DOMContentLoaded", async ()=>{
     const contactNavButton = document.getElementById("contact-nav-button");
     const contactNavButton2 = document.getElementById("contact-nav-button2");
+    const searchIconButton = document.getElementById("search-icon-button");
     if (contactNavButton) contactNavButton.addEventListener("click", async ()=>{
         await main(); // Ensure main() completes before scrolling
         (0, _utilsTs.scrollToBottom)();
@@ -619,6 +620,13 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     if (contactNavButton2) contactNavButton2.addEventListener("click", async ()=>{
         await main(); // Ensure main() completes before scrolling
         (0, _utilsTs.scrollToBottom)();
+    });
+    if (searchIconButton) searchIconButton.addEventListener("click", ()=>{
+        const searchBarContainer = document.getElementById("search-bar-container");
+        if (searchBarContainer) {
+            console.log("Search bar container found");
+            searchBarContainer.classList.toggle("active");
+        }
     });
     const homeLogo = document.getElementById("logo");
     if (homeLogo) homeLogo.addEventListener("click", ()=>{
