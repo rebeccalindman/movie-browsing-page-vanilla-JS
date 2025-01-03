@@ -611,7 +611,12 @@ var _utilsTs = require("./utils.ts");
 const mainElement = document.querySelector('main');
 document.addEventListener("DOMContentLoaded", async ()=>{
     const contactNavButton = document.getElementById("contact-nav-button");
+    const contactNavButton2 = document.getElementById("contact-nav-button2");
     if (contactNavButton) contactNavButton.addEventListener("click", async ()=>{
+        await main(); // Ensure main() completes before scrolling
+        (0, _utilsTs.scrollToBottom)();
+    });
+    if (contactNavButton2) contactNavButton2.addEventListener("click", async ()=>{
         await main(); // Ensure main() completes before scrolling
         (0, _utilsTs.scrollToBottom)();
     });
@@ -673,6 +678,10 @@ function renderMovieCard(movie, category) {
     if (!movieCardContainer) {
         console.error(`Error: Movie card container for category '${category}' not found.`);
         return; // Prevent rendering if the container is missing
+    }
+    if (!movie.poster_path || movie.poster_path === "") {
+        console.error(`Error: Missing poster path for movie '${movie.title}'.`);
+        return; // Prevent rendering if poster path is missing
     }
     const movieCard = document.createElement("article");
     movieCard.classList.add("movie-card");
@@ -779,21 +788,30 @@ function createCategorySection(category) {
 function handleMovieSearch() {
     const searchInput = document.getElementById("searchInput");
     const searchButton = document.getElementById("search-button");
-    const searchResultsContainer = document.getElementById("searchResult movies");
+    if (!searchInput || !searchButton) {
+        console.error("Search input, button, or container not found.");
+        return;
+    }
     const fetchAndDisplayMovies = async (query)=>{
-        if (query.trim().length < 3) {
-            (0, _domTs.displayUserMessage)("Search query too short.", "Please enter at least 3 characters for your search!");
+        if (query.trim().length < 2) {
+            (0, _domTs.displayUserMessage)("Search query too short.", "Please enter at least 2 characters for your search!");
             return;
         }
         const apiSearchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${(0, _apiTs.API_KEY_tmdb)}&query=${encodeURIComponent(query)}`;
         try {
+            await createSearchResultContainer(query);
+            const searchResultsContainer = document.getElementById('searchResult movies');
             const searchResult = await (0, _apiTs.fetchMovies)(apiSearchUrl);
             // Clear previous search results
             if (searchResultsContainer) searchResultsContainer.innerHTML = "";
             if (searchResult && searchResult.length > 0) {
                 (0, _apiTs.storeDataArray)(searchResult, "searchResult");
-                (0, _utilsTs.syncLovePropertyAcrossStoredArrays)();
                 displayMovieCards(searchResult, "searchResult");
+                /* Update section header with search details */ const sectionHeader = document.querySelector(".section-header");
+                if (sectionHeader) sectionHeader.innerHTML = `
+          <h2>Search Results for "${query}"</h2>
+          <p>Click on a movie card to view more details and find a streaming site.</p>
+        `;
             } else (0, _domTs.displayUserMessage)(`No results found for "${query}".`, "Try a different keyword or check the spelling!");
         } catch (error) {
             console.error("Error fetching movies:", error);
@@ -810,6 +828,37 @@ function handleMovieSearch() {
             fetchAndDisplayMovies(query);
         }
     });
+}
+async function createSearchResultContainer(query) {
+    const existingContainer = document.getElementById('searchResult movies');
+    if (existingContainer) {
+        console.log("Search results section already exists.");
+        return;
+    }
+    /* create seaction header */ const sectionHeader = document.createElement("section");
+    sectionHeader.classList.add("section-header");
+    sectionHeader.innerHTML = `
+    <h2>Search Results for "${query}"</h2>
+    <p>Click on a movie card to view more details and find a streaming site.</p>
+  `;
+    const mainElement = document.querySelector("main");
+    if (!mainElement) {
+        console.error("Main element not found.");
+        return;
+    }
+    const searchResultsContainer = document.createElement("section");
+    searchResultsContainer.classList.add("movie-cards-wrapper");
+    searchResultsContainer.innerHTML = `
+    <div class="movie-card-scroll-container">
+      <div class="movie-card-container" id="searchResult movies">
+        <!-- Search results will appear here -->
+      </div>
+    </div>
+  `;
+    mainElement.insertBefore(searchResultsContainer, mainElement.firstChild);
+    mainElement.insertBefore(sectionHeader, mainElement.firstChild);
+    console.log("Search results section created.");
+    return;
 }
 
 },{"./api.ts":"jGtCU","./utils.ts":"8NGW9","@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./modal.ts":"5pIqC","./dom.ts":"eWIKv"}],"jGtCU":[function(require,module,exports,__globalThis) {
@@ -1190,20 +1239,28 @@ function displayUserMessage(userMessage1, userMessage2) {
         const movieCardContainers = movieCardsWrapper.querySelectorAll('.movie-card-container');
         if (Array.from(movieCardContainers).every((container)=>container.children.length === 0)) movieCardsWrapper.remove();
     }
-    // Adds user message
-    const userMessageContainer = document.createElement('div');
-    userMessageContainer.style.backgroundColor = 'white';
-    userMessageContainer.style.padding = '20px';
-    userMessageContainer.style.width = '100%';
-    userMessageContainer.style.textAlign = 'center';
-    let userMessageElement = document.createElement('p');
+    // Check if user message container already exists
+    let userMessageContainer = document.querySelector('.user-message-container');
+    if (!userMessageContainer) {
+        userMessageContainer = document.createElement('div');
+        userMessageContainer.classList.add('user-message-container');
+        userMessageContainer.style.backgroundColor = 'white';
+        userMessageContainer.style.padding = '20px';
+        userMessageContainer.style.width = '100%';
+        userMessageContainer.style.textAlign = 'center';
+    }
+    // Update message text
+    let userMessageElement = userMessageContainer.querySelector('p');
+    if (!userMessageElement) {
+        userMessageElement = document.createElement('p');
+        userMessageContainer.appendChild(userMessageElement);
+    }
     userMessageElement.textContent = userMessage2;
-    userMessageContainer.appendChild(userMessageElement);
     // Update section header and add user message
     const sectionHeader = document.querySelector('.section-header');
     if (sectionHeader) {
         sectionHeader.textContent = userMessage1;
-        sectionHeader.parentElement?.insertBefore(userMessageContainer, sectionHeader.nextSibling);
+        if (!sectionHeader.parentElement?.contains(userMessageContainer)) sectionHeader.parentElement?.insertBefore(userMessageContainer, sectionHeader.nextSibling);
     }
 }
 

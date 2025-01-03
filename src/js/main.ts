@@ -9,9 +9,19 @@ const mainElement = document.querySelector('main');
 
 document.addEventListener("DOMContentLoaded", async () => {
   const contactNavButton = document.getElementById("contact-nav-button");
+  const contactNavButton2 = document.getElementById("contact-nav-button2");
   if (contactNavButton) {
     contactNavButton.addEventListener("click", async () => {
       await main(); // Ensure main() completes before scrolling
+      
+      scrollToBottom();
+    });
+  }
+
+  if (contactNavButton2) {
+    contactNavButton2.addEventListener("click", async () => {
+      await main(); // Ensure main() completes before scrolling
+      
       scrollToBottom();
     });
   }
@@ -89,6 +99,11 @@ export function renderMovieCard(movie: Movie, category: string): void {
   if (!movieCardContainer) {
     console.error(`Error: Movie card container for category '${category}' not found.`);
     return; // Prevent rendering if the container is missing
+  }
+
+  if (!movie.poster_path || movie.poster_path === "") {
+    console.error(`Error: Missing poster path for movie '${movie.title}'.`);
+    return; // Prevent rendering if poster path is missing
   }
 
   const movieCard = document.createElement("article");
@@ -234,20 +249,30 @@ export function createCategorySection(category: string): void {
 function handleMovieSearch() {
   const searchInput = document.getElementById("searchInput") as HTMLInputElement | null;
   const searchButton = document.getElementById("search-button");
-  const searchResultsContainer = document.getElementById("searchResult movies");
+
+  if (!searchInput || !searchButton) {
+    console.error("Search input, button, or container not found.");
+    return;
+  }
+
 
   const fetchAndDisplayMovies = async (query: string) => {
-    if (query.trim().length < 3) {
+    if (query.trim().length < 2) {
       displayUserMessage(
         "Search query too short.",
-        "Please enter at least 3 characters for your search!"
+        "Please enter at least 2 characters for your search!"
       );
       return;
     }
 
+    
+
     const apiSearchUrl = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY_tmdb}&query=${encodeURIComponent(query)}`;
 
     try {
+      await createSearchResultContainer(query);
+      const searchResultsContainer = document.getElementById('searchResult movies');
+
       const searchResult = await fetchMovies(apiSearchUrl);
 
       // Clear previous search results
@@ -257,8 +282,17 @@ function handleMovieSearch() {
 
       if (searchResult && searchResult.length > 0) {
         storeDataArray(searchResult, "searchResult");
-        syncLovePropertyAcrossStoredArrays();
         displayMovieCards(searchResult, "searchResult");
+
+        /* Update section header with search details */
+        const sectionHeader = document.querySelector(".section-header");
+        if (sectionHeader) {
+          sectionHeader.innerHTML = `
+          <h2>Search Results for "${query}"</h2>
+          <p>Click on a movie card to view more details and find a streaming site.</p>
+        `;
+        }
+
       } else {
         displayUserMessage(
           `No results found for "${query}".`,
@@ -291,3 +325,40 @@ function handleMovieSearch() {
   }
 }
 
+async function createSearchResultContainer(query: string): Promise<void> {
+  const existingContainer = document.getElementById('searchResult movies');
+  if (existingContainer) {
+    console.log("Search results section already exists.");
+    return;
+  }
+
+  /* create seaction header */
+  const sectionHeader = document.createElement("section");
+  sectionHeader.classList.add("section-header");
+  sectionHeader.innerHTML = `
+    <h2>Search Results for "${query}"</h2>
+    <p>Click on a movie card to view more details and find a streaming site.</p>
+  `;
+
+  const mainElement = document.querySelector("main");
+  if (!mainElement) {
+    console.error("Main element not found.");
+    return;
+  }
+
+  const searchResultsContainer = document.createElement("section");
+  searchResultsContainer.classList.add("movie-cards-wrapper");
+  searchResultsContainer.innerHTML = `
+    <div class="movie-card-scroll-container">
+      <div class="movie-card-container" id="searchResult movies">
+        <!-- Search results will appear here -->
+      </div>
+    </div>
+  `;
+
+  mainElement.insertBefore(searchResultsContainer, mainElement.firstChild);
+  mainElement.insertBefore(sectionHeader, mainElement.firstChild);
+  console.log("Search results section created.");
+
+  return;
+}

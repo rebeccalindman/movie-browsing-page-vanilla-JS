@@ -565,7 +565,7 @@ main {
   grid-area: actors-section;
   align-items: center;
   gap: 10px;
-  max-width: 100%;
+  width: 100%;
   height: fit-content;
   min-height: 100px;
   margin-top: 10px;
@@ -712,7 +712,7 @@ footer p {
     flex-direction: column;
     align-items: center;
     width: 90vw;
-    height: 90vh;
+    min-height: 90vh;
     display: flex;
     position: fixed;
     overflow-y: scroll;
@@ -733,7 +733,7 @@ footer p {
 
   .movie-card-information-container {
     gap: 10px;
-    height: 70px;
+    height: auto;
   }
 
   .movie-card-container {
