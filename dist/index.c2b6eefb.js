@@ -650,7 +650,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
 async function main() {
     try {
         // Fetch genres and sync love property on page load
-        await (0, _utilsTs.getCachedGenresList)();
+        const genresList = await (0, _utilsTs.getCachedGenresList)();
         (0, _utilsTs.syncLovePropertyAcrossStoredArrays)();
         // Fetch and display featured movies
         const featuredMovies = await (0, _apiTs.fetchMovies)((0, _apiTs.apiUrl));
@@ -660,15 +660,7 @@ async function main() {
             displayMovieCards(featuredMovies, "featured");
         }
         // Fetch and display category movies
-        const categories = [
-            "Action",
-            "Adventure",
-            "Comedy",
-            "Drama",
-            "Horror",
-            "Romance",
-            "Thriller"
-        ];
+        const categories = genresList.map((genre)=>genre.name);
         await Promise.all(categories.map((category)=>fetchAndDisplayCategoryMovies(category)));
     } catch (error) {
         console.error("Error during main execution:", error);
@@ -999,6 +991,7 @@ async function getGenresList() {
     try {
         const response = await fetch(url);
         const json = await response.json();
+        console.log("genresList:", json.genres);
         storeDataArray(json.genres, "genresList");
         return json.genres || []; // Extract genres array
     } catch (error) {

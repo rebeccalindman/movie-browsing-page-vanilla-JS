@@ -81,7 +81,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function main(): Promise<void> {
   try {
     // Fetch genres and sync love property on page load
-    await getCachedGenresList();
+    const genresList = await getCachedGenresList();
     syncLovePropertyAcrossStoredArrays();
 
     // Fetch and display featured movies
@@ -93,7 +93,7 @@ async function main(): Promise<void> {
     }
 
     // Fetch and display category movies
-    const categories = ["Action", "Adventure", "Comedy", "Drama", "Horror", "Romance", "Thriller"];
+    const categories = genresList.map((genre) => genre.name);
     await Promise.all(categories.map((category) => fetchAndDisplayCategoryMovies(category)));
   } catch (error) {
     console.error("Error during main execution:", error);
@@ -189,8 +189,6 @@ export function displayMovieCards(movies: MovieData, category: string) {
 }
 
 
-
-
 export async function fetchAndDisplayCategoryMovies(category: string): Promise<void> {
   try {
     const genresList = await getCachedGenresList();
@@ -230,7 +228,6 @@ export async function fetchAndDisplayCategoryMovies(category: string): Promise<v
     console.log(`Movies fetched and displayed for category: ${category}`);
   }
 }
-
 
 
 export function createCategorySection(category: string): void {

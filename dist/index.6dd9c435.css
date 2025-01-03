@@ -435,10 +435,11 @@ main {
                  "actors-section actors-section"
                  / 1fr 3fr;
   width: 70vw;
+  max-width: 900px;
   max-height: 90vh;
   display: grid;
   position: fixed;
-  top: 5vh;
+  top: clamp(200px, 20vh, 500px);
   overflow-y: scroll;
 }
 
@@ -561,6 +562,7 @@ main {
 }
 
 .movie-modal-overview {
+  max-width: 500px;
   font-size: 14px;
   font-weight: 400;
   line-height: 1.5;
@@ -610,7 +612,7 @@ main {
   height: inherit;
   flex-direction: row;
   align-items: start;
-  gap: 10px;
+  gap: 16px;
   width: fit-content;
   font-size: clamp(8px, 2rem, 12px);
   display: flex;

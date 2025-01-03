@@ -146,6 +146,8 @@ export async function getGenresList(): Promise<{ id: number; name: string }[] | 
   try {
     const response = await fetch(url);
     const json = await response.json();
+    console.log("genresList:", json.genres);
+    
     storeDataArray(json.genres, "genresList");
 
     return json.genres || []; // Extract genres array
