@@ -289,9 +289,7 @@ main {
     flex-direction: column;
     align-items: flex-start;
     align-self: stretch;
-/*     overflow-x: scroll; */
     overflow-y: hidden;
-    gap: 52px;
     background-color: white;
     height: fit-content;
 }
@@ -490,7 +488,7 @@ main {
     position: fixed;
     top: 5vh;
     display: grid;
-    grid-template-columns: 1fr 2fr; /* Adjust proportions here */
+    grid-template-columns: 1fr 3fr; /* Adjust proportions here */
     grid-template-rows: 10% auto auto auto;
     grid-template-areas: 
         "movie-modal-backdrop movie-modal-title-container"
@@ -499,7 +497,7 @@ main {
         "actors-section actors-section"
         ;
     width: 70vw;
-    height: auto;
+    height: 90vh;
 /*     overflow: hidden; */
     overflow-y: scroll;
     border-radius: 30px;
@@ -520,7 +518,7 @@ main {
 
 .movie-modal-backdrop {
     grid-area: movie-modal-backdrop;
-    width: auto; /* adjusts to aspect ratio + width of column */
+    width: 100%; /* adjusts to aspect ratio + width of column */
     height: fit-content; /* Automatically adjust the height to preserve aspect ratio */
     aspect-ratio: 3 / 5; 
 }
@@ -555,7 +553,7 @@ main {
     padding: 8px;
     align-items: center;
     width: 100%;
-    height: auto;
+    height: 100%;
 
     justify-content: space-between;
     align-items: center;
@@ -575,7 +573,7 @@ main {
 .movie-modal-title-container {
     grid-area: movie-modal-title-container;
     width: 100%;
-    height: auto;
+    height: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -618,18 +616,22 @@ main {
     background: rgba(211, 211, 255, 0.50);
 }
 
-.information-container {
+.movie-modal .information-container {
     grid-area: information-container;
     padding: 12px;
     gap: 12px;
     display: flex;
     flex-direction: column;
     overflow-y: auto; /* Allow scrolling for overflow */
+    height: 100%;
+    width: 100%;
 }
 
 .movie-genres {
     font-size: 18px;
     font-weight: 200;
+    height: fit-content;
+    width: 100%;
 }
 
 .movie-genres li {
@@ -658,6 +660,8 @@ main {
     padding: 12px;
     font-size: 12px;
     line-height: 1.5;
+    height: 100%;
+    width: 100%;
 }
 
 .movie-modal-links li {
@@ -681,16 +685,16 @@ main {
 
     overflow-x: scroll;
 
-    min-height: 100px;
+    /* min-height: 100px; */
 
-    height: fit-content;
+    height: 100%;
     width: 100%;
     background-color: #efeff2;
    /*  border: 2px solid var(--brand-color3, #E6E6FA); */
 }
 
 .actors-section ol {
-    height: fit-content;
+    height: inherit;
     width: fit-content;
     display: flex;
     flex-direction: row;
@@ -949,17 +953,87 @@ footer p {
         min-height: 90vh;
         overflow-y: scroll;
 
-        display: flex;
+        grid-template-columns: 1fr; /* Adjust proportions here */
+        grid-template-rows: 20% auto 10% 40% 10% auto;
+        grid-template-areas: 
+            "movie-modal-backdrop"
+            "movie-modal-title-container"
+            "rating-container"
+            "information-container" 
+            "actors-section"
+            "movie-modal-links"
+            ;
+
+
         flex-direction: column;
         align-items: center;
 /*         gap: 10px; */
 
     }
 
+    .movie-modal-title {
+        font-size: clamp(12px, 2.0rem, 24px);
+    }
+
+    .movie-modal-rating {
+        font-size: clamp(12px, 2.0rem, 24px);
+    }
+
+    .movie-genres, .movie-modal-release-date {
+        font-size: clamp(10px, .9rem, 16px);
+    }
+
     .movie-modal-backdrop {
         width: 100%;
-        aspect-ratio: 16 / 9; /* Adjust aspect ratio for smaller screens */
+        height: 100%;
+        /* aspect-ratio: 24 / 9; */ /* Adjust aspect ratio for smaller screens */
     }
+
+        /* actor list section */
+
+    .actors-section {
+        width: 100%;
+        height: 100%;
+        padding: 0 10px;
+    }
+
+    .actors-section ol {
+        height: inherit;
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 12px;
+        font-size: clamp(8px, 2rem, 12px);
+    }
+
+    .actor-list-item {
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
+        justify-content: center;
+        width: max-content;
+    }
+
+    .actor-list-item div {
+        max-height: 50px;
+    }
+
+    .actor-list-item span {
+        text-align: left;
+        width: max-content;
+        height: 100%;
+    }
+
+
+
+    .actor-list-item img {
+        width: 40px;
+        height: 40px;
+    }
+    
+
+    /** movie cards */
 
     .movie-card {
         width: clamp(150px, 20vw, 400px);

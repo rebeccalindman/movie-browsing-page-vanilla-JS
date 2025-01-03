@@ -35,6 +35,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("Search bar container found");
         
         searchBarContainer.classList.toggle("active");
+        
+        /* add margin to main element */
+        if (mainElement) {
+          mainElement.style.marginTop = mainElement.style.marginTop === "130px" ? "" : "130px";
+        }
       }
     
   })

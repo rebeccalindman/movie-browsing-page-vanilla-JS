@@ -71,8 +71,10 @@ import { isFavorite, toggleFavorite } from "./utils.ts";
                 ? movie.cast.map(actor => `
                      <li class="actor-list-item">
                         <img class="actor-image" src="${actor.profile_path}" alt="${actor.name}">
+                        <div style="display: flex; flex-direction: column;">
                         <span aria-label="Role" style="font-weight: bold;">${actor.character}</span>
                         <span aria-label="Actor name">${actor.name}</span>
+                        </div>
                         </li>
                 `).join('')
                 : '<li class="actor-list-item">No cast information available</li>'
