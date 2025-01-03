@@ -1,6 +1,6 @@
 //dom.ts
 
-export function displayUserMessage(userMessage1: string, userMessage2: string): void {
+export function displayUserMessage(userMessage1: string, userMessage2: string, cto?: string, link?: string): void {
     // Remove empty movie cards wrapper
     const movieCardsWrapper = document.querySelector('.movie-cards-wrapper');
 
@@ -38,6 +38,33 @@ export function displayUserMessage(userMessage1: string, userMessage2: string): 
             sectionHeader.parentElement?.insertBefore(userMessageContainer, sectionHeader.nextSibling);
         }
     }
+    
+    // Add call to action-button
+    if (cto && link){
+        const callToActionButton = document.createElement('button');
+        callToActionButton.classList.add('call-to-action-button');
+        callToActionButton.style.backgroundColor = 'black';
+        callToActionButton.style.padding = '8px 16px';
+        callToActionButton.style.border = 'none';
+        callToActionButton.style.borderRadius = '8px';
+        callToActionButton.style.marginTop = '20px';
+        callToActionButton.style.cursor = 'pointer';
+
+        callToActionButton.addEventListener('mouseover', () => {
+            callToActionButton.style.backgroundColor = '#5f9ea0';
+        });
+
+        callToActionButton.addEventListener('mouseout', () => {
+            callToActionButton.style.backgroundColor = 'black';
+        });
+
+        callToActionButton.innerHTML = `
+            <a href="${link}" style="text-decoration: none; color: white; font-weight: bold;">${cto}</a>
+            `;
+        userMessageContainer.appendChild(callToActionButton);
+    }
+
+    
 }
 
 

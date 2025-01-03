@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  if (window.location.pathname === "/index.html") {
+  if (window.location.pathname === "/index.html" || window.location.pathname === "/") {
     await main(); // Ensure dynamic content is fully rendered
   }
 
@@ -106,7 +106,7 @@ async function savedMoviesMain(): Promise<void> {
     displayMovieCards(favoriteMovies, "saved");
   }
   else {
-    displayUserMessage(`No favorite movies found.`, ` Go back to the home page and add some favorites!`);
+    displayUserMessage(`No favorite movies found.`, ` Go back to the home page and add some favorites!`, "To Home Page", "/index.html");
     console.log("No favorite movies found.");
   }
 }
