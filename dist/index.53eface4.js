@@ -870,7 +870,7 @@ async function createSearchResultContainer(query) {
     return;
 }
 
-},{"./api.ts":"jGtCU","./utils.ts":"8NGW9","@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./modal.ts":"5pIqC","./dom.ts":"eWIKv"}],"jGtCU":[function(require,module,exports,__globalThis) {
+},{"./api.ts":"jGtCU","./utils.ts":"8NGW9","@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./dom.ts":"eWIKv","./modal.ts":"5pIqC"}],"jGtCU":[function(require,module,exports,__globalThis) {
 //api.ts
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -1137,7 +1137,44 @@ function scrollToBottom() {
     console.log("Scrolling to bottom");
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./api.ts":"jGtCU"}],"5pIqC":[function(require,module,exports,__globalThis) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./api.ts":"jGtCU"}],"eWIKv":[function(require,module,exports,__globalThis) {
+//dom.ts
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "displayUserMessage", ()=>displayUserMessage);
+function displayUserMessage(userMessage1, userMessage2) {
+    // Remove empty movie cards wrapper
+    const movieCardsWrapper = document.querySelector('.movie-cards-wrapper');
+    if (movieCardsWrapper) {
+        const movieCardContainers = movieCardsWrapper.querySelectorAll('.movie-card-container');
+        if (Array.from(movieCardContainers).every((container)=>container.children.length === 0)) movieCardsWrapper.remove();
+    }
+    // Check if user message container already exists
+    let userMessageContainer = document.querySelector('.user-message-container');
+    if (!userMessageContainer) {
+        userMessageContainer = document.createElement('div');
+        userMessageContainer.classList.add('user-message-container');
+        userMessageContainer.style.backgroundColor = 'white';
+        userMessageContainer.style.padding = '20px';
+        userMessageContainer.style.width = '100%';
+        userMessageContainer.style.textAlign = 'center';
+    }
+    // Update message text
+    let userMessageElement = userMessageContainer.querySelector('p');
+    if (!userMessageElement) {
+        userMessageElement = document.createElement('p');
+        userMessageContainer.appendChild(userMessageElement);
+    }
+    userMessageElement.textContent = userMessage2;
+    // Update section header and add user message
+    const sectionHeader = document.querySelector('.section-header');
+    if (sectionHeader) {
+        sectionHeader.textContent = userMessage1;
+        if (!sectionHeader.parentElement?.contains(userMessageContainer)) sectionHeader.parentElement?.insertBefore(userMessageContainer, sectionHeader.nextSibling);
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"5pIqC":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 /* TODO replace with star icon and heart icon */ parcelHelpers.export(exports, "createMovieModal", ()=>createMovieModal);
@@ -1238,43 +1275,6 @@ function createMovieModal(movie) {
     });
 }
 
-},{"./utils.ts":"8NGW9","@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"eWIKv":[function(require,module,exports,__globalThis) {
-//dom.ts
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "displayUserMessage", ()=>displayUserMessage);
-function displayUserMessage(userMessage1, userMessage2) {
-    // Remove empty movie cards wrapper
-    const movieCardsWrapper = document.querySelector('.movie-cards-wrapper');
-    if (movieCardsWrapper) {
-        const movieCardContainers = movieCardsWrapper.querySelectorAll('.movie-card-container');
-        if (Array.from(movieCardContainers).every((container)=>container.children.length === 0)) movieCardsWrapper.remove();
-    }
-    // Check if user message container already exists
-    let userMessageContainer = document.querySelector('.user-message-container');
-    if (!userMessageContainer) {
-        userMessageContainer = document.createElement('div');
-        userMessageContainer.classList.add('user-message-container');
-        userMessageContainer.style.backgroundColor = 'white';
-        userMessageContainer.style.padding = '20px';
-        userMessageContainer.style.width = '100%';
-        userMessageContainer.style.textAlign = 'center';
-    }
-    // Update message text
-    let userMessageElement = userMessageContainer.querySelector('p');
-    if (!userMessageElement) {
-        userMessageElement = document.createElement('p');
-        userMessageContainer.appendChild(userMessageElement);
-    }
-    userMessageElement.textContent = userMessage2;
-    // Update section header and add user message
-    const sectionHeader = document.querySelector('.section-header');
-    if (sectionHeader) {
-        sectionHeader.textContent = userMessage1;
-        if (!sectionHeader.parentElement?.contains(userMessageContainer)) sectionHeader.parentElement?.insertBefore(userMessageContainer, sectionHeader.nextSibling);
-    }
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}]},["lI3Wn","gfLib"], "gfLib", "parcelRequire94c2")
+},{"./utils.ts":"8NGW9","@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}]},["lI3Wn","gfLib"], "gfLib", "parcelRequire94c2")
 
 //# sourceMappingURL=index.53eface4.js.map

@@ -497,7 +497,7 @@ main {
         "actors-section actors-section"
         ;
     width: 70vw;
-    height: 90vh;
+    max-height: 90vh;
 /*     overflow: hidden; */
     overflow-y: scroll;
     border-radius: 30px;
@@ -950,7 +950,7 @@ footer p {
     .movie-modal {
         position: fixed;
         width: 90vw;
-        min-height: 90vh;
+        max-height: 90vh;
         overflow-y: scroll;
 
         grid-template-columns: 1fr; /* Adjust proportions here */
