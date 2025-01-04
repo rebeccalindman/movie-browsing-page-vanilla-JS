@@ -3,7 +3,7 @@ import { Movie, MovieData } from "./types.ts";
 import { fetchMovies, apiUrl, storeDataArray, API_KEY_tmdb } from './api.ts';
 import { displayUserMessage } from "./dom.ts";
 import { createMovieModal } from './modal.ts';
-import { addCategoryFilter, getGenreFromId, getCachedGenresList, syncLovePropertyAcrossStoredArrays, toggleFavorite, isFavorite, getFavoriteMovies, scrollToBottom } from "./utils.ts";  
+import { addCategoryFilter, getGenreFromId, getCachedGenresList, syncLovePropertyAcrossStoredArrays, toggleFavorite, isFavorite, getFavoriteMovies, scrollToBottom, scrollToTop} from "./utils.ts";  
 
 const mainElement = document.querySelector('main');
 
@@ -39,10 +39,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         /* add margin to main element */
         if (mainElement) {
           mainElement.style.marginTop = mainElement.style.marginTop === "130px" ? "" : "130px";
+
         }
       }
-    
-  })
+      
+    })
 }
 
   const homeLogo = document.getElementById("logo");
@@ -309,6 +310,7 @@ function handleMovieSearch() {
         `;
         }
 
+
       } else {
         displayUserMessage(
           `No results found for "${query}".`,
@@ -339,6 +341,7 @@ function handleMovieSearch() {
       }
     });
   }
+
 }
 
 async function createSearchResultContainer(query: string): Promise<void> {

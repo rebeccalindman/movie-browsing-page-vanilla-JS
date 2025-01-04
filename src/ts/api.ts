@@ -26,6 +26,15 @@ export const apiFeaturedMoviesUrl = `https://api.themoviedb.org/3/discover/movie
 
     const json = await response.json();
 
+    // Debug: Log the API response
+    console.log("API response for fetchMovies:", json);
+
+    // Ensure `results` is an array
+    if (!json.results || !Array.isArray(json.results)) {
+      throw new Error("API response is missing 'results' or it's not an array.");
+    }
+
+
     // Map movies and fetch cast information asynchronously
     const movies: MovieData = await Promise.all(
       json.results.map(async (movie: any) => ({
@@ -38,10 +47,12 @@ export const apiFeaturedMoviesUrl = `https://api.themoviedb.org/3/discover/movie
         love: movie.love || false,
         vote_average: Number(movie.vote_average).toFixed(1), // Convert to one decimal
         vote_count: movie.vote_count,
-        genres: movie.genre_ids.map((genreId: number) => {
-          const genre = genresList.find((g) => g.id === genreId);
-          return genre ? { id: genre.id, name: genre.name } : { id: genreId, name: 'Unknown Genre' };
-        }),
+        genres: Array.isArray(movie.genre_ids)
+        ? movie.genre_ids.map((genreId: number) => {
+            const genre = genresList.find((g) => g.id === genreId);
+            return genre ? { id: genre.id, name: genre.name } : { id: genreId, name: "Unknown Genre" };
+          })
+        : [], // Default to an empty array if `genre_ids` is missing
         cast: (await getCastInformationForMovie(movie.id)) || [], // Default to empty array if cast fetch fails
       }))
     );

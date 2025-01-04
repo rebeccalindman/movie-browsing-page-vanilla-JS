@@ -891,6 +891,10 @@ async function fetchMovies(url) {
             return null;
         }
         const json = await response.json();
+        // Debug: Log the API response
+        console.log("API response for fetchMovies:", json);
+        // Ensure `results` is an array
+        if (!json.results || !Array.isArray(json.results)) throw new Error("API response is missing 'results' or it's not an array.");
         // Map movies and fetch cast information asynchronously
         const movies = await Promise.all(json.results.map(async (movie)=>({
                 title: movie.title,
@@ -902,16 +906,16 @@ async function fetchMovies(url) {
                 love: movie.love || false,
                 vote_average: Number(movie.vote_average).toFixed(1),
                 vote_count: movie.vote_count,
-                genres: movie.genre_ids.map((genreId)=>{
+                genres: Array.isArray(movie.genre_ids) ? movie.genre_ids.map((genreId)=>{
                     const genre = genresList.find((g)=>g.id === genreId);
                     return genre ? {
                         id: genre.id,
                         name: genre.name
                     } : {
                         id: genreId,
-                        name: 'Unknown Genre'
+                        name: "Unknown Genre"
                     };
-                }),
+                }) : [],
                 cast: await getCastInformationForMovie(movie.id) || []
             })));
         return movies;
@@ -1023,6 +1027,7 @@ parcelHelpers.export(exports, "getCachedGenresList", ()=>getCachedGenresList);
     localStorage.setItem(key, JSON.stringify(data));
   } */ parcelHelpers.export(exports, "syncLovePropertyAcrossStoredArrays", ()=>syncLovePropertyAcrossStoredArrays);
 parcelHelpers.export(exports, "scrollToBottom", ()=>scrollToBottom);
+parcelHelpers.export(exports, "scrollToTop", ()=>scrollToTop);
 var _apiTs = require("./api.ts");
 function getGenreFromId(genreId, genres) {
     if (!genres) return 'Unknown Genre'; // Fallback for null genres list
@@ -1098,6 +1103,13 @@ function scrollToBottom() {
         behavior: "smooth"
     });
     console.log("Scrolling to bottom");
+}
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+    console.log("Scrolling to top");
 }
 
 },{"./api.ts":"dshRM","@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"amG76":[function(require,module,exports,__globalThis) {
