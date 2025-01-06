@@ -179,7 +179,7 @@ export function renderMovieCard(movie: Movie, category: string): void {
         </svg>
       </button>
       <img class="movie-card-poster lazy" src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title} poster">
-      <h3 class="movie-card-title">${movie.title}</h3>
+      <div class="movie-card-title"><h3>${movie.title}</h3></div>
       <div class="movie-card-information-container">
         <p class="movie-card-genres">${movie.genres.map((genre) => genre.name).join(", ")}</p>
         <p class="movie-card-release-date">${movie.release_date}</p>
