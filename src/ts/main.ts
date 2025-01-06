@@ -89,11 +89,20 @@ async function main(): Promise<void> {
     const featuredMovies = await fetchMovies(apiUrl);
     if (featuredMovies && featuredMovies.length > 0) {
       storeDataArray(featuredMovies, "featuredMovies");
-      syncLovePropertyAcrossStoredArrays();
       displayMovieCards(featuredMovies, "featured");
     }
 
-    // Fetch and display category movies
+    // Fetch and display new Swedish movies
+    const swedishMovies = await fetchMovies(`${apiUrl}&with_origin_country=SE&with_original_language=sv`);
+
+    if (swedishMovies && swedishMovies.length > 0) {
+      const categoryName = "Discover Swedish Productions";
+      storeDataArray(swedishMovies, "swedishMovies");
+      createCategorySection(categoryName);
+      displayMovieCards(swedishMovies, categoryName);
+    }
+
+    // Fetch and display API category movies
     const categories = genresList.map((genre) => genre.name);
     await Promise.all(categories.map((category) => fetchAndDisplayCategoryMovies(category)));
   } catch (error) {
@@ -290,6 +299,8 @@ function handleMovieSearch() {
       await createSearchResultContainer(query);
       const searchResultsContainer = document.getElementById('searchResult movies');
 
+      localStorage.setItem("searchQuery", query);
+
       const searchResult = await fetchMovies(apiSearchUrl);
 
       // Clear previous search results
@@ -301,11 +312,15 @@ function handleMovieSearch() {
         storeDataArray(searchResult, "searchResult");
         displayMovieCards(searchResult, "searchResult");
 
+        scrollToTop();
+
+        const numberOfValidResults: number = searchResult.filter(movie => movie.poster_path).length;
+
         /* Update section header with search details */
         const sectionHeader = document.querySelector(".section-header");
         if (sectionHeader) {
           sectionHeader.innerHTML = `
-          <h2>Search Results for "${query}"</h2>
+          <h2>Search Results for "${query}" (${numberOfValidResults} results)</h2>
           <p>Click on a movie card to view more details and find a streaming site.</p>
         `;
         }

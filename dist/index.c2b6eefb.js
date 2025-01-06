@@ -656,10 +656,17 @@ async function main() {
         const featuredMovies = await (0, _apiTs.fetchMovies)((0, _apiTs.apiUrl));
         if (featuredMovies && featuredMovies.length > 0) {
             (0, _apiTs.storeDataArray)(featuredMovies, "featuredMovies");
-            (0, _utilsTs.syncLovePropertyAcrossStoredArrays)();
             displayMovieCards(featuredMovies, "featured");
         }
-        // Fetch and display category movies
+        // Fetch and display new Swedish movies
+        const swedishMovies = await (0, _apiTs.fetchMovies)(`${(0, _apiTs.apiUrl)}&with_origin_country=SE&with_original_language=sv`);
+        if (swedishMovies && swedishMovies.length > 0) {
+            const categoryName = "Discover Swedish Productions";
+            (0, _apiTs.storeDataArray)(swedishMovies, "swedishMovies");
+            createCategorySection(categoryName);
+            displayMovieCards(swedishMovies, categoryName);
+        }
+        // Fetch and display API category movies
         const categories = genresList.map((genre)=>genre.name);
         await Promise.all(categories.map((category)=>fetchAndDisplayCategoryMovies(category)));
     } catch (error) {
@@ -802,15 +809,18 @@ function handleMovieSearch() {
         try {
             await createSearchResultContainer(query);
             const searchResultsContainer = document.getElementById('searchResult movies');
+            localStorage.setItem("searchQuery", query);
             const searchResult = await (0, _apiTs.fetchMovies)(apiSearchUrl);
             // Clear previous search results
             if (searchResultsContainer) searchResultsContainer.innerHTML = "";
             if (searchResult && searchResult.length > 0) {
                 (0, _apiTs.storeDataArray)(searchResult, "searchResult");
                 displayMovieCards(searchResult, "searchResult");
+                (0, _utilsTs.scrollToTop)();
+                const numberOfValidResults = searchResult.filter((movie)=>movie.poster_path).length;
                 /* Update section header with search details */ const sectionHeader = document.querySelector(".section-header");
                 if (sectionHeader) sectionHeader.innerHTML = `
-          <h2>Search Results for "${query}"</h2>
+          <h2>Search Results for "${query}" (${numberOfValidResults} results)</h2>
           <p>Click on a movie card to view more details and find a streaming site.</p>
         `;
             } else (0, _domTs.displayUserMessage)(`No results found for "${query}".`, "Try a different keyword or check the spelling!");
@@ -880,8 +890,8 @@ parcelHelpers.export(exports, "getGenresList", ()=>getGenresList);
  ** Fetch movies from The Movie Database API.
  */ var _utilsTs = require("./utils.ts");
 const API_KEY_tmdb = "6369fcc46c83ecd475d3f734321f2a0b"; //themoviedb.org
-const apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc`;
-const apiFeaturedMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}&include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc&with_watch_providers=netflix%20OR%20prime%20OR%20svt&year=2024`;
+const apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}&include_adult=false&include_video=true&page=1&sort_by=popularity.desc`;
+const apiFeaturedMoviesUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}&include_adult=false&include_video=false&page=1&region=SE&sort_by=popularity.desc&with_watch_providers=netflix%20OR%20prime%20OR%20svt&year=2024`; //todo not sure 'region=SE' works
 async function fetchMovies(url) {
     try {
         const genresList = await (0, _utilsTs.getCachedGenresList)();
