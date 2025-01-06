@@ -3,6 +3,7 @@
 # API
 API key is not secret. Included in the api.ts file.
 
+
 API-dokumentation:
 https://developer.themoviedb.org/docs/getting-started
 
@@ -40,6 +41,13 @@ Figma-designen har använts som initial plan. Avvikelserna är störst för moda
 
 _Länk_
 
+=======
+https://developer.themoviedb.org/docs/getting-started
+
+# Figma
+Figma-designen har använts som initial plan. Avvikelserna är störst för modalen och för funktioner som har tillkommit i efterhand.
+
+_Länk_
 https://www.figma.com/design/2KD3FIrf0SKUm9ZY2b32Mm/Filmkv%C3%A4ll?node-id=0-1&t=ikbsUnsbIMVcKKsP-1
 
 Lösenord: ****** (ledtråd: klassen)
