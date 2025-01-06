@@ -6,6 +6,21 @@ Startas genom terminalen såhär:
 2. Högerklicka på huvud-mappen och starta en terminal
 3. parcel public/index.html
 
+# Projektet
+
+Idén var att bygga en hemsida för användare på jakt efter en film till fredagsmyset. Genom att enkelt kunna ta del av information om populära filmer i olika kategorier, så som en länk till IMDb och en överblick över olika tjänster som levererar filmen. 
+
+_Favoriter_ 
+
+Med en funktion att favoritmarkera filmer och spara dem lokalt i en favorit-lista, så blir det enklare att hitta en passande film.
+
+_Sökfunktion_ 
+
+Det finns även en sökfunktion om man själv vill söka fram en titel. 
+
+_Mer info_ 
+När användaren har en idé om vilka filmer som hen vill se så finns det lättillgänglig information om var dessa filmer kan köpas/hyras/streamas som koms åt genom att klicka på ett film-kort. Modalen listar information om var de finns att se i Sverige.
+
 # Figma
 Figma-designen har använts som initial plan. Avvikelserna är störst för modalen och för funktioner som har tillkommit i efterhand.
 
