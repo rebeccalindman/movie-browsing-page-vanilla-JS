@@ -1,5 +1,6 @@
 //dom.ts
 
+
 export function displayUserMessage(userMessage1: string, userMessage2: string, cto?: string, link?: string): void {
     // Remove empty movie cards wrapper
     const movieCardsWrapper = document.querySelector('.movie-cards-wrapper');
@@ -66,6 +67,17 @@ export function displayUserMessage(userMessage1: string, userMessage2: string, c
 
     
 }
+
+/* 
+<div class="watch-container">
+                <h4>Watch on</h4>
+                <ul>
+                    <li><a href="#">Netflix</a></li>
+                    <li><a href="#">Amazon Prime</a></li>
+                </ul>
+            </div>
+            
+            */
 
 
 

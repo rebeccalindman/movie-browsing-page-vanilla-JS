@@ -886,6 +886,7 @@ parcelHelpers.export(exports, "fetchMovies", ()=>fetchMovies);
  */ parcelHelpers.export(exports, "displayErrorMessage", ()=>displayErrorMessage);
 parcelHelpers.export(exports, "storeDataArray", ()=>storeDataArray);
 parcelHelpers.export(exports, "getGenresList", ()=>getGenresList);
+parcelHelpers.export(exports, "getProvidersListForMovie", ()=>getProvidersListForMovie);
 /**
  ** Fetch movies from The Movie Database API.
  */ var _utilsTs = require("./utils.ts");
@@ -926,7 +927,9 @@ async function fetchMovies(url) {
                         name: "Unknown Genre"
                     };
                 }) : [],
-                cast: await getCastInformationForMovie(movie.id) || []
+                cast: await getCastInformationForMovie(movie.id) || [],
+                providers: await getProvidersListForMovie(movie.id) || [],
+                imdb: await getImdbInfoForMovie(movie.id)
             })));
         return movies;
     } catch (error) {
@@ -1011,6 +1014,48 @@ async function getGenresList() {
     } catch (error) {
         console.error('Error fetching genres:', error);
         return null; // Return null on error
+    }
+}
+async function getProvidersListForMovie(movieId) {
+    const url = `https://api.themoviedb.org/3/movie/${movieId}/watch/providers?api_key=${API_KEY_tmdb}`;
+    try {
+        const response = await fetch(url);
+        const json = await response.json();
+        const region = json.results["SE"]; // Adjust for the "SE" region (Sweden)
+        if (!region) {
+            console.warn("No provider data available for the selected region (SE).");
+            return null; // Return null if no data for the region
+        }
+        // Construct the ProviderList object
+        const providers = {
+            link: region.link || "",
+            flatrate: region.flatrate || [],
+            rent: region.rent || [],
+            buy: region.buy || [],
+            free: region.free || []
+        };
+        console.log("ProvidersList:", providers); // Debugging log to verify structure
+        return providers;
+    } catch (error) {
+        console.error("Error fetching providers:", error);
+        return null; // Return null on error
+    }
+}
+async function getImdbInfoForMovie(movieId) {
+    const url = `https://api.themoviedb.org/3/movie/${movieId}/external_ids?api_key=${API_KEY_tmdb}`;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        return {
+            link: "https://www.imdb.com/title/" + data.imdb_id,
+            imdb_id: data.imdb_id || ""
+        };
+    } catch (error) {
+        console.error('Error fetching IMDb info:', error);
+        return {
+            link: "",
+            imdb_id: null
+        };
     }
 }
 
@@ -1156,7 +1201,16 @@ exports.export = function(dest, destName, get) {
 //dom.ts
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "displayUserMessage", ()=>displayUserMessage);
+parcelHelpers.export(exports, "displayUserMessage", ()=>displayUserMessage) /* 
+<div class="watch-container">
+                <h4>Watch on</h4>
+                <ul>
+                    <li><a href="#">Netflix</a></li>
+                    <li><a href="#">Amazon Prime</a></li>
+                </ul>
+            </div>
+            
+            */ ;
 function displayUserMessage(userMessage1, userMessage2, cto, link) {
     // Remove empty movie cards wrapper
     const movieCardsWrapper = document.querySelector('.movie-cards-wrapper');
@@ -1213,9 +1267,10 @@ function displayUserMessage(userMessage1, userMessage2, cto, link) {
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}],"cQ1Dk":[function(require,module,exports,__globalThis) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-/* TODO replace with star icon and heart icon */ parcelHelpers.export(exports, "createMovieModal", ()=>createMovieModal);
+parcelHelpers.export(exports, "createMovieModal", ()=>createMovieModal);
 var _utilsTs = require("./utils.ts");
-function createMovieModal(movie) {
+var _apiTs = require("./api.ts");
+async function createMovieModal(movie) {
     // Check if the movie is a favorite
     const isFavorited = (0, _utilsTs.isFavorite)(movie.id);
     const favoriteClass = isFavorited ? "loved" : "";
@@ -1223,12 +1278,8 @@ function createMovieModal(movie) {
     movieModal.classList.add('movie-modal');
     const movieModalOverlay = document.createElement('div');
     movieModalOverlay.classList.add('movie-modal-overlay');
-    movieModalOverlay.style.width = '100vw';
-    movieModalOverlay.style.height = '100vh';
-    movieModalOverlay.style.top = '0';
-    movieModalOverlay.style.left = '0';
-    movieModalOverlay.style.position = 'fixed';
-    movieModalOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+    // Add a class to the <body> to disable scrolling
+    document.body.classList.add('no-scroll');
     movieModal.innerHTML = `
     <button type="button" class="movie-modal-close">X</button>
     <div class="movie-modal-backdrop" style="background: url('https://image.tmdb.org/t/p/w500/${movie.poster_path}') lightgray 50% center / cover no-repeat" aria-label="${movie.title} movie backdrop">
@@ -1260,16 +1311,12 @@ function createMovieModal(movie) {
             <div class="links-container">
                 <h4>Links</h4>
                 <ul>
-                    <li><a href="#">IMDb</a></li>
-                    <li><a href="#">Rotten Tomatoes</a></li>
+                    <li><a href="${movie.imdb.link}" target="_blank" rel="noopener noreferrer">IMDb</a></li>
                 </ul>
             </div>
             <div class="watch-container">
-                <h4>Watch on</h4>
-                <ul>
-                    <li><a href="#">Netflix</a></li>
-                    <li><a href="#">Amazon Prime</a></li>
-                </ul>
+                
+            
             </div>
     </section>
     <section class="actors-section">
@@ -1288,9 +1335,19 @@ function createMovieModal(movie) {
     `;
     document.body.appendChild(movieModal);
     document.body.appendChild(movieModalOverlay);
+    // available providerTypes: 'buy', 'rent', 'flatrate', 'free'
+    const providers = await (0, _apiTs.getProvidersListForMovie)(movie.id);
+    const watchContainer = movieModal.querySelector(".watch-container");
+    if (providers && Object.keys(providers).length > 0) createListOfProviders(providers, watchContainer);
+    else watchContainer.innerHTML = `
+        <h4>Watch Providers</h4>
+        <p style="font-size: 1em; color: #666;">No watch providers are available for this movie at the moment.</p>
+      `;
     const closeModal = ()=>{
         movieModal.remove();
         movieModalOverlay.remove();
+        // Remove the no-scroll class from the <body>
+        document.body.classList.remove('no-scroll');
     };
     // Close when clicking on the close button or outside the modal
     document.addEventListener("click", (e)=>{
@@ -1310,7 +1367,80 @@ function createMovieModal(movie) {
         loveButtons.forEach((button)=>button.classList.toggle("loved"));
     });
 }
+function createListOfProviders(providers, container) {
+    if (!providers || !container) return;
+    // Combine all provider types into a single list with type information
+    const providerMap = new Map();
+    const addProviders = (type, providersArray)=>{
+        if (!providersArray) return;
+        providersArray.forEach((provider)=>{
+            const existingEntry = providerMap.get(provider.provider_name);
+            if (existingEntry) existingEntry.types.push(type); // Add the type to the existing provider
+            else providerMap.set(provider.provider_name, {
+                provider,
+                types: [
+                    type
+                ]
+            });
+        });
+    };
+    // Add providers from all categories
+    addProviders("Subscription", providers.flatrate);
+    addProviders("Rent", providers.rent);
+    addProviders("Buy", providers.buy);
+    addProviders("Free", providers.free);
+    // Generate the HTML for the combined list of providers
+    const providerListHtml = Array.from(providerMap.values()).map(({ provider, types })=>{
+        const imageUrl = provider.logo_path ? `https://image.tmdb.org/t/p/original${provider.logo_path}` : "";
+        const typesText = types.join(", "); // Combine types into a single string
+        return `
+        <li>
+          <a href="${providers.link}" target="_blank" rel="noopener noreferrer">
+            <img src="${imageUrl}" alt="${provider.provider_name}" class="provider-logo" />
+            <span>${provider.provider_name}</span>
+          </a>
+          <span class="provider-types">(${typesText})</span>
+        </li>
+      `;
+    }).join("");
+    // Update the container with the generated list
+    container.innerHTML = `
+    <h4>Watch Providers in Sweden</h4>
+    <p style="font-size: 0.9em; color: #666;"> Clicking on a provider will redirect you to the tmdb website with direct links to each provider. </p>
+    <ul class="provider-list">
+      ${providerListHtml}
+    </ul>
+  `;
+    // Add CSS to style provider logos and types
+    const styleElement = document.createElement("style");
+    styleElement.textContent = `
+    .provider-logo {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      margin-right: 10px;
+    }
+    .provider-list {
+      display: flex;
+      flex-wrap: wrap;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .provider-list li {
+      display: flex;
+      align-items: flex-end;
+      margin: 10px;
+    }
+    .provider-types {
+      margin-left: 5px;
+      font-size: 0.9em;
+      color: #666;
+    }
+  `;
+    document.head.appendChild(styleElement);
+}
 
-},{"./utils.ts":"dY70f","@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}]},["iPTM2","hBOQB"], "hBOQB", "parcelRequire94c2")
+},{"./utils.ts":"dY70f","@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./api.ts":"dshRM"}]},["iPTM2","hBOQB"], "hBOQB", "parcelRequire94c2")
 
 //# sourceMappingURL=index.c2b6eefb.js.map

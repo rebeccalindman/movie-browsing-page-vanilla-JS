@@ -1,10 +1,8 @@
-import { Movie } from "./types.ts";
+import { Movie, Provider, ProviderList } from "./types.ts";
 import { isFavorite, toggleFavorite } from "./utils.ts";
+import { getProvidersListForMovie } from "./api.ts";
 
-
-
-  /* TODO replace with star icon and heart icon */
-  export function createMovieModal(movie: Movie) {
+  export async function createMovieModal(movie: Movie) {
 
  // Check if the movie is a favorite
   const isFavorited = isFavorite(movie.id);
@@ -15,12 +13,9 @@ import { isFavorite, toggleFavorite } from "./utils.ts";
     
     const movieModalOverlay = document.createElement('div');
     movieModalOverlay.classList.add('movie-modal-overlay');
-    movieModalOverlay.style.width = '100vw';
-    movieModalOverlay.style.height = '100vh';
-    movieModalOverlay.style.top = '0';
-    movieModalOverlay.style.left = '0';
-    movieModalOverlay.style.position = 'fixed';
-    movieModalOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+
+    // Add a class to the <body> to disable scrolling
+    document.body.classList.add('no-scroll');
 
     movieModal.innerHTML = `
     <button type="button" class="movie-modal-close">X</button>
@@ -53,16 +48,12 @@ import { isFavorite, toggleFavorite } from "./utils.ts";
             <div class="links-container">
                 <h4>Links</h4>
                 <ul>
-                    <li><a href="#">IMDb</a></li>
-                    <li><a href="#">Rotten Tomatoes</a></li>
+                    <li><a href="${movie.imdb.link}" target="_blank" rel="noopener noreferrer">IMDb</a></li>
                 </ul>
             </div>
             <div class="watch-container">
-                <h4>Watch on</h4>
-                <ul>
-                    <li><a href="#">Netflix</a></li>
-                    <li><a href="#">Amazon Prime</a></li>
-                </ul>
+                
+            
             </div>
     </section>
     <section class="actors-section">
@@ -84,10 +75,26 @@ import { isFavorite, toggleFavorite } from "./utils.ts";
     `;
     document.body.appendChild(movieModal);
     document.body.appendChild(movieModalOverlay);
+    
+    // available providerTypes: 'buy', 'rent', 'flatrate', 'free'
+    const providers = await getProvidersListForMovie(movie.id);
+    const watchContainer = movieModal.querySelector(".watch-container") as HTMLElement;
+
+    if (providers && Object.keys(providers).length > 0) {
+      createListOfProviders(providers, watchContainer);
+    } else {
+      watchContainer.innerHTML = `
+        <h4>Watch Providers</h4>
+        <p style="font-size: 1em; color: #666;">No watch providers are available for this movie at the moment.</p>
+      `;
+    }
+
 
     const closeModal = () => {
         movieModal.remove();
         movieModalOverlay.remove();
+        // Remove the no-scroll class from the <body>
+        document.body.classList.remove('no-scroll');
       };
     
       // Close when clicking on the close button or outside the modal
@@ -113,3 +120,94 @@ import { isFavorite, toggleFavorite } from "./utils.ts";
         loveButtons.forEach((button) => button.classList.toggle("loved"));
     });
 }
+
+
+function createListOfProviders(
+  providers: ProviderList,
+  container: HTMLElement | null
+): void {
+  if (!providers || !container) {
+    return;
+  }
+
+  // Combine all provider types into a single list with type information
+  const providerMap = new Map<string, { provider: Provider; types: string[] }>();
+
+  const addProviders = (type: string, providersArray?: Provider[]) => {
+    if (!providersArray) return;
+    providersArray.forEach((provider) => {
+      const existingEntry = providerMap.get(provider.provider_name);
+      if (existingEntry) {
+        existingEntry.types.push(type); // Add the type to the existing provider
+      } else {
+        providerMap.set(provider.provider_name, { provider, types: [type] });
+      }
+    });
+  };
+
+  // Add providers from all categories
+  addProviders("Subscription", providers.flatrate);
+  addProviders("Rent", providers.rent);
+  addProviders("Buy", providers.buy);
+  addProviders("Free", providers.free);
+
+  // Generate the HTML for the combined list of providers
+  const providerListHtml = Array.from(providerMap.values())
+    .map(({ provider, types }) => {
+      const imageUrl = provider.logo_path
+        ? `https://image.tmdb.org/t/p/original${provider.logo_path}`
+        : "";
+      const typesText = types.join(", "); // Combine types into a single string
+
+      return `
+        <li>
+          <a href="${providers.link}" target="_blank" rel="noopener noreferrer">
+            <img src="${imageUrl}" alt="${provider.provider_name}" class="provider-logo" />
+            <span>${provider.provider_name}</span>
+          </a>
+          <span class="provider-types">(${typesText})</span>
+        </li>
+      `;
+    })
+    .join("");
+
+  // Update the container with the generated list
+  container.innerHTML = `
+    <h4>Watch Providers in Sweden</h4>
+    <p style="font-size: 0.9em; color: #666;"> Clicking on a provider will redirect you to the tmdb website with direct links to each provider. </p>
+    <ul class="provider-list">
+      ${providerListHtml}
+    </ul>
+  `;
+
+  // Add CSS to style provider logos and types
+  const styleElement = document.createElement("style");
+  styleElement.textContent = `
+    .provider-logo {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      margin-right: 10px;
+    }
+    .provider-list {
+      display: flex;
+      flex-wrap: wrap;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .provider-list li {
+      display: flex;
+      align-items: flex-end;
+      margin: 10px;
+    }
+    .provider-types {
+      margin-left: 5px;
+      font-size: 0.9em;
+      color: #666;
+    }
+  `;
+
+  document.head.appendChild(styleElement);
+}
+

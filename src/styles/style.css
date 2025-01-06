@@ -8,6 +8,11 @@ main {
     flex: 1; /* ? unnecessary? */
 }
 
+/* Disable background scrolling */
+.no-scroll {
+    overflow: hidden;
+  }
+
 
 /* style */
 :root {
@@ -497,7 +502,7 @@ main {
     max-height: 90vh;
     max-width: 900px;
 /*     overflow: hidden; */
-    overflow-y: scroll;
+    overflow-y: auto;
     border-radius: 30px;
     box-sizing: border-box;
     border: 10px solid white;
@@ -620,7 +625,7 @@ main {
     gap: 12px;
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* Allow scrolling for overflow */
+  /*   overflow-y: auto; */ /* Allow scrolling for overflow */
     height: 100%;
     width: 100%;
 }
@@ -949,25 +954,19 @@ footer p {
     .movie-modal {
         position: fixed;
         width: 90vw;
-        max-height: 90vh;
-        overflow-y: scroll;
-
-        grid-template-columns: 1fr; /* Adjust proportions here */
-        grid-template-rows: 20% auto 10% 40% 10% auto;
+        max-height: 70vh;
+        overflow-y: auto;
+        grid-template-columns: 1fr;
+        grid-template-rows: 30% auto 10% auto 10% auto;
         grid-template-areas: 
             "movie-modal-backdrop"
             "movie-modal-title-container"
             "rating-container"
             "information-container" 
             "actors-section"
-            "movie-modal-links"
-            ;
-
-
+            "movie-modal-links";
         flex-direction: column;
         align-items: center;
-/*         gap: 10px; */
-
     }
 
     .movie-modal-title {

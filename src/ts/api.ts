@@ -1,5 +1,5 @@
 //api.ts
-import { Movie, MovieData, CastMember } from "./types.ts";
+import { Movie, MovieData, CastMember, Provider, ProviderList } from "./types.ts";
 export const API_KEY_tmdb = "6369fcc46c83ecd475d3f734321f2a0b"; //themoviedb.org
 
 export const apiUrl = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY_tmdb}&include_adult=false&include_video=true&page=1&sort_by=popularity.desc`;
@@ -54,6 +54,8 @@ export const apiFeaturedMoviesUrl = `https://api.themoviedb.org/3/discover/movie
           })
         : [], // Default to an empty array if `genre_ids` is missing
         cast: (await getCastInformationForMovie(movie.id)) || [], // Default to empty array if cast fetch fails
+        providers: await getProvidersListForMovie(movie.id) || [],
+        imdb: await getImdbInfoForMovie(movie.id),
       }))
     );
 
@@ -168,4 +170,55 @@ export async function getGenresList(): Promise<{ id: number; name: string }[] | 
   }
 }
 
+export async function getProvidersListForMovie(movieId: number): Promise<ProviderList | null> {
+  const url = `https://api.themoviedb.org/3/movie/${movieId}/watch/providers?api_key=${API_KEY_tmdb}`;
+
+  try {
+    const response = await fetch(url);
+    const json = await response.json();
+
+    const region = json.results["SE"]; // Adjust for the "SE" region (Sweden)
+    if (!region) {
+      console.warn("No provider data available for the selected region (SE).");
+      return null; // Return null if no data for the region
+    }
+
+    // Construct the ProviderList object
+    const providers: ProviderList = {
+      link: region.link || "", // Default to an empty string if no link is available
+      flatrate: region.flatrate || [], // Default to an empty array if the category is missing
+      rent: region.rent || [],
+      buy: region.buy || [],
+      free: region.free || [],
+    };
+
+    console.log("ProvidersList:", providers); // Debugging log to verify structure
+    return providers;
+  } catch (error) {
+    console.error("Error fetching providers:", error);
+    return null; // Return null on error
+  }
+}
+
+import { Imdb } from "./types";
+async function getImdbInfoForMovie(movieId: number): Promise<Imdb> {
+  const url = `https://api.themoviedb.org/3/movie/${movieId}/external_ids?api_key=${API_KEY_tmdb}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+    return {
+      link: "https://www.imdb.com/title/" + data.imdb_id,
+      imdb_id: data.imdb_id || "",
+    };
+  } catch (error) {
+    console.error('Error fetching IMDb info:', error);
+    return {
+      link: "",
+      imdb_id: null,
+    };
+  }
+}
+
+  
 

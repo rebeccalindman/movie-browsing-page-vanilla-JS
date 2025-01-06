@@ -8,6 +8,10 @@ main {
   flex: 1;
 }
 
+.no-scroll {
+  overflow: hidden;
+}
+
 :root {
   --text-dark: #16181a;
   --text-light: #fff;
@@ -440,7 +444,7 @@ main {
   display: grid;
   position: fixed;
   top: clamp(200px, 20vh, 500px);
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .movie-modal-overlay {
@@ -546,7 +550,6 @@ main {
   height: 100%;
   padding: 12px;
   display: flex;
-  overflow-y: auto;
 }
 
 .movie-genres {
@@ -823,18 +826,18 @@ footer p {
 
   .movie-modal {
     flex-direction: column;
-    grid-template: "movie-modal-backdrop" 20%
+    grid-template: "movie-modal-backdrop" 30%
                    "movie-modal-title-container"
                    "rating-container" 10%
-                   "information-container" 40%
+                   "information-container"
                    "actors-section" 10%
                    "movie-modal-links"
                    / 1fr;
     align-items: center;
     width: 90vw;
-    max-height: 90vh;
+    max-height: 70vh;
     position: fixed;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   .movie-modal-title, .movie-modal-rating {
