@@ -1458,6 +1458,6 @@ function createListOfProviders(providers, container) {
     document.head.appendChild(styleElement);
 }
 
-},{"./utils.ts":"dY70f","@parcel/transformer-js/src/esmodule-helpers.js":"amG76","./api.ts":"dshRM"}]},["iPTM2","hBOQB"], "hBOQB", "parcelRequire94c2")
+},{"./utils.ts":"dY70f","./api.ts":"dshRM","@parcel/transformer-js/src/esmodule-helpers.js":"amG76"}]},["iPTM2","hBOQB"], "hBOQB", "parcelRequire94c2")
 
 //# sourceMappingURL=index.c2b6eefb.js.map

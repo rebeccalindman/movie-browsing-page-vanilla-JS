@@ -1,13 +1,43 @@
 # movie-browsing-page-vanilla-JS
 
+Startas genom terminalen såhär:
+
+1. Se till att vara i main-branchen
+2. Högerklicka på huvud-mappen och starta en terminal
+3. parcel public/index.html
+
+# Figma
+Figma-designen har använts som initial plan. Avvikelserna är störst för modalen och för funktioner som har tillkommit i efterhand.
+
+_Länk_
+https://www.figma.com/design/2KD3FIrf0SKUm9ZY2b32Mm/Filmkv%C3%A4ll?node-id=0-1&t=ikbsUnsbIMVcKKsP-1
+
+Lösenord: fjsx24 
+
+
+# Arbetsprocess
+
+* Trello för planering och prioritering av nya uppgifter/felsökning
+
+_Git_ 
+* Jag har använt mig av flera branches för att enkelt kunna ångra större ändringar, t.ex. en branch för movie-cards respektive modal
+* Dessa har jag mergeat in i 'develop'
+
+
+# Lighthouse-analys
+Mobil:
+54 performance --> 60
+- mindre storlek på bilder
+- flyttade en del css till html-filen
+
+
 # API
 API key is not secret. Included in the api.ts file.
-
 
 API-dokumentation:
 https://developer.themoviedb.org/docs/getting-started
 
-__URL__
+# URL:er från API
 
 _Sökfunktionen_
 
@@ -30,29 +60,7 @@ https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=tr
 
 _Skådespelarbilder_
 
-const imageBaseUrl = "https://image.tmdb.org/t/p/w500";
+const imageBaseUrl = "https://image.tmdb.org/t/p/w200";
 
 
-# Figma
-Figma-designen har använts som initial plan. Avvikelserna är störst för modalen och för funktioner som har tillkommit i efterhand.
 
-_Länk_
-https://www.figma.com/design/2KD3FIrf0SKUm9ZY2b32Mm/Filmkv%C3%A4ll?node-id=0-1&t=ikbsUnsbIMVcKKsP-1
-
-Lösenord: ****** (ledtråd: klassen)
-
-
-# Arbetsprocess
-
-* Trello för planering och prioritering av nya uppgifter/felsökning
-
-_Git_ 
-* Jag har använt mig av flera branches för att enkelt kunna ångra större ändringar, t.ex. en branch för movie-cards respektive modal
-* Dessa har jag mergeat in i 'develop'
-
-
-# Lighthouse-analys
-
-54 performance
-- mindre storlek på bilder
-- flyttade en del css till html-filen
