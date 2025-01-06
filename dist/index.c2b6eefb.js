@@ -609,6 +609,27 @@ var _domTs = require("./dom.ts");
 var _modalTs = require("./modal.ts");
 var _utilsTs = require("./utils.ts");
 const mainElement = document.querySelector('main');
+const lazyLoad = ()=>{
+    const lazyImages = document.querySelectorAll("img.lazy");
+    const loadImg = (img)=>{
+        img.src = img.dataset.src || '';
+        img.classList.remove("lazy");
+    };
+    if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver((entries, observer)=>{
+            entries.forEach((entry)=>{
+                if (entry.isIntersecting) {
+                    const img = entry.target;
+                    loadImg(img);
+                    observer.unobserve(img);
+                }
+            });
+        });
+        lazyImages.forEach((img)=>observer.observe(img));
+    } else // Fallback for older browsers
+    lazyImages.forEach(loadImg);
+};
+document.addEventListener("DOMContentLoaded", lazyLoad);
 document.addEventListener("DOMContentLoaded", async ()=>{
     const contactNavButton = document.getElementById("contact-nav-button");
     const contactNavButton2 = document.getElementById("contact-nav-button2");
@@ -698,12 +719,12 @@ function renderMovieCard(movie, category) {
     const favoriteClass = isFavorited ? "loved" : "";
     movieCard.innerHTML = `
     <div class="movie-card-content">
-      <button class="love-button ${favoriteClass}" data-movie-id="${movie.id}">
+      <button class="love-button ${favoriteClass}" aria-label="Add to favorites" data-movie-id="${movie.id}">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M12.62 20.8101C12.28 20.9301 11.72 20.9301 11.38 20.8101C8.48 19.8201 2 15.6901 2 8.6901C2 5.6001 4.49 3.1001 7.56 3.1001C9.38 3.1001 10.99 3.9801 12 5.3401C13.01 3.9801 14.63 3.1001 16.44 3.1001C19.51 3.1001 22 5.6001 22 8.6901C22 15.6901 15.52 19.8201 12.62 20.8101Z" fill="white" fill-opacity="0.4"/>
         </svg>
       </button>
-      <img class="movie-card-poster" src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title} poster">
+      <img class="movie-card-poster lazy" src="https://image.tmdb.org/t/p/w200${movie.poster_path}" alt="${movie.title} poster">
       <h3 class="movie-card-title">${movie.title}</h3>
       <div class="movie-card-information-container">
         <p class="movie-card-genres">${movie.genres.map((genre)=>genre.name).join(", ")}</p>
@@ -950,7 +971,7 @@ async function fetchMovies(url) {
 }
 async function getCastInformationForMovie(movieId) {
     const url = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY_tmdb}&include_adult=false&language=en-US,sv-SE`;
-    const imageBaseUrl = "https://image.tmdb.org/t/p/w500";
+    const imageBaseUrl = "https://image.tmdb.org/t/p/w200";
     try {
         const response = await fetch(url);
         if (!response.ok) {
@@ -1288,7 +1309,7 @@ async function createMovieModal(movie) {
             <p class="movie-modal-rating">${movie.vote_average}/10</p> 
             <p class="vote-count">(${movie.vote_count})</p> 
         </div>
-        <button class="love-button ${favoriteClass}" data-movie-id="${movie.id}">
+        <button class="love-button ${favoriteClass}" aria-label="Add to favorites" data-movie-id="${movie.id}">
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M12.62 20.8101C12.28 20.9301 11.72 20.9301 11.38 20.8101C8.48 19.8201 2 15.6901 2 8.6901C2 5.6001 4.49 3.1001 7.56 3.1001C9.38 3.1001 10.99 3.9801 12 5.3401C13.01 3.9801 14.63 3.1001 16.44 3.1001C19.51 3.1001 22 5.6001 22 8.6901C22 15.6901 15.52 19.8201 12.62 20.8101Z" fill="white" fill-opacity="0.4"/>
         </svg>
@@ -1319,7 +1340,7 @@ async function createMovieModal(movie) {
         <ol>
             ${movie.cast ? movie.cast.map((actor)=>`
                      <li class="actor-list-item">
-                        <img class="actor-image" src="${actor.profile_path}" alt="${actor.name}">
+                        <img class="actor-image lazy" src="${actor.profile_path}" alt="${actor.name}">
                         <div style="display: flex; flex-direction: column;">
                         <span aria-label="Role" style="font-weight: bold;">${actor.character}</span>
                         <span aria-label="Actor name">${actor.name}</span>

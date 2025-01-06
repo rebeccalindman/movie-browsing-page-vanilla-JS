@@ -1,10 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/index.6dd9c435.css">
-    <title>Filmkväll - Saved Movies</title>
+
+     <!-- Preconnect to Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+
+  <!-- Preconnect to TMDb API -->
+  <link rel="preconnect" href="https://api.themoviedb.org">
+
+  <!-- Preconnect to TMDb images -->
+  <link rel="preconnect" href="https://image.tmdb.org">
+
+  <!-- Critical CSS -->
+  <style>* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  flex: 1;
+}
+
+:root {
+  --text-dark: #16181a;
+  --text-light: #fff;
+  --brand-color1: #fc0;
+  --brand-color2: #5f9ea0;
+  --brand-color2-5: #70b3b6;
+  --brand-color3: #d3d3ff;
+  --brand-color3-8: #d3d3ffcc;
+  --brand-color4: #e93dad;
+  --brand-color4-darker: #d7369f;
+  --brand-color7: #fe671d;
+  --text-color-dark: #16181a;
+  --sds-typography-body-size-medium: 16px;
+  --sds-typography-body-font-weight-regular: 400;
+}
+
+body {
+  background: repeating-linear-gradient(135deg, #569092, #569092 80px, #51888a 80px 160px);
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100vw;
+  font-family: Inria Sans, sans-serif;
+  display: flex;
+}
+
+header {
+  z-index: 100;
+  background-color: #000;
+  justify-content: space-between;
+  align-self: stretch;
+  align-items: center;
+  width: 100%;
+  height: fit-content;
+  padding: 0 2vw;
+  display: flex;
+  position: fixed;
+}
+</style>
+  
+
+    <title>Filmkväll - Favorite Movies</title>
     <!-- todo add favicon -->
      <!-- todo add package.json dependencies if needed -->
 </head>

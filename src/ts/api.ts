@@ -68,7 +68,7 @@ export const apiFeaturedMoviesUrl = `https://api.themoviedb.org/3/discover/movie
 async function getCastInformationForMovie(movieId: number): Promise<CastMember[] | null> {
   const url = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY_tmdb}&include_adult=false&language=en-US,sv-SE`;
 
-  const imageBaseUrl = "https://image.tmdb.org/t/p/w500";
+  const imageBaseUrl = "https://image.tmdb.org/t/p/w200";
 
   try {
     const response = await fetch(url);
