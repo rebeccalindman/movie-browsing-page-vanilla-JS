@@ -46,13 +46,13 @@ import { getProvidersListForMovie } from "./api.ts";
        
     </section>
     <section class="movie-modal-links">
-            <div class="watch-container">
-            </div>
             <div class="links-container">
                 <h4>Links</h4>
                 <ul>
                     <li><a href="${movie.imdb.link}" target="_blank" rel="noopener noreferrer">IMDb</a></li>
                 </ul>
+            </div>
+            <div class="watch-container">
             </div>
     </section>
     <section class="actors-section">
