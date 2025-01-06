@@ -33,17 +33,6 @@ _Skådespelarbilder_
 const imageBaseUrl = "https://image.tmdb.org/t/p/w500";
 
 
-
-
-# Figma
-Figma-designen har använts som initial plan. Avvikelserna är störst för modalen och för funktioner som har tillkommit i efterhand.
-
-
-_Länk_
-
-=======
-https://developer.themoviedb.org/docs/getting-started
-
 # Figma
 Figma-designen har använts som initial plan. Avvikelserna är störst för modalen och för funktioner som har tillkommit i efterhand.
 
