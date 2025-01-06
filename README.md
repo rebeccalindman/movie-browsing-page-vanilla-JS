@@ -19,6 +19,7 @@ _Sökfunktion_
 Det finns även en sökfunktion om man själv vill söka fram en titel. 
 
 _Mer info_ 
+
 När användaren har en idé om vilka filmer som hen vill se så finns det lättillgänglig information om var dessa filmer kan köpas/hyras/streamas som koms åt genom att klicka på ett film-kort. Modalen listar information om var de finns att se i Sverige.
 
 # Figma
