@@ -494,12 +494,14 @@ main {
     top: clamp(100px, 10vh, 500px);
     display: grid;
     grid-template-columns: 1fr 3fr; /* Adjust proportions here */
-    grid-template-rows: 10% auto 10% 10% auto;
+    grid-template-rows: 10% auto auto 10% auto auto auto;
     grid-template-areas: 
         "movie-modal-backdrop movie-modal-title-container"
         "movie-modal-backdrop information-container"
         "movie-modal-backdrop movie-modal-links"
         "rating-container movie-modal-links"
+        "span movie-modal-links"
+        "span movie-modal-links"
         "actors-section actors-section"
         ;
     width: 70vw;
@@ -511,6 +513,11 @@ main {
     box-sizing: border-box;
     border: 10px solid white;
     background: #FFF;
+}
+
+.movie-modal span {
+    grid-area: span;
+    height: 100%;
 }
 
 .movie-modal-overlay {
@@ -665,7 +672,7 @@ main {
     flex-direction: row;
     align-items: flex-start;
     gap: 24px;
-    padding: 12px;
+    padding: clamp(12px, 5%, 24px);
     font-size: 12px;
     line-height: 1.5;
     height: 100%;
@@ -1062,7 +1069,7 @@ footer p {
 
     .movie-card-title {
         height: clamp(60px, 7vw, 80px);
-        font-size: clamp(12px, 3vw, 14px);
+        font-size: clamp(12px, 1vw, 14px);
     }
 
 

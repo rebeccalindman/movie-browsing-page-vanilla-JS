@@ -24,6 +24,7 @@ import { getProvidersListForMovie } from "./api.ts";
     <section class="movie-modal-title-container">
         <h3 class="movie-modal-title">${movie.title}</h3>
     </section>
+    <span></span>
     <section class="rating-container">
         <div class="rating-group">
             <p class="movie-modal-rating">${movie.vote_average}/10</p> 
@@ -45,15 +46,13 @@ import { getProvidersListForMovie } from "./api.ts";
        
     </section>
     <section class="movie-modal-links">
+            <div class="watch-container">
+            </div>
             <div class="links-container">
                 <h4>Links</h4>
                 <ul>
                     <li><a href="${movie.imdb.link}" target="_blank" rel="noopener noreferrer">IMDb</a></li>
                 </ul>
-            </div>
-            <div class="watch-container">
-                
-            
             </div>
     </section>
     <section class="actors-section">
