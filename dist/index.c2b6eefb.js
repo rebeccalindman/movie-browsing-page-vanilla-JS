@@ -708,10 +708,8 @@ function renderMovieCard(movie, category) {
         console.error(`Error: Movie card container for category '${category}' not found.`);
         return; // Prevent rendering if the container is missing
     }
-    if (!movie.poster_path || movie.poster_path === "") {
-        console.error(`Error: Missing poster path for movie '${movie.title}'.`);
-        return; // Prevent rendering if poster path is missing
-    }
+    if (!movie.poster_path || movie.poster_path === "") /*  console.log(`No poster path for movie '${movie.title}'. Skipping display.`); */ return; // Prevent rendering if poster path is missing
+    if (!movie.providers || movie.providers === null) /* console.log(`No providers for movie '${movie.title}'. Skipping display.`); */ return; // Prevent rendering if providers are missing
     const movieCard = document.createElement("article");
     movieCard.classList.add("movie-card");
     // Check if the movie is a favorite
@@ -959,7 +957,7 @@ async function fetchMovies(url) {
                     };
                 }) : [],
                 cast: await getCastInformationForMovie(movie.id) || [],
-                providers: await getProvidersListForMovie(movie.id) || [],
+                providers: await getProvidersListForMovie(movie.id) || null,
                 imdb: await getImdbInfoForMovie(movie.id)
             })));
         return movies;
@@ -1052,10 +1050,7 @@ async function getProvidersListForMovie(movieId) {
         const response = await fetch(url);
         const json = await response.json();
         const region = json.results["SE"]; // Adjust for the "SE" region (Sweden)
-        if (!region) {
-            console.warn("No provider data available for the selected region (SE).");
-            return null; // Return null if no data for the region
-        }
+        if (!region) /* console.warn("No provider data available for the selected region (SE)."); */ return null; // Return null if no data for the region
         // Construct the ProviderList object
         const providers = {
             link: region.link || "",
