@@ -25,7 +25,7 @@ export type Movie = {
     order: number;
   }
   
-  export type MovieData = Movie[];
+  export type MovieData = Movie[] | null;
 
 /* Structure for movie providers */
 /*

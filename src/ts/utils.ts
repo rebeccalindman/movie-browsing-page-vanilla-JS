@@ -16,7 +16,6 @@ export function getGenreFromId(genreId: number, genres: { id: number; name: stri
   
     return url;
   }
-  
 
 
   let cachedGenresList: { id: number; name: string }[] | null = null;
@@ -83,10 +82,6 @@ export function getFavoriteMovies(): Movie[] {
 /**
  * Sync the local storage and the in-memory `lovedMoviesArr` in case of external changes.
  */
-/* export function storeDataArray(data: Movie[], key: string): void {
-    console.log(`Storing data for key: ${key}, Length: ${data.length}`);
-    localStorage.setItem(key, JSON.stringify(data));
-  } */
   
   export function syncLovePropertyAcrossStoredArrays(): void {
     // Get the favorite movies list

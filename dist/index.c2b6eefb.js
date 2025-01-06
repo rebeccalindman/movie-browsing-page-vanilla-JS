@@ -730,6 +730,7 @@ function renderMovieCard(movie, category) {
 }
 function displayMovieCards(movies, category) {
     try {
+        if (!movies || movies.length === 0) throw new Error("No movies found");
         movies.forEach((movie)=>{
             renderMovieCard(movie, category);
         });
@@ -743,7 +744,6 @@ async function fetchAndDisplayCategoryMovies(category) {
     try {
         const genresList = await (0, _utilsTs.getCachedGenresList)();
         const categoryUrl = await (0, _utilsTs.addCategoryFilter)(category);
-        console.log(`Fetching movies for category: ${category}, URL: ${categoryUrl}`);
         const categoryMovies = await (0, _apiTs.fetchMovies)(categoryUrl);
         if (!categoryMovies || categoryMovies.length === 0) {
             console.error(`No movies found for category: ${category}`);
@@ -829,10 +829,22 @@ function handleMovieSearch() {
             (0, _domTs.displayUserMessage)("An error occurred during the search.", "Please try again later!");
         }
     };
+    let searchTimeout = null;
     if (searchInput) searchInput.addEventListener("input", ()=>{
         const query = searchInput.value.trim();
-        if (query.length >= 3) fetchAndDisplayMovies(query);
+        if (query.length >= 3) {
+            if (searchTimeout) clearTimeout(searchTimeout);
+            searchTimeout = window.setTimeout(()=>fetchAndDisplayMovies(query), 1000); // 1 second delay to reduce API requests
+        }
     });
+    // Handle Enter key
+    if (searchInput) searchInput.addEventListener("keydown", (event)=>{
+        if (event.key === "Enter") {
+            const query = searchInput.value.trim();
+            fetchAndDisplayMovies(query);
+        }
+    });
+    // Handle Search Button
     if (searchButton) searchButton.addEventListener("click", ()=>{
         if (searchInput) {
             const query = searchInput.value.trim();
@@ -902,8 +914,6 @@ async function fetchMovies(url) {
             return null;
         }
         const json = await response.json();
-        // Debug: Log the API response
-        console.log("API response for fetchMovies:", json);
         // Ensure `results` is an array
         if (!json.results || !Array.isArray(json.results)) throw new Error("API response is missing 'results' or it's not an array.");
         // Map movies and fetch cast information asynchronously
@@ -1008,7 +1018,6 @@ async function getGenresList() {
     try {
         const response = await fetch(url);
         const json = await response.json();
-        console.log("genresList:", json.genres);
         storeDataArray(json.genres, "genresList");
         return json.genres || []; // Extract genres array
     } catch (error) {
@@ -1034,7 +1043,6 @@ async function getProvidersListForMovie(movieId) {
             buy: region.buy || [],
             free: region.free || []
         };
-        console.log("ProvidersList:", providers); // Debugging log to verify structure
         return providers;
     } catch (error) {
         console.error("Error fetching providers:", error);
@@ -1077,10 +1085,7 @@ parcelHelpers.export(exports, "getCachedGenresList", ()=>getCachedGenresList);
  */ parcelHelpers.export(exports, "getFavoriteMovies", ()=>getFavoriteMovies);
 /**
  * Sync the local storage and the in-memory `lovedMoviesArr` in case of external changes.
- */ /* export function storeDataArray(data: Movie[], key: string): void {
-    console.log(`Storing data for key: ${key}, Length: ${data.length}`);
-    localStorage.setItem(key, JSON.stringify(data));
-  } */ parcelHelpers.export(exports, "syncLovePropertyAcrossStoredArrays", ()=>syncLovePropertyAcrossStoredArrays);
+ */ parcelHelpers.export(exports, "syncLovePropertyAcrossStoredArrays", ()=>syncLovePropertyAcrossStoredArrays);
 parcelHelpers.export(exports, "scrollToBottom", ()=>scrollToBottom);
 parcelHelpers.export(exports, "scrollToTop", ()=>scrollToTop);
 var _apiTs = require("./api.ts");
@@ -1201,16 +1206,7 @@ exports.export = function(dest, destName, get) {
 //dom.ts
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "displayUserMessage", ()=>displayUserMessage) /* 
-<div class="watch-container">
-                <h4>Watch on</h4>
-                <ul>
-                    <li><a href="#">Netflix</a></li>
-                    <li><a href="#">Amazon Prime</a></li>
-                </ul>
-            </div>
-            
-            */ ;
+parcelHelpers.export(exports, "displayUserMessage", ()=>displayUserMessage);
 function displayUserMessage(userMessage1, userMessage2, cto, link) {
     // Remove empty movie cards wrapper
     const movieCardsWrapper = document.querySelector('.movie-cards-wrapper');

@@ -25,6 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       await main(); // Ensure main() completes before scrolling
       
       scrollToBottom();
+      
     });
   }
 
@@ -82,18 +83,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 async function main(): Promise<void> {
   try {
     // Fetch genres and sync love property on page load
-    const genresList = await getCachedGenresList();
+    const genresList: { id: number; name: string }[] = await getCachedGenresList();
     syncLovePropertyAcrossStoredArrays();
 
     // Fetch and display featured movies
-    const featuredMovies = await fetchMovies(apiUrl);
+    const featuredMovies: MovieData = await fetchMovies(apiUrl);
     if (featuredMovies && featuredMovies.length > 0) {
       storeDataArray(featuredMovies, "featuredMovies");
       displayMovieCards(featuredMovies, "featured");
     }
 
     // Fetch and display new Swedish movies
-    const swedishMovies = await fetchMovies(`${apiUrl}&with_origin_country=SE&with_original_language=sv`);
+    const swedishMovies: MovieData = await fetchMovies(`${apiUrl}&with_origin_country=SE&with_original_language=sv`);
 
     if (swedishMovies && swedishMovies.length > 0) {
       const categoryName = "Discover Swedish Productions";
@@ -103,7 +104,7 @@ async function main(): Promise<void> {
     }
 
     // Fetch and display API category movies
-    const categories = genresList.map((genre) => genre.name);
+    const categories: string[] = genresList.map((genre) => genre.name);
     await Promise.all(categories.map((category) => fetchAndDisplayCategoryMovies(category)));
   } catch (error) {
     console.error("Error during main execution:", error);
@@ -111,7 +112,7 @@ async function main(): Promise<void> {
 }
 
 async function savedMoviesMain(): Promise<void> {
-  const favoriteMovies = await getFavoriteMovies();
+  const favoriteMovies: MovieData = await getFavoriteMovies();
   if (favoriteMovies && favoriteMovies.length > 0) {
     displayMovieCards(favoriteMovies, "saved");
   }
@@ -186,6 +187,9 @@ export function renderMovieCard(movie: Movie, category: string): void {
 
 export function displayMovieCards(movies: MovieData, category: string) {
   try {
+    if (!movies || movies.length === 0) {
+      throw new Error("No movies found");
+    }
     movies.forEach(movie => {
       renderMovieCard(movie, category);
   });
@@ -203,8 +207,6 @@ export async function fetchAndDisplayCategoryMovies(category: string): Promise<v
   try {
     const genresList = await getCachedGenresList();
     const categoryUrl = await addCategoryFilter(category);
-
-    console.log(`Fetching movies for category: ${category}, URL: ${categoryUrl}`);
 
     const categoryMovies = await fetchMovies(categoryUrl);
     if (!categoryMovies || categoryMovies.length === 0) {
@@ -341,13 +343,28 @@ function handleMovieSearch() {
     }
   };
 
+  let searchTimeout: number | null = null;
   if (searchInput) {
     searchInput.addEventListener("input", () => {
       const query = searchInput.value.trim();
-      if (query.length >= 3) fetchAndDisplayMovies(query);
+      if (query.length >= 3) {
+        if (searchTimeout) clearTimeout(searchTimeout);
+        searchTimeout = window.setTimeout(() => fetchAndDisplayMovies(query), 1000); // 1 second delay to reduce API requests
+      }
     });
   }
 
+  // Handle Enter key
+  if (searchInput) {
+    searchInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        const query = searchInput.value.trim();
+        fetchAndDisplayMovies(query);
+      }
+    });
+  }
+
+  // Handle Search Button
   if (searchButton) {
     searchButton.addEventListener("click", () => {
       if (searchInput) {

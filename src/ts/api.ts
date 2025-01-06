@@ -26,8 +26,6 @@ export const apiFeaturedMoviesUrl = `https://api.themoviedb.org/3/discover/movie
 
     const json = await response.json();
 
-    // Debug: Log the API response
-    console.log("API response for fetchMovies:", json);
 
     // Ensure `results` is an array
     if (!json.results || !Array.isArray(json.results)) {
@@ -159,7 +157,6 @@ export async function getGenresList(): Promise<{ id: number; name: string }[] | 
   try {
     const response = await fetch(url);
     const json = await response.json();
-    console.log("genresList:", json.genres);
     
     storeDataArray(json.genres, "genresList");
 
@@ -192,7 +189,6 @@ export async function getProvidersListForMovie(movieId: number): Promise<Provide
       free: region.free || [],
     };
 
-    console.log("ProvidersList:", providers); // Debugging log to verify structure
     return providers;
   } catch (error) {
     console.error("Error fetching providers:", error);
