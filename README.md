@@ -46,6 +46,9 @@ Mobil:
 - mindre storlek på bilder
 - flyttade en del css till html-filen
 
+# Asynkronitet
+- Data hämtas asynkront från api:et genom flera url, varav några finns listade längre ner i detta dokument, t.ex. skådespelar-information och providers-information hämtas asynkront till varje film. 
+
 
 # API
 API key is not secret. Included in the api.ts file.
