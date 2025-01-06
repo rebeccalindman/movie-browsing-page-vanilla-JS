@@ -1,61 +1,3 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box; 
-}
-
-main {
-    flex: 1; /* ? unnecessary? */
-}
-
-/* Disable background scrolling */
-.no-scroll {
-    overflow: hidden;
-  }
-
-
-/* style */
-:root {
-    --text-dark: #16181A;
-    --text-light: #FFF; 
-    --brand-color1: #ffcc00; /*mustard yellow*/
-    --brand-color2: #5F9EA0; /*dark mint green*/
-    --brand-color2-5: #70b3b6; /*light mint green*/
-    --brand-color3: #D3D3FF; /*lilac*/
-    --brand-color3-8: #D3D3FFCC; /* lilac 80% opacity */
-    --brand-color4: #E93DAD; /* hot pink */
-    --brand-color4-darker: #d7369f; /* darker hot pink */
-
-    --brand-color7: #FE671D; /* orange */
-    --text-color-dark: #16181a;
-
-    --sds-typography-body-size-medium: 16px;
-    --sds-typography-body-font-weight-regular: 400;
-}
-
-body{
-background-color: #FFF;
-font-family: "Inria Sans", sans-serif;
-width: 100%;
-}
-
-header{
-    display: flex;
-    background-color: black;
-    position: fixed;
-    z-index: 100;
-    width: 100%;
-    height: fit-content;
-
-    
-    justify-content: space-between;
-    align-items: flex-start;
-    align-self: stretch;
-
-    padding: 0px 2vw;
-}
-
-
 
 #search-bar-container {
     display: flex;
@@ -64,15 +6,11 @@ header{
     justify-content: center;
     width: clamp(200px, 70%, 800px);
     height: 100%;
-/*     border-radius: 20px; */
     overflow: hidden;
-/*     margin: 12px; */
     width: 100%;
     border-radius: 20px;
     margin: 0 20px;
 }
-
-
 #search-bar-container * {
     padding: 12px;
     color: white;
@@ -81,7 +19,6 @@ header{
     font-size: 14px;
     border: none;
 }
-
 #search-bar-container input {
     display: flex;
     align-items: center;
@@ -94,7 +31,6 @@ header{
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
-
 #search-bar-container button {
     display: flex;
     align-items: center;
@@ -103,13 +39,11 @@ header{
     width: 80px;
     height: 100%;
 }
-
 #search-bar-container button:hover {
     opacity: 100%;
     background-color: var(--brand-color2);
     outline: 1px solid rgba(255, 255, 255, 0.727);
 }
-
 #search-icon-button {
     display: flex;
     width: 44px;
@@ -127,109 +61,77 @@ header{
 
     display: none;
 }
-
 #search-icon-button:hover {
     opacity: 100%;
 /*     background-color: var(--brand-color2); */
     scale: 1.20;
 }
-
 #search-icon-button:active path {
     stroke: var(--brand-color2);
 }
-
 #search-icon-button svg {
     width: 28px;
     height: 28px;
     flex-shrink: 0;
 }
 
-
 header #logo:hover {
-    grid-area: logo;
-    cursor: pointer;
-    transform: scale(0.95);
+  grid-area: logo;
+  cursor: pointer;
+  transform: scale(0.95);
 }
-
-
 #hamburger-button {
-    display: none;
+  display: none;
 }
-
 header nav ul { /* nav bar button menu */
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 20px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
-
-
 .nav-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 0px 0px 20px 20px;
-    background: var(--brand-color2);
-    padding: 0;
-    overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0px 0px 20px 20px;
+  background: var(--brand-color2);
+  padding: 0;
+  overflow: hidden;
 }
-
 #hamburger-menu {
-    display: none;
+  display: none;
 }
-
 .nav-button a {
-    display: flex; /* fills the space */
-    height: 100%;
-    width: 100%;
-    padding: 20px 24px; /* Add padding to make the button area larger */
-    color: var(--text-light);
-    font-size: var(--sds-typography-body-size-medium);
-    text-decoration: none;
-    font-weight: var(--sds-typography-body-font-weight-regular);
-    line-height: 100%; /* 16px */
-    text-wrap-mode: nowrap;
-    outline: red 1px solid;
+  display: flex; /* fills the space */
+  height: 100%;
+  width: 100%;
+  padding: 20px 24px; /* Add padding to make the button area larger */
+  color: var(--text-light);
+  font-size: var(--sds-typography-body-size-medium);
+  text-decoration: none;
+  font-weight: var(--sds-typography-body-font-weight-regular);
+  line-height: 100%; /* 16px */
+  text-wrap-mode: nowrap;
+  outline: red 1px solid;
 }
-
 /* Colors for nav bar */
 .nav-button:nth-child(3){
-    background: var(--brand-color7);
+  background: var(--brand-color7);
 }
-
 .nav-button:nth-child(2){
-    background-color: #E93DAD;
+  background-color: #E93DAD;
 }
-
 .nav-button:hover{
-    border-radius: 0px 0px 20px 20px;
-    background: var(--brand-color2-5, #70B3B6);
-    cursor: pointer
+  border-radius: 0px 0px 20px 20px;
+  background: var(--brand-color2-5, #70B3B6);
+  cursor: pointer
 }
-
 .nav-button.active{
-    background-color: inherit;
+  background-color: inherit;
 }
-
 /* Layout */
-body {
-display: flex;
-width: 100vw;
-flex-direction: column;
-align-items: center;
-gap: 10px;
-background: repeating-linear-gradient(
-        135deg, /* Direction: 90 degrees creates vertical stripes */
-        #569092, /* First stripe color */
-        #569092 80px, /* Stripe width */
-        #51888a 80px, /* Gap between stripes (starts second color) */
-        #51888a 160px /* Total stripe width (alternates back to first color) */
-    );
-
-}
-
 #savedmovies-body {
     background: repeating-linear-gradient(
         135deg, /* Direction: 90 degrees creates vertical stripes */
@@ -239,9 +141,6 @@ background: repeating-linear-gradient(
         var(--brand-color4-darker) 160px /* Total stripe width (alternates back to first color) */
     );
 }
-
-
-
 
 main {
     display: flex;
@@ -343,8 +242,6 @@ main {
 
 }
 
-
-
 .movie-card .love-button {
     position: absolute;
     top: 10px;
@@ -388,11 +285,6 @@ main {
     height: 330px;
     flex-shrink: 0;
 }
-
-
-
-
-
 .movie-card-information-container {
     display: flex;
     padding-top: 16px;
@@ -402,7 +294,7 @@ main {
 }
 
 .movie-card-genres {
-    font-size: clamp(10px, 1.8vw, 13px);
+    font-size: clamp(12px, 1.8vw, 14px);
     font-weight: 400;
     line-height: 1.5;
     height: 5vh;
@@ -413,8 +305,8 @@ main {
 }
 
 .movie-card .cto-view-details {
-    color: var(--brand-color2, #5F9EA0);
-    font-size: clamp(10px, 2.0vw, 14px);
+    color: #3b6a6c;
+    font-size: clamp(12px, 2.0vw, 14px);
     font-weight: 700;
     text-align: center;
 }
@@ -458,16 +350,12 @@ main {
     font-weight: 700;
     font-size: clamp(12px, 3vw, 18px);
     height: clamp(70px, 7vw, 90px);
-
     text-align: center;
     line-clamp: 3;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
 }
-
-
-
 
 .love-button {
     background-color: transparent;
@@ -501,8 +389,7 @@ main {
     width: 70vw;
     max-height: 90vh;
     max-width: 900px;
-/*     overflow: hidden; */
-    overflow-y: auto;
+    overflow-y: scroll;
     border-radius: 30px;
     box-sizing: border-box;
     border: 10px solid white;
@@ -557,7 +444,6 @@ main {
     align-items: center;
     width: 100%;
     height: 100%;
-
     justify-content: space-between;
     align-items: center;
     background: var(--brand-color3, #E6E6FA);
@@ -580,32 +466,21 @@ main {
     display: flex;
     flex-direction: column;
     justify-content: center;
-/*     align-items: center; */
     padding: 10px;
-/*     background: var(--background-dark-base, #16181A); */
 }
-
 .movie-modal-title {
-   /*  color: var(--brand-color1, #FC0); */
-  /*   text-align: center; */
     font-size: 24px;
     font-weight: 700;
     width: 100%;
-
 }
-
 .movie-modal-rating, .star-icon {
     font-size: 24px;
-    font-weight: 700;
-    
+    font-weight: 700; 
 }
-
 .vote-count {
     font-size: 12px;
     font-weight: 300;
 }
-
-
 .love-button {
     display: flex;
     width: 44px;
@@ -618,18 +493,16 @@ main {
     border-radius: 999px;
     background: rgba(211, 211, 255, 0.50);
 }
-
 .movie-modal .information-container {
     grid-area: information-container;
     padding: 12px;
     gap: 12px;
     display: flex;
     flex-direction: column;
-  /*   overflow-y: auto; */ /* Allow scrolling for overflow */
+    overflow-y: auto; /* Allow scrolling for overflow */
     height: 100%;
     width: 100%;
 }
-
 .movie-genres {
     font-size: 18px;
     font-weight: 200;
@@ -653,8 +526,6 @@ main {
     font-size: 16px;
     font-weight: 300;
 }
-
-
 .movie-modal-links {
     grid-area: movie-modal-links;
     display: flex;
@@ -667,15 +538,12 @@ main {
     height: 100%;
     width: 100%;
 }
-
 .movie-modal-links li {
     list-style: none;
 }
-
 .movie-modal-links li a {
     color: var(--text-dark);
 }
-
 /* actor list section */
 .actors-section {
     grid-area: actors-section;
@@ -696,7 +564,6 @@ main {
     background-color: #efeff2;
    /*  border: 2px solid var(--brand-color3, #E6E6FA); */
 }
-
 .actors-section ol {
     height: inherit;
     width: fit-content;
@@ -704,9 +571,8 @@ main {
     flex-direction: row;
     align-items: start;
     gap: 16px;
-    font-size: clamp(8px, 2rem, 12px);
+    font-size: clamp(12px, 2rem, 16px);
 }
-
 .actor-list-item {
     display: flex;
     flex-direction: column;
@@ -714,53 +580,28 @@ main {
     gap: 10px;
     justify-content: center;
 }
-
 .actor-list-item span {
     text-align: center;
 }
-
-
-
 .actor-list-item img {
     width: 100px;
     height: 100px;
     border-radius: 50%;
     object-fit: cover;
 }
-
 #page-title {
     padding: 3rem 1rem;
     color: white;
     text-align: center;
     font-size: 2.5rem;
 }
-
-
-
-
-
 /** UX Shape Dividers **/
-
-/*  #background-wrapper {
-    position: relative;
-    height: 200px;
-    background: repeating-linear-gradient(
-        135deg,
-        var(--brand-color2-5),
-        var(--brand-color2-5) 50px,
-        var(--brand-color2) 50px,
-        var(--brand-color2) 100px
-    );
-}
- */
-
 #background-image img {
     display: block; /* Ensure no unexpected spacing issues */
     width: 100%; /* Cover full width */
     height: auto;
     z-index: 0; /* Place image below divider */
 }
-
 .ux-shape-divider {
     position: fixed; /* Position relative to #background-image-wrapper */
     left: 0; /* Align to the left */
@@ -771,27 +612,22 @@ main {
     line-height: 0; /* Remove line height spacing */
     pointer-events: none;
 }
-
 .movie-cards-wrapper#featured .ux-shape-divider {
     position: relative; /* Position relative to #background-image-wrapper */
     bottom: -30px;
     z-index: 10;
 }
-
 .ux-shape-divider .dark {
     fill: var(--text-color-dark);
 }
-
 .ux-shape-divider svg {
     width: 100%; /* Ensure SVG stretches across the container */
     height: auto;
 }
-
 .ux-shape-fill {
     fill: #fff; /* Adjust color to match your design */
 }
-
-
+/* Footer */
 footer {
     visibility: visible;
     position: relative;
@@ -809,11 +645,9 @@ footer {
     background-color: var(--brand-color1);
     color: var(--text-dark);
 }   
-
 footer p {
     text-align: center;
 }
-
 .footer-content {
     display: grid;
     gap: 20px;
@@ -826,7 +660,6 @@ footer p {
     ;
 
 }
-
 .footer-bottom, .footer-newsletter, .footer-content *{
     display: flex;
     flex-direction: column;
@@ -834,61 +667,43 @@ footer p {
     justify-content: flex-start;
     gap: 10px;
 }
-
 .footer-tagline {
     grid-area: footer-tagline;
 }
-
 .footer-contact {
     grid-area: footer-contact;
 }
-
 .footer-links {
     grid-area: footer-links;
 }
-
 .footer-newsletter {
     grid-area: footer-newsletter;
 }
-
 .footer-social {
     grid-area: footer-social;
 }
-
 .footer-bottom {
 
     text-align: center;
 }
-
-
 /** Media Queries **/
-
 @media screen and (max-width: 1024px) {
-
     header {
         align-items: center;
         height: clamp(50px, 20vw, 80px);
         padding: 2vw 4vw;
         display: flex;
     }
-
     /** Hamburger Menu */
-
-
     header nav ul {
         display: none;
     }
-
-
     #hamburger-menu.open {
         display: flex;
     }
-
     #hamburger-menu.close {
         display: none;
     }
-
-
     #hamburger-menu {
         position: fixed;
         top: clamp(50px, 20vw, 80px);
@@ -903,14 +718,11 @@ footer p {
         border-radius: 0 0 20px 20px;
         overflow: hidden;
     }
-
     #hamburger-menu li {
         border-radius: 0;
         justify-self: stretch;
         width: 100%;
     }
-
-
     #hamburger-button {
         display: flex;
         align-items: center;
@@ -922,79 +734,64 @@ footer p {
         background-color: inherit;
         border: none;
     }
-    
-
     #hamburger-button:hover {
         scale: 1.10;
         opacity: 100%;
     }
-
     #hamburger-button:active {
         opacity: 100%;
     }
-
     #hamburger-button.active path {
         stroke: #51888a;
         stroke-width: 4px;
     }
-
     #hamburger-button.rest path {
         stroke: #ffffff;
         stroke-width: 3px;
     }
 }
-
 @media screen and (max-width: 700px) {
-
     #logo {
         width: clamp(150px, 50vw, 300px);
         height: auto;
     }
-
     .movie-modal {
         position: fixed;
         width: 90vw;
-        max-height: 70vh;
-        overflow-y: auto;
-        grid-template-columns: 1fr;
-        grid-template-rows: 30% auto 10% auto 10% auto;
+        max-height: 90vh;
+        overflow-y: scroll;
+        grid-template-columns: 1fr; /* Adjust proportions here */
+        grid-template-rows: 20% auto 10% 40% 10% auto;
         grid-template-areas: 
             "movie-modal-backdrop"
             "movie-modal-title-container"
             "rating-container"
             "information-container" 
             "actors-section"
-            "movie-modal-links";
+            "movie-modal-links"
+            ;
         flex-direction: column;
         align-items: center;
     }
-
     .movie-modal-title {
         font-size: clamp(12px, 2.0rem, 24px);
     }
-
     .movie-modal-rating {
         font-size: clamp(12px, 2.0rem, 24px);
     }
-
     .movie-genres, .movie-modal-release-date {
-        font-size: clamp(10px, .9rem, 16px);
+        font-size: clamp(12px, .9rem, 16px);
     }
-
     .movie-modal-backdrop {
         width: 100%;
         height: 100%;
-        /* aspect-ratio: 24 / 9; */ /* Adjust aspect ratio for smaller screens */
     }
-
-        /* actor list section */
-
+    /* actor list section */
     .actors-section {
         width: 100%;
         height: 100%;
         padding: 0 10px;
     }
-
     .actors-section ol {
         height: inherit;
         width: 100%;
@@ -1002,9 +799,8 @@ footer p {
         flex-direction: row;
         align-items: center;
         gap: 12px;
-        font-size: clamp(8px, 2rem, 12px);
+        font-size: clamp(12px, 2rem, 16px);
     }
-
     .actor-list-item {
         flex-direction: row;
         align-items: center;
@@ -1012,27 +808,19 @@ footer p {
         justify-content: center;
         width: max-content;
     }
-
     .actor-list-item div {
         max-height: 50px;
     }
-
     .actor-list-item span {
         text-align: left;
         width: max-content;
         height: 100%;
     }
-
-
-
     .actor-list-item img {
         width: 40px;
         height: 40px;
     }
-    
-
-    /** movie cards */
-
+/** movie cards */
     .movie-card {
         width: clamp(150px, 20vw, 400px);
         padding-bottom: 10px;
@@ -1040,38 +828,29 @@ footer p {
         gap: 10px;
         height: inherit;
     }
-
     .movie-card-content img { /* poster */
         width: auto; 
         height: 230px;
     }
-
     .movie-card-container {
         gap: 10px;
     }
-
     .movie-cards-wrapper {
       
         height: fit-content;
     }
-
     .movie-card-title {
         height: clamp(60px, 7vw, 80px);
         font-size: clamp(12px, 3vw, 14px);
     }
-
-
-
     nav {
         display: flex;
         align-items: end;
         flex-direction: column;
-   /*      margin-top: 2vw; */
         border-radius: 20px;
         overflow: hidden;
         box-shadow: #000000 0px 0px 10px;
     }
-
     #search-bar-container {
         width: 100%;
         position: fixed;
@@ -1081,21 +860,15 @@ footer p {
         margin: auto;
         z-index: 10;
         height: fit-content;
-       /*  display: none; */
        background-color: black;
        padding: 10px;
        border-radius: 0px;
-
        display: none;
     }
     #search-bar-container.active {
         display: flex;
     }
-
     #search-icon-button {
         display: flex;
-    }
-
-    
-    
+    } 
 }

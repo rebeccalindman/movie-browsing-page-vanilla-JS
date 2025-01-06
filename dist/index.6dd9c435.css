@@ -1,52 +1,3 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-main {
-  flex: 1;
-}
-
-.no-scroll {
-  overflow: hidden;
-}
-
-:root {
-  --text-dark: #16181a;
-  --text-light: #fff;
-  --brand-color1: #fc0;
-  --brand-color2: #5f9ea0;
-  --brand-color2-5: #70b3b6;
-  --brand-color3: #d3d3ff;
-  --brand-color3-8: #d3d3ffcc;
-  --brand-color4: #e93dad;
-  --brand-color4-darker: #d7369f;
-  --brand-color7: #fe671d;
-  --text-color-dark: #16181a;
-  --sds-typography-body-size-medium: 16px;
-  --sds-typography-body-font-weight-regular: 400;
-}
-
-body {
-  background-color: #fff;
-  width: 100%;
-  font-family: Inria Sans, sans-serif;
-}
-
-header {
-  z-index: 100;
-  background-color: #000;
-  justify-content: space-between;
-  align-self: stretch;
-  align-items: flex-start;
-  width: 100%;
-  height: fit-content;
-  padding: 0 2vw;
-  display: flex;
-  position: fixed;
-}
-
 #search-bar-container {
   border-radius: 20px;
   justify-content: center;
@@ -189,15 +140,6 @@ header nav ul {
 
 .nav-button.active {
   background-color: inherit;
-}
-
-body {
-  background: repeating-linear-gradient(135deg, #569092, #569092 80px, #51888a 80px 160px);
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  width: 100vw;
-  display: flex;
 }
 
 #savedmovies-body {
@@ -355,7 +297,7 @@ main {
   text-align: center;
   width: 75%;
   height: 5vh;
-  font-size: clamp(10px, 1.8vw, 13px);
+  font-size: clamp(12px, 1.8vw, 14px);
   font-weight: 400;
   line-height: 1.5;
   display: -webkit-box;
@@ -363,9 +305,9 @@ main {
 }
 
 .movie-card .cto-view-details {
-  color: var(--brand-color2, #5f9ea0);
+  color: #3b6a6c;
   text-align: center;
-  font-size: clamp(10px, 2vw, 14px);
+  font-size: clamp(12px, 2vw, 14px);
   font-weight: 700;
 }
 
@@ -444,7 +386,7 @@ main {
   display: grid;
   position: fixed;
   top: clamp(200px, 20vh, 500px);
-  overflow-y: auto;
+  overflow-y: scroll;
 }
 
 .movie-modal-overlay {
@@ -550,6 +492,7 @@ main {
   height: 100%;
   padding: 12px;
   display: flex;
+  overflow-y: auto;
 }
 
 .movie-genres {
@@ -617,7 +560,7 @@ main {
   align-items: start;
   gap: 16px;
   width: fit-content;
-  font-size: clamp(8px, 2rem, 12px);
+  font-size: clamp(12px, 2rem, 16px);
   display: flex;
 }
 
@@ -826,18 +769,18 @@ footer p {
 
   .movie-modal {
     flex-direction: column;
-    grid-template: "movie-modal-backdrop" 30%
+    grid-template: "movie-modal-backdrop" 20%
                    "movie-modal-title-container"
                    "rating-container" 10%
-                   "information-container"
+                   "information-container" 40%
                    "actors-section" 10%
                    "movie-modal-links"
                    / 1fr;
     align-items: center;
     width: 90vw;
-    max-height: 70vh;
+    max-height: 90vh;
     position: fixed;
-    overflow-y: auto;
+    overflow-y: scroll;
   }
 
   .movie-modal-title, .movie-modal-rating {
@@ -845,7 +788,7 @@ footer p {
   }
 
   .movie-genres, .movie-modal-release-date {
-    font-size: clamp(10px, .9rem, 16px);
+    font-size: clamp(12px, .9rem, 16px);
   }
 
   .movie-modal-backdrop {
@@ -865,7 +808,7 @@ footer p {
     align-items: center;
     gap: 12px;
     width: 100%;
-    font-size: clamp(8px, 2rem, 12px);
+    font-size: clamp(12px, 2rem, 16px);
     display: flex;
   }
 

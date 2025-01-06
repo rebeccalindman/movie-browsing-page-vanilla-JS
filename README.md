@@ -49,3 +49,10 @@ Lösenord: ****** (ledtråd: klassen)
 _Git_ 
 * Jag har använt mig av flera branches för att enkelt kunna ångra större ändringar, t.ex. en branch för movie-cards respektive modal
 * Dessa har jag mergeat in i 'develop'
+
+
+# Lighthouse-analys
+
+54 performance
+- mindre storlek på bilder
+- flyttade en del css till html-filen

@@ -4,6 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/index.6dd9c435.css">
+
+     <!-- Preconnect to Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+
+  <!-- Preconnect to TMDb API -->
+  <link rel="preconnect" href="https://api.themoviedb.org">
+
+  <!-- Preconnect to TMDb images -->
+  <link rel="preconnect" href="https://image.tmdb.org">
+
+  <!-- Critical CSS -->
+  <style>* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+main {
+  flex: 1;
+}
+
+:root {
+  --text-dark: #16181a;
+  --text-light: #fff;
+  --brand-color1: #fc0;
+  --brand-color2: #5f9ea0;
+  --brand-color2-5: #70b3b6;
+  --brand-color3: #d3d3ff;
+  --brand-color3-8: #d3d3ffcc;
+  --brand-color4: #e93dad;
+  --brand-color4-darker: #d7369f;
+  --brand-color7: #fe671d;
+  --text-color-dark: #16181a;
+  --sds-typography-body-size-medium: 16px;
+  --sds-typography-body-font-weight-regular: 400;
+}
+
+body {
+  background: repeating-linear-gradient(135deg, #569092, #569092 80px, #51888a 80px 160px);
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100vw;
+  font-family: Inria Sans, sans-serif;
+  display: flex;
+}
+
+header {
+  z-index: 100;
+  background-color: #000;
+  justify-content: space-between;
+  align-self: stretch;
+  align-items: center;
+  width: 100%;
+  height: fit-content;
+  padding: 0 2vw;
+  display: flex;
+  position: fixed;
+}
+</style>
+  
+
     <title>Filmkväll - Home</title>
     <!-- todo add favicon -->
      <!-- todo add package.json dependencies if needed -->
@@ -19,7 +82,7 @@
           <button id="search-button">Search</button>
         </div>
         <!-- search icon button for smaller screens -->
-        <button id="search-icon-button">
+        <button id="search-icon-button" aria-labelledby="searchInput">
           <svg xmlns="http://www.w3.org/2000/svg" width="25" height="24" viewbox="0 0 25 24" fill="none">
             <path d="M22.5 22L20.5 20M21.5 11.5C21.5 16.7467 17.2467 21 12 21C6.75329 21 2.5 16.7467 2.5 11.5C2.5 6.25329 6.75329 2 12 2C17.2467 2 21.5 6.25329 21.5 11.5Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
             </svg>
@@ -30,7 +93,7 @@
         <nav>
 
           <!-- hamburger -->
-          <button id="hamburger-button">
+          <button id="hamburger-button" aria-label="Toggle navigation">
             <svg class="" xmlns="http://www.w3.org/2000/svg" width="38" height="30" viewbox="0 0 38 30" fill="none">
               <path d="M2 2H36M2 15H36M2 28H36" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
               </svg>

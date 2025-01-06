@@ -1,10 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../src/styles/style.css">
-    <title>Filmkväll - Saved Movies</title>
+
+     <!-- Preconnect to Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Preconnect to TMDb API -->
+  <link rel="preconnect" href="https://api.themoviedb.org">
+
+  <!-- Preconnect to TMDb images -->
+  <link rel="preconnect" href="https://image.tmdb.org">
+
+  <!-- Critical CSS -->
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    main {
+        flex: 1; /* ? unnecessary? */
+    }
+    :root {
+      --text-dark: #16181A;
+      --text-light: #FFF; 
+      --brand-color1: #ffcc00;
+      --brand-color2: #5F9EA0;
+      --brand-color2-5: #70b3b6; /*light mint green*/
+      --brand-color3: #D3D3FF; /*lilac*/
+      --brand-color3-8: #D3D3FFCC; /* lilac 80% opacity */
+      --brand-color4: #E93DAD; /* hot pink */
+      --brand-color4-darker: #d7369f; /* darker hot pink */
+
+      --brand-color7: #FE671D; /* orange */
+      --text-color-dark: #16181a;
+
+      --sds-typography-body-size-medium: 16px;
+      --sds-typography-body-font-weight-regular: 400;
+    }
+    body{
+    background-color: #FFF;
+    font-family: "Inria Sans", sans-serif;
+    display: flex;
+    width: 100vw;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    background: repeating-linear-gradient(
+            135deg, /* Direction: 90 degrees creates vertical stripes */
+            #569092, /* First stripe color */
+            #569092 80px, /* Stripe width */
+            #51888a 80px, /* Gap between stripes (starts second color) */
+            #51888a 160px /* Total stripe width (alternates back to first color) */
+        );
+    }
+    header {
+    display: flex;
+    background-color: black;
+    position: fixed;
+    z-index: 100;
+    width: 100%;
+    height: fit-content;
+    justify-content: space-between;
+    align-items: center;
+    align-self: stretch;
+    padding: 0px 2vw;
+  }
+  
+  </style>
+  
+
+    <title>Filmkväll - Favorite Movies</title>
     <!-- todo add favicon -->
      <!-- todo add package.json dependencies if needed -->
 </head>
