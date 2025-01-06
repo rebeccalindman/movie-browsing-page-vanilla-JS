@@ -160,8 +160,14 @@ export function renderMovieCard(movie: Movie, category: string): void {
   }
 
   if (!movie.poster_path || movie.poster_path === "") {
-    console.error(`Error: Missing poster path for movie '${movie.title}'.`);
+   /*  console.log(`No poster path for movie '${movie.title}'. Skipping display.`); */
     return; // Prevent rendering if poster path is missing
+  }
+
+  if (!movie.providers || movie.providers === null) { // only display if providers exist
+    /* console.log(`No providers for movie '${movie.title}'. Skipping display.`); */
+    
+    return; // Prevent rendering if providers are missing
   }
 
   const movieCard = document.createElement("article");

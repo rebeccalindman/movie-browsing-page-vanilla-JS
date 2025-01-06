@@ -52,7 +52,7 @@ export const apiFeaturedMoviesUrl = `https://api.themoviedb.org/3/discover/movie
           })
         : [], // Default to an empty array if `genre_ids` is missing
         cast: (await getCastInformationForMovie(movie.id)) || [], // Default to empty array if cast fetch fails
-        providers: await getProvidersListForMovie(movie.id) || [],
+        providers: await getProvidersListForMovie(movie.id) || null,
         imdb: await getImdbInfoForMovie(movie.id),
       }))
     );
@@ -176,7 +176,7 @@ export async function getProvidersListForMovie(movieId: number): Promise<Provide
 
     const region = json.results["SE"]; // Adjust for the "SE" region (Sweden)
     if (!region) {
-      console.warn("No provider data available for the selected region (SE).");
+      /* console.warn("No provider data available for the selected region (SE)."); */
       return null; // Return null if no data for the region
     }
 
